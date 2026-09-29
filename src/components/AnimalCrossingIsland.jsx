@@ -307,7 +307,7 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       {/* ============================================================== */}
       <Suspense fallback={null}>
         <ModelProp url="./models/tree_oak.glb" position={[-9.5, 4.3, -9.5]} scale={2.2} />
-        <ModelProp url="./models/tree_default.glb" position={[-9.2, 2.3, -3.5]} scale={2.0} />
+        <ModelProp url="./models/tree_cone_dark.glb" position={[-9.2, 2.3, -3.5]} scale={2.0} />
         <ModelProp url="./models/tree_cone.glb" position={[-10, 0.6, 4.5]} scale={2.0} />
         <ModelProp url="./models/tree_oak.glb" position={[9.5, 0.6, 4.5]} scale={2.0} />
         <ModelProp url="./models/plant_bush.glb" position={[-4, 0.6, 7.5]} scale={1.8} />

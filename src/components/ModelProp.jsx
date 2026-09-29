@@ -35,7 +35,7 @@ export function preloadCommonModels() {
     './models/chairModernCushion.glb',
     './models/tableCoffee.glb',
     './models/tree_oak.glb',
-    './models/tree_default.glb',
+    './models/tree_cone_dark.glb',
     './models/tree_cone.glb',
     './models/plant_bush.glb'
   ]
