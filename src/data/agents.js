@@ -4,9 +4,9 @@ export const AGENTS_DATA = {
     name: '@Ai (PM)',
     species: 'bunny',
     role: 'Executive PM & Teman Masa Kecil Heru',
-    deskPos: [0, 4.6, -7.2],
-    pantryPos: [2, 0.6, 6],
-    meetingPos: [-3.5, 4.5, -7.5],
+    deskPos: [0.0, 4.3, -8.2],
+    pantryPos: [0.0, 0.6, 5.0],
+    meetingPos: [-3.5, 4.3, -8.0],
     color: '#ffb7c5',
     sweater: '#ff6b8b',
     emoji: '🐰💖',
@@ -27,16 +27,16 @@ export const AGENTS_DATA = {
     ]
   },
   
-  // Divisi 01 Akademik
+  // Divisi 01 Akademik (Left Wing Back)
   luna: {
     id: 'luna',
     name: '@Luna (Prof. LUNA)',
     species: 'owl_cat',
     role: 'Koordinator Riset Akademik & Skripsi',
-    deskPos: [-4, 2.6, -2],
-    pantryPos: [-5, 0.6, 6],
-    meetingPos: [-3.5, 4.5, -7.5],
-    bookshelfPos: [-4.2, 4.5, -9.8],
+    deskPos: [-5.5, 2.3, -3.0],
+    pantryPos: [-3.8, 0.6, 6.5],
+    meetingPos: [-3.5, 4.3, -8.0],
+    bookshelfPos: [-5.0, 2.3, -3.8],
     color: '#9d71e8',
     sweater: '#6d28d9',
     emoji: '🦉🎓',
@@ -60,9 +60,9 @@ export const AGENTS_DATA = {
     name: '@Kutu',
     species: 'hedgehog',
     role: 'Peneliti Jurnal Scopus Q1 & Standar SNI',
-    deskPos: [-4, 2.6, 0.2],
-    pantryPos: [-4, 0.6, 7],
-    bookshelfPos: [0, 4.5, -9.8],
+    deskPos: [-3.5, 2.3, -3.0],
+    pantryPos: [-4.8, 0.6, 6.5],
+    bookshelfPos: [-1.2, 2.3, -3.8],
     color: '#c49b71',
     sweater: '#8b5a2b',
     emoji: '🦔📚',
@@ -84,8 +84,8 @@ export const AGENTS_DATA = {
     name: '@Crayon',
     species: 'bear',
     role: 'Pelukis Grafik Ilmiah 600 DPI (GradiEnt Style)',
-    deskPos: [-2, 2.6, -2],
-    pantryPos: [-3, 0.6, 6],
+    deskPos: [-1.5, 2.3, -3.0],
+    pantryPos: [-3.8, 0.6, 7.3],
     color: '#ffb347',
     sweater: '#ff7043',
     emoji: '🐻🎨',
@@ -108,10 +108,10 @@ export const AGENTS_DATA = {
     name: '@Kucing',
     species: 'cat',
     role: 'Penjaga Integritas Anti-Turnitin',
-    deskPos: [-2, 2.6, 0.2],
-    pantryPos: [-2, 0.6, 8],
+    deskPos: [-4.5, 2.3, -1.2],
+    pantryPos: [-4.8, 0.6, 7.3],
     color: '#ffa07a',
-    sweater: '#f06292',
+    sweater: '#c084fc',
     emoji: '🐱🛡️',
     bubbleIcon: '✨',
     bubbleText: 'Human-Touch Polishing',
@@ -131,10 +131,10 @@ export const AGENTS_DATA = {
     name: '@Mata',
     species: 'bird',
     role: 'Penonton Video YouTube & Transkrip Tutorial',
-    deskPos: [-2, 2.6, 2],
-    pantryPos: [-1, 0.6, 7],
-    color: '#4fc3f7',
-    sweater: '#0288d1',
+    deskPos: [-2.5, 2.3, -1.2],
+    pantryPos: [-6.5, 0.6, 5.0],
+    color: '#38bdf8',
+    sweater: '#0284c7',
     emoji: '🐧🍿',
     bubbleIcon: '🎬',
     bubbleText: 'Transkrip Tutorial YouTube',
@@ -150,90 +150,17 @@ export const AGENTS_DATA = {
     ]
   },
 
-  // Divisi 02 Web & Software
-  mochi: {
-    id: 'mochi',
-    name: '@Mochi',
-    species: 'puppy',
-    role: 'Lead Architect GradiEnt Studio',
-    deskPos: [2, 2.6, -2],
-    pantryPos: [1, 0.6, 6],
-    meetingPos: [-3.5, 4.5, -7.5],
-    color: '#ffe082',
-    sweater: '#00acc1',
-    emoji: '🐕💻',
-    bubbleIcon: '⚡',
-    bubbleText: 'Fullstack React Three Fiber',
-    skills: ['building-data-apps', 'typesafe-ai', 'jev-ai'],
-    terminalLogs: [
-      '$ vite build --mode production',
-      '[VITE] Transforming 2093 modules...',
-      '[R3F] Canvas WebGL renderer initialized successfully',
-      '[SERVER] Supabase edge functions deployed'
-    ],
-    deliverables: [
-      { name: 'Arsitektur_GradiEnt_Web_V3.docx', type: 'word', size: '640 KB', date: 'Hari ini' },
-      { name: 'Schema_Database_Supabase_Production.sql', type: 'code', size: '45 KB', date: 'Kemarin' }
-    ]
-  },
-  piksel: {
-    id: 'piksel',
-    name: '@Piksel',
-    species: 'raccoon',
-    role: 'Spesialis UI/UX Tailwind (Nook Style)',
-    deskPos: [4, 2.6, -2],
-    pantryPos: [2, 0.6, 7],
-    color: '#8d6e63',
-    sweater: '#26a69a',
-    emoji: '🦝✨',
-    bubbleIcon: '🎨',
-    bubbleText: 'Tailwind CSS Layouting',
-    skills: ['cult-ui', 'fast-gui-orchestrator'],
-    terminalLogs: [
-      '$ npx tailwindcss -i ./src/index.css -o ./dist/output.css --minify',
-      '[TAILWIND] 126 utility classes generated',
-      '[DESIGN] Animal Crossing pastel palette hex verified',
-      '[MOBILE] Touch-friendly responsive layout active'
-    ],
-    deliverables: [
-      { name: 'Design_System_GradiEnt_NookUI.pdf', type: 'pdf', size: '2.1 MB', date: 'Hari ini' }
-    ]
-  },
-  kunci: {
-    id: 'kunci',
-    name: '@Kunci',
-    species: 'badger',
-    role: 'DBA Supabase PostgreSQL & RLS Security',
-    deskPos: [4, 2.6, 0.2],
-    pantryPos: [3, 0.6, 6],
-    color: '#90a4ae',
-    sweater: '#37474f',
-    emoji: '🦡🔑',
-    bubbleIcon: '🔒',
-    bubbleText: 'Mengunci RLS & Query SQL',
-    skills: ['supabase-integration', 'sql-optimization'],
-    terminalLogs: [
-      '$ psql -h db.supabase.co -U postgres -d postgres -f security.sql',
-      '[RLS] Row Level Security enabled for user_id = auth.uid()',
-      '[INDEX] B-tree index created on session_archives(timestamp)',
-      '[SECURE] Zero leak guarantee active'
-    ],
-    deliverables: [
-      { name: 'Audit_Keamanan_Database_RLS.xlsx', type: 'excel', size: '190 KB', date: 'Kemarin' }
-    ]
-  },
-
-  // Divisi 03 BIM & Konstruksi
+  // Divisi 03 BIM & Konstruksi (Left Wing Front)
   kaktus: {
     id: 'kaktus',
     name: '@Kaktus',
     species: 'cactus',
     role: 'BIM & AEC Engineering Lead',
-    deskPos: [-4, 2.6, 2],
-    pantryPos: [-4, 0.6, 8],
-    meetingPos: [-3.5, 4.5, -7.5],
-    color: '#81c784',
-    sweater: '#2e7d32',
+    deskPos: [-5.5, 2.3, 0.5],
+    pantryPos: [-2.0, 0.6, 5.0],
+    meetingPos: [-3.5, 4.3, -8.0],
+    color: '#4ade80',
+    sweater: '#15803d',
     emoji: '🌵🏗️',
     bubbleIcon: '📐',
     bubbleText: 'Revit LOD 350 Inspection',
@@ -254,10 +181,10 @@ export const AGENTS_DATA = {
     name: '@Tabrak',
     species: 'bulldog',
     role: 'Tukang Razia Clash 3D Pipa vs Balok',
-    deskPos: [-4, 2.6, 3.8],
-    pantryPos: [-3, 0.6, 7],
+    deskPos: [-3.5, 2.3, 0.5],
+    pantryPos: [-1.0, 0.6, 5.0],
     color: '#d7ccc8',
-    sweater: '#ffb74d',
+    sweater: '#f59e0b',
     emoji: '🐶💥',
     bubbleIcon: '⚠️',
     bubbleText: 'Zero-Clash Detection',
@@ -277,10 +204,10 @@ export const AGENTS_DATA = {
     name: '@Cuan',
     species: 'cat_lucky',
     role: 'Estimator RAB & Volume QTO Makassar',
-    deskPos: [-2, 2.6, 3.8],
-    pantryPos: [-2, 0.6, 6],
-    color: '#fff9c4',
-    sweater: '#ffd54f',
+    deskPos: [-1.5, 2.3, 0.5],
+    pantryPos: [-7.0, 0.6, 4.5],
+    color: '#fffbeb',
+    sweater: '#f59e0b',
     emoji: '🐱💰',
     bubbleIcon: '💵',
     bubbleText: 'Hitung RAB AHSP Makassar',
@@ -297,17 +224,17 @@ export const AGENTS_DATA = {
     ]
   },
 
-  // Divisi 04 Trading & Kuantitatif
+  // Divisi 04 Trading & Kuantitatif (Right Wing Back)
   masamba: {
     id: 'masamba',
     name: '@MasAmba',
     species: 'wolf',
     role: 'Lead Quantitative Trader',
-    deskPos: [2, 2.6, 2],
-    pantryPos: [1, 0.6, 8],
-    meetingPos: [-3.5, 4.5, -7.5],
-    color: '#78909c',
-    sweater: '#ffb300',
+    deskPos: [1.5, 2.3, -3.0],
+    pantryPos: [3.2, 0.6, 6.5],
+    meetingPos: [-1.0, 4.3, -8.0],
+    color: '#64748b',
+    sweater: '#d97706',
     emoji: '🐺📈',
     bubbleIcon: '📊',
     bubbleText: 'SMC & Order Block Analysis',
@@ -329,10 +256,10 @@ export const AGENTS_DATA = {
     name: '@Lilin',
     species: 'red_panda',
     role: 'Chartist & SMC Specialist (FVG & Liquidity)',
-    deskPos: [4, 2.6, 2],
-    pantryPos: [2, 0.6, 7],
-    color: '#d84315',
-    sweater: '#ff8a65',
+    deskPos: [3.5, 2.3, -3.0],
+    pantryPos: [4.4, 0.6, 6.5],
+    color: '#c2410c',
+    sweater: '#ea580c',
     emoji: '🐼🕯️',
     bubbleIcon: '🕯️',
     bubbleText: 'Scanning FVG & Likuiditas',
@@ -352,10 +279,10 @@ export const AGENTS_DATA = {
     name: '@Bandar',
     species: 'bear_big',
     role: 'Whale Tracker & Sentiment Analyzer',
-    deskPos: [2, 2.6, 3.8],
-    pantryPos: [3, 0.6, 6],
-    color: '#546e7a',
-    sweater: '#1e88e5',
+    deskPos: [5.5, 2.3, -3.0],
+    pantryPos: [3.2, 0.6, 7.3],
+    color: '#334155',
+    sweater: '#1d4ed8',
     emoji: '🐻🐋',
     bubbleIcon: '🐋',
     bubbleText: 'Tracking Transaksi Paus',
@@ -375,10 +302,10 @@ export const AGENTS_DATA = {
     name: '@Botik',
     species: 'robo_pup',
     role: 'Algo & Python Backtest Engine',
-    deskPos: [4, 2.6, 3.8],
-    pantryPos: [4, 0.6, 8],
-    color: '#aed581',
-    sweater: '#689f38',
+    deskPos: [2.5, 2.3, -1.2],
+    pantryPos: [4.4, 0.6, 7.3],
+    color: '#84cc16',
+    sweater: '#4d7c0f',
     emoji: '🐶⚡',
     bubbleIcon: '💻',
     bubbleText: 'Backtest Sharpe 2.14',
@@ -399,10 +326,10 @@ export const AGENTS_DATA = {
     name: '@Rem',
     species: 'turtle',
     role: 'Chief Risk Officer (Batas Lot 1-2%)',
-    deskPos: [0, 2.6, 3.8],
-    pantryPos: [5, 0.6, 7],
-    color: '#80cbc4',
-    sweater: '#e53935',
+    deskPos: [4.5, 2.3, -1.2],
+    pantryPos: [1.0, 0.6, 5.0],
+    color: '#14b8a6',
+    sweater: '#dc2626',
     emoji: '🐢🛑',
     bubbleIcon: '🛡️',
     bubbleText: 'Kunci Batas Risiko 1.5%',
@@ -415,6 +342,79 @@ export const AGENTS_DATA = {
     ],
     deliverables: [
       { name: 'Kalkulator_Ukuran_Lot_Anti_MC.xlsx', type: 'excel', size: '310 KB', date: 'Hari ini' }
+    ]
+  },
+
+  // Divisi 02 Web & Software (Right Wing Front)
+  mochi: {
+    id: 'mochi',
+    name: '@Mochi',
+    species: 'puppy',
+    role: 'Lead Architect GradiEnt Studio',
+    deskPos: [1.5, 2.3, 0.5],
+    pantryPos: [2.0, 0.6, 5.0],
+    meetingPos: [1.0, 4.3, -8.0],
+    color: '#fbbf24',
+    sweater: '#0891b2',
+    emoji: '🐕💻',
+    bubbleIcon: '⚡',
+    bubbleText: 'Fullstack React Three Fiber',
+    skills: ['building-data-apps', 'typesafe-ai', 'jev-ai'],
+    terminalLogs: [
+      '$ vite build --mode production',
+      '[VITE] Transforming 2093 modules...',
+      '[R3F] Canvas WebGL renderer initialized successfully',
+      '[SERVER] Supabase edge functions deployed'
+    ],
+    deliverables: [
+      { name: 'Arsitektur_GradiEnt_Web_V3.docx', type: 'word', size: '640 KB', date: 'Hari ini' },
+      { name: 'Schema_Database_Supabase_Production.sql', type: 'code', size: '45 KB', date: 'Kemarin' }
+    ]
+  },
+  piksel: {
+    id: 'piksel',
+    name: '@Piksel',
+    species: 'raccoon',
+    role: 'Spesialis UI/UX Tailwind (Nook Style)',
+    deskPos: [3.5, 2.3, 0.5],
+    pantryPos: [6.5, 0.6, 4.5],
+    color: '#78716c',
+    sweater: '#0d9488',
+    emoji: '🦝✨',
+    bubbleIcon: '🎨',
+    bubbleText: 'Tailwind CSS Layouting',
+    skills: ['cult-ui', 'fast-gui-orchestrator'],
+    terminalLogs: [
+      '$ npx tailwindcss -i ./src/index.css -o ./dist/output.css --minify',
+      '[TAILWIND] 126 utility classes generated',
+      '[DESIGN] Animal Crossing pastel palette hex verified',
+      '[MOBILE] Touch-friendly responsive layout active'
+    ],
+    deliverables: [
+      { name: 'Design_System_GradiEnt_NookUI.pdf', type: 'pdf', size: '2.1 MB', date: 'Hari ini' }
+    ]
+  },
+  kunci: {
+    id: 'kunci',
+    name: '@Kunci',
+    species: 'badger',
+    role: 'DBA Supabase PostgreSQL & RLS Security',
+    deskPos: [5.5, 2.3, 0.5],
+    pantryPos: [5.5, 0.6, 5.5],
+    color: '#64748b',
+    sweater: '#334155',
+    emoji: '🦡🔑',
+    bubbleIcon: '🔒',
+    bubbleText: 'Mengunci RLS & Query SQL',
+    skills: ['supabase-integration', 'sql-optimization'],
+    terminalLogs: [
+      '$ psql -h db.supabase.co -U postgres -d postgres -f security.sql',
+      '[RLS] Row Level Security enabled for user_id = auth.uid()',
+      '[INDEX] B-tree index created on session_archives(timestamp)',
+      '[SECURE] Zero leak guarantee active'
+    ],
+    deliverables: [
+      { name: 'Audit_Keamanan_Database_RLS.xlsx', type: 'excel', size: '190 KB', date: 'Kemarin' }
     ]
   }
 }

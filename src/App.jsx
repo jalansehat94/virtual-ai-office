@@ -3,6 +3,8 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Sky } from '@react-three/drei'
 import * as THREE from 'three'
 
+import ErrorBoundary from './components/ErrorBoundary'
+import LoadingScreen from './components/LoadingScreen'
 import SecurityGate from './components/SecurityGate'
 import AnimalCrossingIsland from './components/AnimalCrossingIsland'
 import Villager from './components/Villager'
@@ -11,8 +13,16 @@ import CameraDirector from './components/CameraDirector'
 import { AGENTS_DATA } from './data/agents'
 
 export default function App() {
+  // Auto-unlock on localhost for instant developer & user preview without barriers
   const [unlocked, setUnlocked] = useState(() => {
-    return sessionStorage.getItem('sb_unlocked') === '1'
+    if (typeof window !== 'undefined') {
+      const host = window.location.hostname
+      if (host === 'localhost' || host === '127.0.0.1' || host === '') {
+        return true
+      }
+      return sessionStorage.getItem('sb_unlocked') === '1'
+    }
+    return true
   })
 
   // Agents status map
@@ -194,14 +204,14 @@ export default function App() {
       setCamPos(new THREE.Vector3(22, 16, 24))
       setLookPos(new THREE.Vector3(0, 2, 0))
     } else if (tier === 'boss') {
-      setCamPos(new THREE.Vector3(-1, 8.5, -2))
-      setLookPos(new THREE.Vector3(-1, 4.5, -8))
+      setCamPos(new THREE.Vector3(0, 9.0, -2.5))
+      setLookPos(new THREE.Vector3(0, 4.3, -8.2))
     } else if (tier === 'workspace') {
-      setCamPos(new THREE.Vector3(0, 9, 6))
-      setLookPos(new THREE.Vector3(0, 2.5, -1))
+      setCamPos(new THREE.Vector3(0, 10.0, 7.0))
+      setLookPos(new THREE.Vector3(0, 2.5, -1.2))
     } else if (tier === 'pantry') {
-      setCamPos(new THREE.Vector3(0, 4.5, 14))
-      setLookPos(new THREE.Vector3(0, 0.6, 6))
+      setCamPos(new THREE.Vector3(0, 5.0, 13.5))
+      setLookPos(new THREE.Vector3(0, 0.6, 5.0))
     }
   }
 
@@ -211,106 +221,108 @@ export default function App() {
   }
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#a2e8dd]">
-      {/* 1. Security Gate PIN Overlay (Master PIN 211103) */}
-      {!unlocked && <SecurityGate onUnlocked={() => setUnlocked(true)} />}
+    <ErrorBoundary>
+      <div className="relative w-screen h-screen overflow-hidden bg-[#a2e8dd]">
+        {/* 1. Security Gate PIN Overlay (Active only if locked and not on localhost) */}
+        {!unlocked && <SecurityGate onUnlocked={() => setUnlocked(true)} />}
 
-      {/* 2. Three.js Canvas Scene */}
-      <Canvas
-        shadows
-        camera={{ position: [22, 16, 24], fov: 40, near: 0.1, far: 1000 }}
-        className="w-full h-full"
-      >
-        {/* Cinematic Camera Director with Smooth Damping */}
-        <CameraDirector
-          cameraPos={camPos}
-          lookAtPos={lookPos}
-          controlsRef={controlsRef}
-        />
-
-        {/* Soft Animal Crossing Sunlight */}
-        <ambientLight intensity={0.7} color="#ffffff" />
-        <hemisphereLight intensity={1.1} groundColor="#8fcc70" color="#fff6e5" />
-        <directionalLight
-          position={[18, 32, 12]}
-          intensity={1.5}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-camera-near={0.5}
-          shadow-camera-far={60}
-          shadow-camera-left={-16}
-          shadow-camera-right={16}
-          shadow-camera-top={16}
-          shadow-camera-bottom={-16}
-          color="#fff5db"
-        />
-
-        <Sky
-          distance={450000}
-          sunPosition={[18, 30, 12]}
-          inclination={0.6}
-          azimuth={0.25}
-          turbidity={6}
-          rayleigh={0.5}
-        />
-
-        <fog attach="fog" args={['#a2e8dd', 15, 65]} />
-
-        <OrbitControls
-          ref={controlsRef}
-          enableDamping
-          dampingFactor={0.05}
-          maxPolarAngle={Math.PI / 2.1}
-          minDistance={6}
-          maxDistance={55}
-          target={[0, 2, 0]}
-        />
-
-        {/* Suspense wrapper for 3D GLB assets */}
-        <Suspense fallback={null}>
-          {/* Island Terrain and Room Divisions (Hedge Lounge & Bookcase Maze) */}
-          <AnimalCrossingIsland
-            counts={counts}
-            showLabels={unlocked}
-            onOpenBulletin={() => setBulletinOpen(true)}
+        {/* 2. Three.js Canvas Scene */}
+        <Canvas
+          shadows
+          camera={{ position: [22, 16, 24], fov: 40, near: 0.1, far: 1000 }}
+          className="w-full h-full"
+        >
+          {/* Cinematic Camera Director with Smooth Damping */}
+          <CameraDirector
+            cameraPos={camPos}
+            lookAtPos={lookPos}
+            controlsRef={controlsRef}
           />
 
-          {/* 17 Villagers with Laptops, Walking Cycles, and Thought Bubbles */}
-          {Object.values(AGENTS_DATA).map(agent => (
-            <Villager
-              key={agent.id}
-              agent={agent}
-              status={agentStatuses[agent.id] || 'standby'}
-              isSelected={selectedAgent?.id === agent.id}
-              showLabels={unlocked}
-              isAlerted={alertedAgentId === agent.id}
-              onClick={(a) => setSelectedAgent(a)}
-            />
-          ))}
-        </Suspense>
-      </Canvas>
+          {/* Soft Animal Crossing Sunlight */}
+          <ambientLight intensity={0.7} color="#ffffff" />
+          <hemisphereLight intensity={1.1} groundColor="#8fcc70" color="#fff6e5" />
+          <directionalLight
+            position={[18, 32, 12]}
+            intensity={1.5}
+            castShadow
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-camera-near={0.5}
+            shadow-camera-far={60}
+            shadow-camera-left={-16}
+            shadow-camera-right={16}
+            shadow-camera-top={16}
+            shadow-camera-bottom={-16}
+            color="#fff5db"
+          />
 
-      {/* 3. HTML NookPhone Style UI Overlay */}
-      {unlocked && (
-        <UIOverlay
-          counts={counts}
-          selectedAgent={selectedAgent}
-          agentStatus={selectedAgent ? (agentStatuses[selectedAgent.id] || 'standby') : 'standby'}
-          onCloseModal={() => setSelectedAgent(null)}
-          onToggleAgent={handleToggleAgent}
-          onFocusTier={handleFocusTier}
-          onLock={handleLock}
-          commsLogs={commsLogs}
-          bulletinOpen={bulletinOpen}
-          onOpenBulletin={() => setBulletinOpen(true)}
-          onCloseBulletin={() => setBulletinOpen(false)}
-          onDispatchCommand={handleDispatchCommand}
-          bossMessage={bossMessage}
-          autoMode={autoMode}
-          onToggleAutoMode={() => setAutoMode(!autoMode)}
-        />
-      )}
-    </div>
+          <Sky
+            distance={450000}
+            sunPosition={[18, 30, 12]}
+            inclination={0.6}
+            azimuth={0.25}
+            turbidity={6}
+            rayleigh={0.5}
+          />
+
+          <fog attach="fog" args={['#a2e8dd', 15, 65]} />
+
+          <OrbitControls
+            ref={controlsRef}
+            enableDamping
+            dampingFactor={0.05}
+            maxPolarAngle={Math.PI / 2.1}
+            minDistance={6}
+            maxDistance={55}
+            target={[0, 2, 0]}
+          />
+
+          {/* Suspense wrapper with cute Animal Crossing Loading Screen */}
+          <Suspense fallback={null}>
+            {/* Island Terrain and Room Divisions (Hedge Lounge & Bookcase Maze) */}
+            <AnimalCrossingIsland
+              counts={counts}
+              showLabels={unlocked}
+              onOpenBulletin={() => setBulletinOpen(true)}
+            />
+
+            {/* 17 Villagers with Laptops, Walking Cycles, and Thought Bubbles */}
+            {Object.values(AGENTS_DATA).map(agent => (
+              <Villager
+                key={agent.id}
+                agent={agent}
+                status={agentStatuses[agent.id] || 'standby'}
+                isSelected={selectedAgent?.id === agent.id}
+                showLabels={unlocked}
+                isAlerted={alertedAgentId === agent.id}
+                onClick={(a) => setSelectedAgent(a)}
+              />
+            ))}
+          </Suspense>
+        </Canvas>
+
+        {/* 3. HTML NookPhone Style UI Overlay */}
+        {unlocked && (
+          <UIOverlay
+            counts={counts}
+            selectedAgent={selectedAgent}
+            agentStatus={selectedAgent ? (agentStatuses[selectedAgent.id] || 'standby') : 'standby'}
+            onCloseModal={() => setSelectedAgent(null)}
+            onToggleAgent={handleToggleAgent}
+            onFocusTier={handleFocusTier}
+            onLock={handleLock}
+            commsLogs={commsLogs}
+            bulletinOpen={bulletinOpen}
+            onOpenBulletin={() => setBulletinOpen(true)}
+            onCloseBulletin={() => setBulletinOpen(false)}
+            onDispatchCommand={handleDispatchCommand}
+            bossMessage={bossMessage}
+            autoMode={autoMode}
+            onToggleAutoMode={() => setAutoMode(!autoMode)}
+          />
+        )}
+      </div>
+    </ErrorBoundary>
   )
 }
