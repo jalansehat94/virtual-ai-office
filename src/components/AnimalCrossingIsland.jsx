@@ -65,6 +65,71 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           <boxGeometry args={[31.4, 0.08, 12.4]} />
           <meshStandardMaterial color="#b5651d" roughness={0.6} />
         </mesh>
+
+        {/* ============================================================== */}
+        {/* CLASH OF CLANS / AC STYLE 3D COBBLESTONE ROADS FROM STAIRS    */}
+        {/* ============================================================== */}
+        {/* 1. Central Grand Avenue (From Stairway 1 top Z: 2.2 to Z: -8.5) */}
+        <group position={[0, 2.47, 0]}>
+          {/* Main Avenue Stone Bed */}
+          <mesh position={[0, 0.015, -3.15]} receiveShadow>
+            <boxGeometry args={[3.4, 0.03, 11.2]} />
+            <meshStandardMaterial color="#ded1bf" roughness={0.85} />
+          </mesh>
+          {/* Side Stone Kerbs (Left & Right) */}
+          <mesh position={[-1.75, 0.035, -3.15]} receiveShadow castShadow>
+            <boxGeometry args={[0.12, 0.05, 11.2]} />
+            <meshStandardMaterial color="#6b4c35" roughness={0.7} />
+          </mesh>
+          <mesh position={[1.75, 0.035, -3.15]} receiveShadow castShadow>
+            <boxGeometry args={[0.12, 0.05, 11.2]} />
+            <meshStandardMaterial color="#6b4c35" roughness={0.7} />
+          </mesh>
+
+          {/* Staggered Decorative Cobblestone Pavers along Central Avenue */}
+          {[-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2].map((pz, idx) => (
+            <group key={`pave-center-${idx}`} position={[0, 0.032, pz]}>
+              <mesh position={[-0.8, 0, 0]} rotation={[-Math.PI / 2, 0, idx * 0.2]} receiveShadow>
+                <circleGeometry args={[0.38, 7]} />
+                <meshStandardMaterial color={idx % 2 === 0 ? '#cbbea9' : '#e6dbcc'} roughness={0.9} />
+              </mesh>
+              <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, idx * 0.3]} receiveShadow>
+                <circleGeometry args={[0.42, 8]} />
+                <meshStandardMaterial color={idx % 3 === 0 ? '#b8a993' : '#dfd4c4'} roughness={0.9} />
+              </mesh>
+              <mesh position={[0.8, 0, 0]} rotation={[-Math.PI / 2, 0, idx * 0.4]} receiveShadow>
+                <circleGeometry args={[0.36, 6]} />
+                <meshStandardMaterial color={idx % 2 === 0 ? '#ded4c4' : '#c5b6a0'} roughness={0.9} />
+              </mesh>
+            </group>
+          ))}
+
+          {/* 2. Connecting Boulevard to Stairway 2 (Right wing to Tier 3 at Z: -7.5) */}
+          <mesh position={[5.8, 0.015, -7.5]} receiveShadow>
+            <boxGeometry args={[11.6, 0.03, 2.6]} />
+            <meshStandardMaterial color="#ded1bf" roughness={0.85} />
+          </mesh>
+          <mesh position={[5.8, 0.035, -6.2]} receiveShadow castShadow>
+            <boxGeometry args={[11.6, 0.05, 0.12]} />
+            <meshStandardMaterial color="#6b4c35" roughness={0.7} />
+          </mesh>
+          <mesh position={[5.8, 0.035, -8.8]} receiveShadow castShadow>
+            <boxGeometry args={[11.6, 0.05, 0.12]} />
+            <meshStandardMaterial color="#6b4c35" roughness={0.7} />
+          </mesh>
+
+          {/* 3. Lateral Walkway Row 1 (Between Desks at Z: -1.5) */}
+          <mesh position={[0, 0.012, -1.5]} receiveShadow>
+            <boxGeometry args={[26.0, 0.024, 2.0]} />
+            <meshStandardMaterial color="#ded1bf" roughness={0.85} />
+          </mesh>
+
+          {/* 4. Lateral Walkway Row 2 (Between Desks at Z: -5.5) */}
+          <mesh position={[0, 0.012, -5.5]} receiveShadow>
+            <boxGeometry args={[26.0, 0.024, 2.0]} />
+            <meshStandardMaterial color="#ded1bf" roughness={0.85} />
+          </mesh>
+        </group>
       </group>
 
       {/* Tier 2 Front Cliff Wings (Z: +1.8 to +4.0) with Wide Center Gap at X: -2.4 to +2.4 for Stairway 1 */}
@@ -180,11 +245,42 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
 
       {/* STAIRWAY 1: Center Grand Wooden Incline (Tier 1 <-> Tier 2, X: 0) */}
       <group position={[0, 0, 0]}>
-        {/* Cobblestone Promenade on Lawn leading to Stairs */}
-        <mesh position={[0, 0.615, 8.8]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-          <planeGeometry args={[3.8, 5.0]} />
-          <meshStandardMaterial color="#e2e8f0" roughness={0.9} />
-        </mesh>
+        {/* Tier 1 Cobblestone Promenade Network */}
+        <group position={[0, 0.615, 0]}>
+          {/* Central Grand Promenade (from Stairway 1 base Z: 6.4 down to beach Z: 13.0) */}
+          <mesh position={[0, 0.012, 9.7]} receiveShadow>
+            <boxGeometry args={[4.4, 0.024, 6.6]} />
+            <meshStandardMaterial color="#ded1bf" roughness={0.85} />
+          </mesh>
+          <mesh position={[-2.25, 0.030, 9.7]} receiveShadow castShadow>
+            <boxGeometry args={[0.12, 0.04, 6.6]} />
+            <meshStandardMaterial color="#6b4c35" roughness={0.7} />
+          </mesh>
+          <mesh position={[2.25, 0.030, 9.7]} receiveShadow castShadow>
+            <boxGeometry args={[0.12, 0.04, 6.6]} />
+            <meshStandardMaterial color="#6b4c35" roughness={0.7} />
+          </mesh>
+
+          {/* West Promenade to Brewster Cafe & Animal Crossing Cottage */}
+          <mesh position={[-7.5, 0.010, 8.8]} receiveShadow>
+            <boxGeometry args={[11.5, 0.020, 2.8]} />
+            <meshStandardMaterial color="#ded1bf" roughness={0.85} />
+          </mesh>
+
+          {/* East Promenade to Patio Lounge & Bulletin Board / Tom Nook */}
+          <mesh position={[7.5, 0.010, 8.8]} receiveShadow>
+            <boxGeometry args={[11.5, 0.020, 2.8]} />
+            <meshStandardMaterial color="#ded1bf" roughness={0.85} />
+          </mesh>
+
+          {/* Stepping Stone Trail to Beach & Pier */}
+          {[13.5, 14.5, 15.5, 16.5].map((bz, idx) => (
+            <mesh key={`beach-trail-${idx}`} position={[-1.0 + (idx % 2) * 2.0, 0.015, bz]} rotation={[-Math.PI / 2, 0, idx * 0.4]} receiveShadow>
+              <circleGeometry args={[0.5, 8]} />
+              <meshStandardMaterial color="#c2b280" roughness={0.9} />
+            </mesh>
+          ))}
+        </group>
 
         {/* 9 Solid Timber Steps */}
         {[
@@ -360,29 +456,31 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
 
         {/* Executive Boss Desk for @Ai with Glowing Pink Laptop */}
         <group position={[0, 0, 1.5]}>
-          <ModelProp url="./models/desk.glb" scale={1.5} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[0, 0, -0.78]} scale={1.5} />
+          <group position={[-0.54, 0, 0.28]}>
+            <ModelProp url="./models/desk.glb" scale={1.5} />
+          </group>
+          <ModelProp url="./models/chairModernCushion.glb" position={[0, 0, -0.68]} scale={1.5} />
           
-          {/* Executive Laptop on Desk - Opened and facing seated Ai at Z = -0.75 */}
-          <group position={[0, 0.76, -0.15]}>
+          {/* Executive Laptop on Desk - Opened and flush on desk at Y = 0.58 */}
+          <group position={[0, 0.58, 0]}>
             {/* Base */}
-            <mesh position={[0, 0.015, 0]} castShadow receiveShadow>
-              <boxGeometry args={[0.56, 0.025, 0.38]} />
+            <mesh position={[0, 0.012, 0]} castShadow receiveShadow>
+              <boxGeometry args={[0.56, 0.024, 0.38]} />
               <meshStandardMaterial color="#f472b6" metalness={0.6} roughness={0.2} />
             </mesh>
             {/* Trackpad nearest to Ai */}
-            <mesh position={[0, 0.028, -0.12]} rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh position={[0, 0.025, -0.12]} rotation={[-Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.18, 0.09]} />
               <meshBasicMaterial color="#fbcfe8" />
             </mesh>
             {/* Keyboard */}
-            <mesh position={[0, 0.028, -0.02]} rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh position={[0, 0.025, -0.02]} rotation={[-Math.PI / 2, 0, 0]}>
               <planeGeometry args={[0.48, 0.18]} />
               <meshBasicMaterial color="#374151" />
             </mesh>
 
             {/* Laptop Screen Tilted towards Ai */}
-            <group position={[0, 0.025, 0.15]} rotation={[0.35, 0, 0]}>
+            <group position={[0, 0.022, 0.15]} rotation={[0.34, 0, 0]}>
               {/* Back Cover */}
               <mesh position={[0, 0.18, 0]} castShadow>
                 <boxGeometry args={[0.56, 0.36, 0.02]} />
@@ -435,66 +533,71 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       {/* 5. TIER 2: BOOKCASE MAZE & 16 SPACIOUS DESKS WITH LAPTOPS      */}
       {/* ============================================================== */}
       <group position={[0, 2.4, 0]}>
-        {/* Perimeter & Maze Dividing Bookcases */}
+        {/* Perimeter & Maze Dividing Bookcases - Scaled to Full Architectural Height (2.8m) */}
         <group position={[0, 0, -3.5]}>
-          {/* Back Row Bookcases */}
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-12.0, 0, -6.5]} scale={1.6} />
-          <ModelProp url="./models/bookcaseOpen.glb" position={[-8.5, 0, -6.5]} scale={1.6} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-4.5, 0, -6.5]} scale={1.6} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[4.5, 0, -6.5]} scale={1.6} />
-          <ModelProp url="./models/bookcaseOpen.glb" position={[8.5, 0, -6.5]} scale={1.6} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[12.0, 0, -6.5]} scale={1.6} />
+          {/* Back Wall Bookcases (Perimeter behind desks) */}
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-11.5, 0, -6.5]} scale={3.2} />
+          <ModelProp url="./models/bookcaseOpen.glb" position={[-8.0, 0, -6.5]} scale={3.2} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-4.5, 0, -6.5]} scale={3.2} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[4.5, 0, -6.5]} scale={3.2} />
+          <ModelProp url="./models/bookcaseOpen.glb" position={[8.0, 0, -6.5]} scale={3.2} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[11.5, 0, -6.5]} scale={3.2} />
 
-          {/* Departmental Divider Bookcases */}
-          <ModelProp url="./models/bookcaseOpen.glb" position={[-4.5, 0, -2.0]} rotation={[0, Math.PI / 2, 0]} scale={1.6} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[4.5, 0, -2.0]} rotation={[0, Math.PI / 2, 0]} scale={1.6} />
-          <ModelProp url="./models/bookcaseOpen.glb" position={[-4.5, 0, 2.5]} rotation={[0, Math.PI / 2, 0]} scale={1.6} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[4.5, 0, 2.5]} rotation={[0, Math.PI / 2, 0]} scale={1.6} />
+          {/* Departmental Divider Bookcase Walls */}
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-4.8, 0, -1.8]} rotation={[0, Math.PI / 2, 0]} scale={3.0} />
+          <ModelProp url="./models/bookcaseOpen.glb" position={[-4.8, 0, 2.8]} rotation={[0, Math.PI / 2, 0]} scale={3.0} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[4.8, 0, -1.8]} rotation={[0, Math.PI / 2, 0]} scale={3.0} />
+          <ModelProp url="./models/bookcaseOpen.glb" position={[4.8, 0, 2.8]} rotation={[0, Math.PI / 2, 0]} scale={3.0} />
         </group>
 
-        {/* 16 Real Desks, Chairs, and Laptops with Generous Spacing */}
+        {/* 16 Real Desks, Chairs, and Laptops with Centered Symmetry & Zero-Float */}
         {tier2Desks.map(d => (
           <group key={d.id} position={[d.pos[0], 0, d.pos[2]]}>
-            <ModelProp url="./models/desk.glb" scale={1.35} />
-            <ModelProp url="./models/chairDesk.glb" position={[0, 0, -0.74]} rotation={[0, 0, 0]} scale={1.35} />
+            {/* Centered Desk Body (Offsetting origin to place center exactly at 0, 0) */}
+            <group position={[-0.482, 0, 0.25]}>
+              <ModelProp url="./models/desk.glb" scale={1.35} />
+            </group>
 
-            {/* Glowing Laptop on Each Desk - Orienting Screen toward seated villager at Z = -0.74 */}
-            <group position={[0, 0.74, -0.15]}>
+            {/* Office Chair centered directly behind the desk */}
+            <ModelProp url="./models/chairDesk.glb" position={[0, 0, -0.60]} rotation={[0, 0, 0]} scale={1.35} />
+
+            {/* Glowing Laptop sitting FLUSH on top of the desk wood surface at Y = 0.52 */}
+            <group position={[0, 0.52, 0]}>
               {/* Laptop base */}
-              <mesh position={[0, 0.012, 0]} castShadow receiveShadow>
-                <boxGeometry args={[0.54, 0.02, 0.36]} />
-                <meshStandardMaterial color="#cbd5e1" metalness={0.6} roughness={0.3} />
+              <mesh position={[0, 0.010, 0]} castShadow receiveShadow>
+                <boxGeometry args={[0.50, 0.018, 0.34]} />
+                <meshStandardMaterial color="#94a3b8" metalness={0.7} roughness={0.25} />
               </mesh>
-              {/* Trackpad (nearest to villager) */}
-              <mesh position={[0, 0.024, -0.12]} rotation={[-Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[0.16, 0.08]} />
-                <meshBasicMaterial color="#94a3b8" />
+              {/* Trackpad (nearest to seated villager) */}
+              <mesh position={[0, 0.020, -0.10]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[0.15, 0.08]} />
+                <meshBasicMaterial color="#cbd5e1" />
               </mesh>
               {/* Keyboard */}
-              <mesh position={[0, 0.024, -0.02]} rotation={[-Math.PI / 2, 0, 0]}>
-                <planeGeometry args={[0.46, 0.16]} />
+              <mesh position={[0, 0.020, -0.01]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[0.42, 0.15]} />
                 <meshBasicMaterial color="#1e293b" />
               </mesh>
 
-              {/* Tilted Laptop Screen with Glowing Code - Screen opens toward -Z (villager) */}
-              <group position={[0, 0.02, 0.14]} rotation={[0.34, 0, 0]}>
-                {/* Back Cover (facing away into office) */}
-                <mesh position={[0, 0.16, 0]} castShadow>
-                  <boxGeometry args={[0.54, 0.32, 0.018]} />
-                  <meshStandardMaterial color="#475569" metalness={0.6} roughness={0.3} />
+              {/* Tilted Laptop Screen with Glowing Emerald Code facing seated villager at -Z */}
+              <group position={[0, 0.018, 0.13]} rotation={[0.32, 0, 0]}>
+                {/* Back Cover */}
+                <mesh position={[0, 0.15, 0]} castShadow>
+                  <boxGeometry args={[0.50, 0.30, 0.018]} />
+                  <meshStandardMaterial color="#334155" metalness={0.7} roughness={0.25} />
                 </mesh>
                 {/* Screen Display (facing -Z directly into villager eyes) */}
-                <mesh position={[0, 0.16, -0.010]} rotation={[0, Math.PI, 0]}>
-                  <planeGeometry args={[0.50, 0.28]} />
+                <mesh position={[0, 0.15, -0.010]} rotation={[0, Math.PI, 0]}>
+                  <planeGeometry args={[0.46, 0.26]} />
                   <meshBasicMaterial color="#10b981" />
                 </mesh>
-                <pointLight position={[0, 0.16, -0.15]} color="#34d399" intensity={1.5} distance={1.8} />
+                <pointLight position={[0, 0.15, -0.15]} color="#34d399" intensity={1.8} distance={1.8} />
               </group>
             </group>
 
-            {/* Cute Ceramic Coffee Mug on Corner of Desk */}
-            <mesh position={[0.34, 0.74, -0.15]} castShadow>
-              <cylinderGeometry args={[0.05, 0.045, 0.11, 10]} />
+            {/* Cute Ceramic Coffee Mug sitting on Corner of Desk Surface */}
+            <mesh position={[0.30, 0.575, 0.05]} castShadow>
+              <cylinderGeometry args={[0.045, 0.04, 0.11, 10]} />
               <meshStandardMaterial color="#ffffff" roughness={0.3} />
             </mesh>
           </group>

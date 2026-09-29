@@ -43,23 +43,75 @@ export default function App() {
   const [alertedAgentId, setAlertedAgentId] = useState(null)
   const [autoMode, setAutoMode] = useState(true)
 
+  const [waModalOpen, setWaModalOpen] = useState(false)
+  const [waGroupLogs, setWaGroupLogs] = useState([
+    { id: 1, sender: '@Luna (Prof. LUNA)', role: 'Divisi 01 Riset Akademik', time: '04:05', text: 'Rujukan SNI 03-6197 & Al-Marwaee dikunci pada Bab II Skripsi Mattoanging.' },
+    { id: 2, sender: '@MasAmba', role: 'Divisi 04 Trading & Quant', time: '04:08', text: 'Market BTC/USDT bertahan di atas FVG H4. Risk dikunci max 1.5%.' },
+    { id: 3, sender: '@Kaktus', role: 'Divisi 03 BIM & Konstruksi', time: '04:10', text: 'Revit IFC Menara Dynamo clean, zero clash pipa vs struktur.' },
+    { id: 4, sender: '@Mochi', role: 'Divisi 02 Software & Web', time: '04:12', text: 'Layout responsif mobile & visual 2.5D CoC dioptimalkan untuk HP!' },
+    { id: 5, sender: '@Ai (PM)', role: 'Chief of Staff', time: '04:15', text: 'Heru, semua 17 bot SecondBrain aktif dan terhubung di WhatsApp Desktop!' }
+  ])
+
   // Camera Mode: Director vs Free Cam
   const [isFreeCam, setIsFreeCam] = useState(false)
 
-  // Camera targets for smooth cinematic director
-  const [camPos, setCamPos] = useState(() => new THREE.Vector3(28, 22, 34))
+  // Camera targets for smooth cinematic director (CoC 2.5D Isometric default)
+  const [camPos, setCamPos] = useState(() => new THREE.Vector3(30, 24, 30))
   const [lookPos, setLookPos] = useState(() => new THREE.Vector3(0, 2, -2))
 
   const [commsLogs, setCommsLogs] = useState([
-    '🦉 [Telegram] @Luna: Bab II Mattoanging Al-Marwaee & Carter disinkronkan',
-    '🐺 [Telegram] @MasAmba: Funding rate Binance net-neutral, bull safe',
+    '💬 [WhatsApp Group] @Ai: 17 Bot SecondBrain terhubung di Session 1',
+    '🦉 [WhatsApp Group] @Luna: Bab II Mattoanging Al-Marwaee & Carter disinkronkan',
+    '🐺 [WhatsApp Group] @MasAmba: Funding rate Binance net-neutral, bull safe',
     '🦝 [Cloud] @Piksel: UI component responsive layout synced',
     '🌵 [Cloud] @Kaktus: Menara Dynamo IFC clash free',
-    '🐰 [Telegram] @Ai: Heru baru saja login dari terminal Makassar',
     '🐶 [Cloud] @Botik: Python backtest Sharpe ratio 2.14 verified'
   ])
 
   const controlsRef = useRef()
+
+  const handleSendWhatsAppMessage = (text) => {
+    if (!text.trim()) return
+    const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+    const userMsg = {
+      id: Date.now(),
+      sender: 'Heru (You)',
+      role: 'Master Admin',
+      time: timeStr,
+      text: text,
+      isSelf: true
+    }
+
+    let botId = 'ai'
+    let botReply = 'Siap Heru! Perintah diterima dan disinkronkan ke seluruh sistem SecondBrain.'
+    const lower = text.toLowerCase()
+    if (lower.includes('skripsi') || lower.includes('@luna')) {
+      botId = 'luna'
+      botReply = 'Baik Heru, rujukan SNI 03-6197 dan jurnal Scopus Q1 segera dievaluasi untuk naskah skripsi.'
+    } else if (lower.includes('trading') || lower.includes('@masamba') || lower.includes('btc')) {
+      botId = 'masamba'
+      botReply = 'Order block dan FVG H4 siap dipantau. Risk per trade tetap dibatasi 1-2% modal.'
+    } else if (lower.includes('bim') || lower.includes('@kaktus') || lower.includes('revit')) {
+      botId = 'kaktus'
+      botReply = 'Pemeriksaan clash geometry IFC Menara Dynamo sedang dieksekusi!'
+    } else if (lower.includes('web') || lower.includes('@mochi')) {
+      botId = 'mochi'
+      botReply = 'Komponen web dan layout mobile GradiEnt Studio siap disinkronkan.'
+    }
+
+    const botMsg = {
+      id: Date.now() + 1,
+      sender: AGENTS_DATA[botId]?.name || '@Ai',
+      role: AGENTS_DATA[botId]?.role || 'Chief of Staff',
+      time: timeStr,
+      text: botReply,
+      isSelf: false
+    }
+
+    setWaGroupLogs(prev => [...prev, userMsg, botMsg])
+    setCommsLogs(prev => [`💬 [WhatsApp Group] ${AGENTS_DATA[botId]?.name || '@Ai'}: ${botReply}`, ...prev.slice(0, 8)])
+    handleDispatchCommand(botId, text)
+  }
 
   // Polling live_state.json
   useEffect(() => {
@@ -164,6 +216,10 @@ export default function App() {
     setAgentStatuses(prev => ({ ...prev, [targetAgentId]: 'working' }))
 
     const agent = AGENTS_DATA[targetAgentId]
+    if (agent) {
+      setSelectedAgent(agent)
+    }
+
     setCommsLogs(l => [
       `🚀 [Command] ${agent?.name || '@Ai'} menerima tugas: "${taskText}"!`,
       ...l
@@ -197,7 +253,7 @@ export default function App() {
   const handleFocusTier = (tier) => {
     setIsFreeCam(false)
     if (tier === 'all') {
-      setCamPos(new THREE.Vector3(28, 22, 34))
+      setCamPos(new THREE.Vector3(30, 24, 30))
       setLookPos(new THREE.Vector3(0, 2, -2))
     } else if (tier === 'boss') {
       setCamPos(new THREE.Vector3(0, 11.0, -8.0))
@@ -222,11 +278,19 @@ export default function App() {
         {/* 1. Security Gate PIN Overlay */}
         {!unlocked && <SecurityGate onUnlocked={() => setUnlocked(true)} />}
 
-        {/* 2. Three.js Canvas Scene */}
+        {/* 2. Three.js Canvas Scene - Optimized with Clash of Clans (CoC) Titan 2.5D Aesthetic */}
         <Canvas
           shadows
-          camera={{ position: [28, 22, 34], fov: 42, near: 0.1, far: 1000 }}
-          className="w-full h-full"
+          dpr={[1, Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 1.8)]}
+          performance={{ min: 0.5 }}
+          gl={{
+            antialias: true,
+            powerPreference: 'high-performance',
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.18,
+          }}
+          camera={{ position: [30, 24, 30], fov: 36, near: 0.1, far: 1000 }}
+          className="w-full h-full touch-none"
         >
           {/* Cinematic Camera Director */}
           <CameraDirector
@@ -236,22 +300,23 @@ export default function App() {
             isFreeCam={isFreeCam}
           />
 
-          {/* Soft Sunlight */}
-          <ambientLight intensity={0.7} color="#ffffff" />
-          <hemisphereLight intensity={1.1} groundColor="#8fcc70" color="#fff6e5" />
+          {/* Clash of Clans 2.5D High-Contrast Warm Sun & Rich Fill */}
+          <ambientLight intensity={0.65} color="#ffffff" />
+          <hemisphereLight intensity={1.15} groundColor="#78bc58" color="#dbeafe" />
           <directionalLight
-            position={[25, 45, 20]}
-            intensity={1.5}
+            position={[26, 42, 22]}
+            intensity={1.65}
             castShadow
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
             shadow-camera-near={0.5}
             shadow-camera-far={120}
-            shadow-camera-left={-28}
-            shadow-camera-right={28}
-            shadow-camera-top={28}
-            shadow-camera-bottom={-28}
-            color="#fff5db"
+            shadow-camera-left={-30}
+            shadow-camera-right={30}
+            shadow-camera-top={30}
+            shadow-camera-bottom={-30}
+            shadow-bias={-0.0004}
+            color="#fff6e8"
           />
 
           <Sky
@@ -263,7 +328,7 @@ export default function App() {
             rayleigh={0.5}
           />
 
-          <fog attach="fog" args={['#a2e8dd', 35, 120]} />
+          <fog attach="fog" args={['#a2e8dd', 38, 125]} />
 
           {/* Orbit Controls with full free cam capabilities */}
           <OrbitControls
@@ -286,7 +351,7 @@ export default function App() {
             {/* Expanded Island Terraces, Desks & Laptops */}
             <AnimalCrossingIsland
               counts={counts}
-              showLabels={unlocked}
+              showLabels={unlocked && !waModalOpen && !bulletinOpen}
               onOpenBulletin={() => setBulletinOpen(true)}
             />
 
@@ -297,7 +362,7 @@ export default function App() {
                 agent={agent}
                 status={agentStatuses[agent.id] || 'standby'}
                 isSelected={selectedAgent?.id === agent.id}
-                showLabels={unlocked}
+                showLabels={unlocked && !waModalOpen && !bulletinOpen}
                 isAlerted={alertedAgentId === agent.id}
                 onClick={(a) => setSelectedAgent(a)}
               />
@@ -325,6 +390,11 @@ export default function App() {
             onToggleAutoMode={() => setAutoMode(!autoMode)}
             isFreeCam={isFreeCam}
             onToggleFreeCam={() => setIsFreeCam(!isFreeCam)}
+            waModalOpen={waModalOpen}
+            onOpenWaModal={() => setWaModalOpen(true)}
+            onCloseWaModal={() => setWaModalOpen(false)}
+            waGroupLogs={waGroupLogs}
+            onSendWhatsAppMessage={handleSendWhatsAppMessage}
           />
         )}
       </div>

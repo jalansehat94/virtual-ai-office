@@ -59,7 +59,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
   // When working at desk, sit on the chair cushion behind the desk with zero clipping
   const finalPos = useMemo(() => {
     if (status === 'working') {
-      return [agent.deskPos[0], agent.deskPos[1] + 0.44, agent.deskPos[2] - 0.74]
+      return [agent.deskPos[0], agent.deskPos[1] + 0.35, agent.deskPos[2] - 0.60]
     }
     if (status === 'collaborating' && agent.meetingPos) {
       return agent.meetingPos
@@ -226,7 +226,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     >
       {/* --- 1. FLOATING 3D THOUGHT / ACTION BUBBLE --- */}
       {showLabels && (
-        <Html position={[0, 2.35, 0]} center distanceFactor={16}>
+        <Html position={[0, 2.35, 0]} center distanceFactor={16} zIndexRange={[10, 0]}>
           <div
             className={`px-2.5 py-1 rounded-2xl flex items-center gap-1.5 shadow-[0_3px_0_rgba(0,0,0,0.15)] text-[10px] font-black whitespace-nowrap select-none transition-all duration-300 pointer-events-none ${
               isAlerted
