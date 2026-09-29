@@ -405,6 +405,18 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           <ModelProp url="./models/chairModernCushion.glb" position={[1.6, 0, 0]} rotation={[0, -Math.PI / 2, 0]} scale={1.5} />
         </group>
 
+        {/* Raymond (Iconic Business Cat Executive Advisor) */}
+        <group position={[-5.5, 0, 0.1]} rotation={[0, 0, 0]}>
+          <ModelProp url="./models/raymond/scene.gltf" scale={0.0022} />
+          {showLabels && (
+            <Html position={[0, 1.6, 0]} center distanceFactor={15}>
+              <div className="px-2.5 py-0.5 rounded-full bg-[#f1f5f9] border border-[#475569] shadow-sm text-[10px] font-black text-[#1e293b] whitespace-nowrap pointer-events-none select-none">
+                👓 Raymond (Executive Advisor)
+              </div>
+            </Html>
+          )}
+        </group>
+
         {/* Floor Lamp & Coat Rack */}
         <ModelProp url="./models/lampRoundFloor.glb" position={[5.5, 0, -3.5]} scale={1.6} />
         <group position={[5.5, 0, 1.5]}>
@@ -532,22 +544,22 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
 
       {/* OUTDOOR PATIO TABLES (RIGHT WING, World X: +6.5) */}
       <group position={[6.5, 0.6, 0]}>
-        {/* Cafe Lounge Table 1 (Near lawn, World Z: 8.0) */}
+        {/* Cafe Lounge Table 1 (Near lawn, World Z: 8.0) with AUTHENTIC FROGGY CHAIRS */}
         <group position={[0, 0, 8.0]}>
           <ModelProp url="./models/tableCoffee.glb" scale={1.8} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[-1.4, 0, 0]} rotation={[0, Math.PI / 2, 0]} scale={1.4} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[1.4, 0, 0]} rotation={[0, -Math.PI / 2, 0]} scale={1.4} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[0, 0, -1.2]} rotation={[0, 0, 0]} scale={1.4} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[0, 0, 1.2]} rotation={[0, Math.PI, 0]} scale={1.4} />
+          <ModelProp url="./models/froggy_chair/scene.gltf" position={[-1.3, 0, 0]} rotation={[0, Math.PI / 2, 0]} scale={0.048} />
+          <ModelProp url="./models/froggy_chair/scene.gltf" position={[1.3, 0, 0]} rotation={[0, -Math.PI / 2, 0]} scale={0.048} />
+          <ModelProp url="./models/froggy_chair/scene.gltf" position={[0, 0, -1.1]} rotation={[0, 0, 0]} scale={0.048} />
+          <ModelProp url="./models/froggy_chair/scene.gltf" position={[0, 0, 1.1]} rotation={[0, Math.PI, 0]} scale={0.048} />
         </group>
 
-        {/* Cafe Lounge Table 2 (Front patio, World Z: 11.2) */}
+        {/* Cafe Lounge Table 2 (Front patio, World Z: 11.2) with AUTHENTIC FROGGY CHAIRS */}
         <group position={[0, 0, 11.2]}>
           <ModelProp url="./models/tableCoffee.glb" scale={1.8} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[-1.4, 0, 0]} rotation={[0, Math.PI / 2, 0]} scale={1.4} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[1.4, 0, 0]} rotation={[0, -Math.PI / 2, 0]} scale={1.4} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[0, 0, -1.2]} rotation={[0, 0, 0]} scale={1.4} />
-          <ModelProp url="./models/chairModernCushion.glb" position={[0, 0, 1.2]} rotation={[0, Math.PI, 0]} scale={1.4} />
+          <ModelProp url="./models/froggy_chair/scene.gltf" position={[-1.3, 0, 0]} rotation={[0, Math.PI / 2, 0]} scale={0.048} />
+          <ModelProp url="./models/froggy_chair/scene.gltf" position={[1.3, 0, 0]} rotation={[0, -Math.PI / 2, 0]} scale={0.048} />
+          <ModelProp url="./models/froggy_chair/scene.gltf" position={[0, 0, -1.1]} rotation={[0, 0, 0]} scale={0.048} />
+          <ModelProp url="./models/froggy_chair/scene.gltf" position={[0, 0, 1.1]} rotation={[0, Math.PI, 0]} scale={0.048} />
         </group>
       </group>
 
@@ -572,7 +584,65 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       </group>
 
       {/* ============================================================== */}
-      {/* 7. INTERACTIVE CORK BULLETIN BOARD (LAWN)                     */}
+      {/* 7. AUTHENTIC ANIMAL CROSSING COTTAGE & RESIDENT SERVICES       */}
+      {/* ============================================================== */}
+      {/* Iconic Animal Crossing House on Left Beach Lawn */}
+      <group position={[-13.5, 0.6, 9.0]} rotation={[0, Math.PI / 6, 0]}>
+        <ModelProp url="./models/ac_house/scene.gltf" scale={0.026} />
+        {/* Cobblestone walkway to the door */}
+        {[0, 1, 2].map((s) => (
+          <mesh key={`path-${s}`} position={[0.2, 0.02, 3.0 + s * 0.9]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+            <circleGeometry args={[0.5 - s * 0.05, 12]} />
+            <meshStandardMaterial color="#c2b280" roughness={0.9} />
+          </mesh>
+        ))}
+        {/* Wooden Mailbox */}
+        <group position={[2.2, 0, 3.0]}>
+          <mesh position={[0, 0.5, 0]} castShadow>
+            <cylinderGeometry args={[0.06, 0.07, 1.0, 8]} />
+            <meshStandardMaterial color="#8b5a2b" roughness={0.8} />
+          </mesh>
+          <mesh position={[0, 1.05, 0]} castShadow>
+            <boxGeometry args={[0.35, 0.3, 0.45]} />
+            <meshStandardMaterial color="#3b82f6" roughness={0.4} />
+          </mesh>
+        </group>
+
+        {showLabels && (
+          <Html position={[0, 5.6, 0]} center distanceFactor={18}>
+            <div className="px-3 py-1 rounded-full bg-[#fef9e7] border-2 border-[#8b5a2b] shadow-sm text-[11px] font-black text-[#5c3a21] whitespace-nowrap pointer-events-none select-none">
+              🏡 Rumah Warga Pulau
+            </div>
+          </Html>
+        )}
+      </group>
+
+      {/* Tom Nook standing proudly next to Bulletin Board */}
+      <group position={[13.2, 1.03, 5.8]} rotation={[0, -Math.PI / 3, 0]}>
+        <ModelProp url="./models/tom_nook/scene.gltf" scale={0.32} />
+        {showLabels && (
+          <Html position={[0, 1.6, 0]} center distanceFactor={15}>
+            <div className="px-2.5 py-0.5 rounded-full bg-[#fef9e7] border border-[#2b5c4b] shadow-sm text-[10px] font-black text-[#1b5e50] whitespace-nowrap pointer-events-none select-none">
+              🍃 Tom Nook (Resident Services)
+            </div>
+          </Html>
+        )}
+      </group>
+
+      {/* Audie enjoying the sun on the front lawn */}
+      <group position={[-8.5, 0.6, 12.0]} rotation={[0, Math.PI / 4, 0]}>
+        <ModelProp url="./models/audie/scene.gltf" scale={0.0034} />
+        {showLabels && (
+          <Html position={[0, 1.5, 0]} center distanceFactor={15}>
+            <div className="px-2.5 py-0.5 rounded-full bg-[#fff7ed] border border-[#ea580c] shadow-sm text-[10px] font-black text-[#c2410c] whitespace-nowrap pointer-events-none select-none">
+              🦊 Audie (Warga Pantai)
+            </div>
+          </Html>
+        )}
+      </group>
+
+      {/* ============================================================== */}
+      {/* 8. INTERACTIVE CORK BULLETIN BOARD (LAWN)                     */}
       {/* ============================================================== */}
       <group
         position={[11.5, 0.6, 5.0]}

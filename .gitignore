@@ -6,3 +6,7 @@ dist-ssr
 .env.*
 .DS_Store
 *.log
+.sketchfab_token
+edge_temp_profile
+scratch*
+public/models/ankha

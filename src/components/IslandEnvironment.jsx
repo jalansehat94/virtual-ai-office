@@ -6,6 +6,8 @@ import ModelProp from './ModelProp'
 export default function IslandEnvironment() {
   const cloudsRef = useRef()
   const oceanRef = useRef()
+  const balloonRef = useRef()
+  const boatsRef = useRef()
 
   // Generate 16 fluffy drifting 3D clouds
   const cloudsData = useMemo(() => {
@@ -36,6 +38,27 @@ export default function IslandEnvironment() {
     if (oceanRef.current) {
       const t = state.clock.getElapsedTime()
       oceanRef.current.material.opacity = 0.88 + Math.sin(t * 1.5) * 0.05
+    }
+
+    // Drift Animal Crossing Red Balloon Present across the sky
+    if (balloonRef.current) {
+      const t = state.clock.getElapsedTime()
+      balloonRef.current.position.x += delta * 1.6
+      balloonRef.current.position.y = 15.5 + Math.sin(t * 1.5) * 0.4
+      balloonRef.current.rotation.z = Math.sin(t * 1.2) * 0.08
+      if (balloonRef.current.position.x > 70) {
+        balloonRef.current.position.x = -70
+      }
+    }
+
+    // Gentle rocking motion for ocean boats
+    if (boatsRef.current) {
+      const t = state.clock.getElapsedTime()
+      boatsRef.current.children.forEach((boat, idx) => {
+        boat.rotation.z = Math.sin(t * 1.4 + idx * 1.2) * 0.06
+        boat.rotation.x = Math.cos(t * 1.1 + idx * 0.8) * 0.04
+        boat.position.y = (idx === 0 ? 0.1 : 0.05) + Math.sin(t * 1.6 + idx) * 0.06
+      })
     }
   })
 
@@ -262,6 +285,218 @@ export default function IslandEnvironment() {
           <circleGeometry args={[1.5, 16]} />
           <meshBasicMaterial color="#ffffff" transparent opacity={0.6} />
         </mesh>
+      </group>
+
+      {/* ============================================================== */}
+      {/* 6. ICONIC ANIMAL CROSSING BALLOON PRESENT IN THE SKY          */}
+      {/* ============================================================== */}
+      <group ref={balloonRef} position={[-40, 16, 2]}>
+        {/* Shiny Red Latex Balloon */}
+        <mesh position={[0, 1.4, 0]} castShadow>
+          <sphereGeometry args={[0.85, 20, 20]} />
+          <meshStandardMaterial color="#ef4444" roughness={0.15} metalness={0.1} />
+        </mesh>
+        {/* Balloon Tie Knot */}
+        <mesh position={[0, 0.52, 0]}>
+          <coneGeometry args={[0.12, 0.16, 8]} />
+          <meshStandardMaterial color="#dc2626" />
+        </mesh>
+        {/* White Hanging String */}
+        <mesh position={[0, 0.05, 0]}>
+          <cylinderGeometry args={[0.015, 0.015, 0.85, 6]} />
+          <meshBasicMaterial color="#ffffff" />
+        </mesh>
+        {/* Gift Present Box */}
+        <group position={[0, -0.65, 0]}>
+          <mesh castShadow receiveShadow>
+            <boxGeometry args={[0.8, 0.7, 0.8]} />
+            <meshStandardMaterial color="#fef08a" roughness={0.4} />
+          </mesh>
+          {/* Green Ribbon Horizontal */}
+          <mesh position={[0, 0, 0]}>
+            <boxGeometry args={[0.82, 0.16, 0.82]} />
+            <meshStandardMaterial color="#16a34a" roughness={0.3} />
+          </mesh>
+          {/* Green Ribbon Vertical */}
+          <mesh position={[0, 0, 0]}>
+            <boxGeometry args={[0.16, 0.72, 0.82]} />
+            <meshStandardMaterial color="#16a34a" roughness={0.3} />
+          </mesh>
+          {/* Cute Bow on Top */}
+          <mesh position={[0, 0.38, 0]}>
+            <sphereGeometry args={[0.14, 8, 8]} />
+            <meshStandardMaterial color="#15803d" />
+          </mesh>
+        </group>
+      </group>
+
+      {/* ============================================================== */}
+      {/* 7. CHARMING WOODEN SAILBOATS IN THE OCEAN                      */}
+      {/* ============================================================== */}
+      <group ref={boatsRef}>
+        {/* Sailboat 1 (Cruising near the fishing pier) */}
+        <group position={[-28, 0.1, 26]} rotation={[0, -Math.PI / 4, 0]}>
+          {/* Hull */}
+          <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
+            <boxGeometry args={[2.2, 0.6, 5.0]} />
+            <meshStandardMaterial color="#78350f" roughness={0.7} />
+          </mesh>
+          <mesh position={[0, 0.35, 1.8]} rotation={[-0.4, 0, 0]} castShadow>
+            <boxGeometry args={[2.1, 0.5, 1.4]} />
+            <meshStandardMaterial color="#92400e" roughness={0.7} />
+          </mesh>
+          {/* Mast */}
+          <mesh position={[0, 2.6, 0.2]} castShadow>
+            <cylinderGeometry args={[0.06, 0.08, 4.8, 8]} />
+            <meshStandardMaterial color="#451a03" />
+          </mesh>
+          {/* Main Canvas Sail */}
+          <mesh position={[0, 2.8, -0.6]} rotation={[0, 0.1, 0]} castShadow>
+            <planeGeometry args={[0.04, 3.8]} />
+            <boxGeometry args={[0.04, 3.6, 2.2]} />
+            <meshStandardMaterial color="#f8fafc" roughness={0.8} />
+          </mesh>
+          {/* Red Flag at Mast Tip */}
+          <mesh position={[0, 5.0, -0.2]} rotation={[0, 0, 0]}>
+            <coneGeometry args={[0.2, 0.4, 3]} />
+            <meshBasicMaterial color="#ef4444" />
+          </mesh>
+        </group>
+
+        {/* Sailboat 2 (Further out in the sunny horizon) */}
+        <group position={[34, 0.05, 30]} rotation={[0, Math.PI / 6, 0]} scale={0.75}>
+          <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
+            <boxGeometry args={[2.0, 0.5, 4.2]} />
+            <meshStandardMaterial color="#1e3a8a" roughness={0.6} />
+          </mesh>
+          {/* Mast */}
+          <mesh position={[0, 2.2, 0.1]} castShadow>
+            <cylinderGeometry args={[0.05, 0.07, 4.0, 8]} />
+            <meshStandardMaterial color="#451a03" />
+          </mesh>
+          {/* Teal Sail */}
+          <mesh position={[0, 2.4, -0.5]} rotation={[0, -0.15, 0]} castShadow>
+            <boxGeometry args={[0.04, 3.0, 1.8]} />
+            <meshStandardMaterial color="#38bdf8" roughness={0.8} />
+          </mesh>
+        </group>
+      </group>
+
+      {/* ============================================================== */}
+      {/* 8. DISTANT TROPICAL ARCHIPELAGO ISLANDS (HORIZON ATOLIS)       */}
+      {/* ============================================================== */}
+      {/* Atoll 1 (West Horizon, X: -75, Z: 25) */}
+      <group position={[-75, -0.2, 25]}>
+        {/* Sandy beach hill */}
+        <mesh position={[0, 0.6, 0]} receiveShadow>
+          <cylinderGeometry args={[16, 20, 1.6, 18]} />
+          <meshStandardMaterial color="#f6d89b" roughness={0.9} />
+        </mesh>
+        {/* Green lush grassy hill */}
+        <mesh position={[0, 1.8, 0]} receiveShadow>
+          <cylinderGeometry args={[11, 14, 1.2, 16]} />
+          <meshStandardMaterial color="#7ec850" roughness={0.8} />
+        </mesh>
+        {/* Tropical Coconut Palms */}
+        <ModelProp url="./models/tree_oak.glb" position={[-3, 2.4, -2]} scale={2.8} />
+        <ModelProp url="./models/tree_cone_dark.glb" position={[4, 2.4, 3]} scale={2.5} />
+        {/* Sea Rocks */}
+        <mesh position={[12, 0.4, -8]} castShadow>
+          <dodecahedronGeometry args={[2.4]} />
+          <meshStandardMaterial color="#64748b" roughness={0.9} />
+        </mesh>
+      </group>
+
+      {/* Atoll 2 (East Horizon with Lighthouse Beacon, X: 78, Z: 18) */}
+      <group position={[78, -0.2, 18]}>
+        {/* Sandy foundation */}
+        <mesh position={[0, 0.6, 0]} receiveShadow>
+          <cylinderGeometry args={[18, 22, 1.6, 18]} />
+          <meshStandardMaterial color="#f6d89b" roughness={0.9} />
+        </mesh>
+        <mesh position={[0, 1.8, 0]} receiveShadow>
+          <cylinderGeometry args={[12, 15, 1.2, 16]} />
+          <meshStandardMaterial color="#7ec850" roughness={0.8} />
+        </mesh>
+        {/* Cute Miniature Lighthouse Tower */}
+        <group position={[-4, 2.4, 0]}>
+          <mesh position={[0, 3.5, 0]} castShadow>
+            <cylinderGeometry args={[0.9, 1.5, 7.0, 12]} />
+            <meshStandardMaterial color="#ffffff" roughness={0.5} />
+          </mesh>
+          {/* Red Stripes on Lighthouse */}
+          <mesh position={[0, 3.5, 0]}>
+            <cylinderGeometry args={[0.95, 1.25, 2.2, 12]} />
+            <meshStandardMaterial color="#ef4444" roughness={0.5} />
+          </mesh>
+          {/* Glass Lantern Room */}
+          <mesh position={[0, 7.4, 0]}>
+            <cylinderGeometry args={[0.8, 0.8, 1.2, 8]} />
+            <meshBasicMaterial color="#fef08a" />
+          </mesh>
+          <pointLight position={[0, 7.4, 0]} color="#fef08a" intensity={2.5} distance={15} />
+          <mesh position={[0, 8.2, 0]}>
+            <coneGeometry args={[1.1, 0.8, 8]} />
+            <meshStandardMaterial color="#1e293b" />
+          </mesh>
+        </group>
+        <ModelProp url="./models/tree_oak.glb" position={[4, 2.4, -3]} scale={2.8} />
+      </group>
+
+      {/* Atoll 3 (North-East Mountainous Islet, X: 65, Z: -65) */}
+      <group position={[65, -0.2, -65]}>
+        <mesh position={[0, 2.5, 0]} receiveShadow>
+          <coneGeometry args={[22, 6.0, 16]} />
+          <meshStandardMaterial color="#7ec850" roughness={0.85} />
+        </mesh>
+        <ModelProp url="./models/tree_cone_dark.glb" position={[0, 5.5, 0]} scale={3.2} />
+        <ModelProp url="./models/tree_cone.glb" position={[-5, 4.0, 4]} scale={2.6} />
+      </group>
+
+      {/* ============================================================== */}
+      {/* 9. COLORFUL WILDFLOWERS & SEASHELLS ON LAWN & BEACH            */}
+      {/* ============================================================== */}
+      {/* Front Lawn Wildflowers */}
+      <group position={[0, 0.6, 0]}>
+        {[
+          { x: -5, z: 5.5, c: '#f43f5e' },
+          { x: -4.2, z: 5.8, c: '#fbbf24' },
+          { x: -3.6, z: 5.2, c: '#a855f7' },
+          { x: 3.5, z: 5.5, c: '#38bdf8' },
+          { x: 4.2, z: 5.8, c: '#f43f5e' },
+          { x: 5.0, z: 5.2, c: '#fbbf24' },
+          { x: -10, z: 7.2, c: '#ec4899' },
+          { x: -9.2, z: 7.5, c: '#fbbf24' },
+        ].map((f, idx) => (
+          <group key={`flower-${idx}`} position={[f.x, 0.05, f.z]}>
+            {/* Green Stem */}
+            <mesh position={[0, 0.1, 0]}>
+              <cylinderGeometry args={[0.02, 0.02, 0.2, 6]} />
+              <meshBasicMaterial color="#15803d" />
+            </mesh>
+            {/* Flower Petals */}
+            <mesh position={[0, 0.22, 0]}>
+              <sphereGeometry args={[0.09, 6, 6]} />
+              <meshBasicMaterial color={f.c} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      {/* Beach Seashells along the Front Sand Strip */}
+      <group position={[0, 0.2, 16]}>
+        {[
+          { x: -8, z: 0, r: 0.15, c: '#fed7aa' },
+          { x: -3, z: 1.2, r: 0.18, c: '#fecdd3' },
+          { x: 4, z: -0.5, r: 0.14, c: '#ffffff' },
+          { x: 10, z: 0.8, r: 0.16, c: '#fed7aa' },
+          { x: -14, z: 1.5, r: 0.2, c: '#fef08a' },
+        ].map((s, idx) => (
+          <mesh key={`shell-${idx}`} position={[s.x, 0, s.z]} rotation={[0.2, idx, -0.1]} castShadow>
+            <coneGeometry args={[s.r, s.r * 1.5, 5]} />
+            <meshStandardMaterial color={s.c} roughness={0.4} />
+          </mesh>
+        ))}
       </group>
     </group>
   )

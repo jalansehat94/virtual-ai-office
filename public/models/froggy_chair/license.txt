@@ -1,0 +1,11 @@
+Model Information:
+* title:	Animal Crossing - Froggy Chair
+* source:	https://sketchfab.com/3d-models/animal-crossing-froggy-chair-78dae21cdbd549609e735758f17596c0
+* author:	Dekania (https://sketchfab.com/dekania)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Animal Crossing - Froggy Chair" (https://sketchfab.com/3d-models/animal-crossing-froggy-chair-78dae21cdbd549609e735758f17596c0) by Dekania (https://sketchfab.com/dekania) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
