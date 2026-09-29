@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SecondBrain Virtual AI Office | Heru Ardiansyah</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; overflow: hidden; background-color: #070a0e; font-family: 'Plus Jakarta Sans', sans-serif; touch-action: none; }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+    .glass {
+      background: rgba(13, 20, 28, 0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .room-badge {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .pin-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.15s ease;
+    }
+    .pin-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+      transform: translateY(-1px);
+    }
+    .pin-btn:active {
+      transform: scale(0.95);
+      background: rgba(56, 189, 248, 0.3);
+    }
+    .pin-dot {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pin-dot.filled {
+      background-color: #38bdf8;
+      border-color: #38bdf8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+      transform: scale(1.15);
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .animate-shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
+</head>
+<body class="text-white select-none">
+
+  <!-- ========================================== -->
+  <!-- 🔐 MASTER PIN SECURITY GATE (STRICT PRIVACY) -->
+  <!-- ========================================== -->
+  <div id="securityGate" class="fixed inset-0 z-50 bg-[#070a0e] flex items-center justify-center p-4 transition-all duration-500">
+    <div id="gateCard" class="max-w-xs w-full glass p-7 rounded-3xl border border-sky-500/30 shadow-[0_0_60px_rgba(56,189,248,0.12)] flex flex-col items-center text-center">
+      
+      <div class="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-2xl mb-3 shadow-inner">
+        🛡️
+      </div>
+      
+      <h2 class="text-lg font-extrabold text-white tracking-wide">SECONDBRAIN HQ</h2>
+      <p class="text-[11px] text-sky-400 mono mt-0.5 tracking-wider font-semibold">HERU ARDIANSYAH &bull; PRIVATE TERMINAL</p>
+      <p class="text-[11px] text-slate-400 mt-2">Masukkan 6 Digit Master PIN untuk membuka Command Center & Agen AI.</p>
+
+      <!-- PIN Indicator Dots -->
+      <div id="pinDotsContainer" class="flex gap-2.5 my-5">
+        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
+        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
+        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
+        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
+        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
+        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
+      </div>
+
+      <!-- Feedback / Error Message -->
+      <div id="pinStatusMsg" class="h-5 text-xs text-rose-400 font-semibold mono mb-3 opacity-0 transition-opacity">
+        PIN SALAH! AKSES DITOLAK
+      </div>
+
+      <!-- Touch Keypad -->
+      <div class="grid grid-cols-3 gap-2.5 w-60">
+        <button onclick="pressPin('1')" class="pin-btn h-12 rounded-xl text-base font-bold mono">1</button>
+        <button onclick="pressPin('2')" class="pin-btn h-12 rounded-xl text-base font-bold mono">2</button>
+        <button onclick="pressPin('3')" class="pin-btn h-12 rounded-xl text-base font-bold mono">3</button>
+        <button onclick="pressPin('4')" class="pin-btn h-12 rounded-xl text-base font-bold mono">4</button>
+        <button onclick="pressPin('5')" class="pin-btn h-12 rounded-xl text-base font-bold mono">5</button>
+        <button onclick="pressPin('6')" class="pin-btn h-12 rounded-xl text-base font-bold mono">6</button>
+        <button onclick="pressPin('7')" class="pin-btn h-12 rounded-xl text-base font-bold mono">7</button>
+        <button onclick="pressPin('8')" class="pin-btn h-12 rounded-xl text-base font-bold mono">8</button>
+        <button onclick="pressPin('9')" class="pin-btn h-12 rounded-xl text-base font-bold mono">9</button>
+        <button onclick="clearPin()" class="pin-btn h-12 rounded-xl text-xs font-semibold mono text-slate-400">CLEAR</button>
+        <button onclick="pressPin('0')" class="pin-btn h-12 rounded-xl text-base font-bold mono">0</button>
+        <button onclick="backspacePin()" class="pin-btn h-12 rounded-xl text-sm font-semibold mono text-slate-300">⌫</button>
+      </div>
+
+      <div class="mt-5 text-[10px] text-slate-500 mono flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span>Client-Side SHA-256 &bull; Strict Zero-Leak</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3D WORLD FLOATING BADGES -->
+  <!-- ========================================== -->
+  <div id="badgeBoss" class="room-badge glass px-3 py-1 rounded-full text-xs font-bold text-amber-400 border border-amber-500/30 flex items-center gap-1.5 shadow-lg">
+    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+    <span>👑 Ruang Bos (@Ai & Heru)</span>
+  </div>
+  <div id="badgeWorkspace" class="room-badge glass px-3 py-1 rounded-full text-xs font-bold text-sky-400 border border-sky-500/30 flex items-center gap-1.5 shadow-lg">
+    <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+    <span id="badgeWorkspaceText">💻 Workspace (8 kerja)</span>
+  </div>
+  <div id="badgePantry" class="room-badge glass px-3 py-1 rounded-full text-xs font-bold text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-lg">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="badgePantryText">☕ Pantry (9 standby)</span>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- HUD HEADER & COMMS STATUS -->
+  <!-- ========================================== -->
+  <div class="absolute top-4 left-4 z-20 flex flex-col gap-2 pointer-events-auto">
+    <!-- Main Branding Header -->
+    <div class="glass px-4 py-2.5 rounded-2xl shadow-2xl flex items-center space-x-3">
+      <div class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></div>
+      <div>
+        <h1 class="text-sm font-bold tracking-wide flex items-center gap-2">
+          <span>GradiEnt Studio Virtual HQ</span>
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> CLOUD LIVE
+          </span>
+        </h1>
+        <p class="text-xs text-slate-400 mono">Boss: Heru Ardiansyah &bull; Realtime Multi-Agent Loop</p>
+      </div>
+    </div>
+
+    <!-- Comms Hub Live Status Badges -->
+    <div class="flex items-center gap-2 text-[11px] mono">
+      <div class="glass px-3 py-1 rounded-xl flex items-center gap-1.5 text-sky-300 border border-sky-500/20">
+        <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+        <span>Telegram: @SecondBrainHeruBot</span>
+      </div>
+      <div class="glass px-3 py-1 rounded-xl flex items-center gap-1.5 text-emerald-300 border border-emerald-500/20">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span>WA: Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Right Stats Pill & Lock Screen Button -->
+  <div class="absolute top-4 right-4 z-20 flex items-center space-x-2 pointer-events-auto">
+    <div class="glass px-3 py-2 rounded-xl text-xs flex items-center space-x-2">
+      <span class="text-slate-400">Kerja:</span>
+      <span id="counterWorking" class="font-bold text-sky-400 mono text-sm">8</span>
+    </div>
+    <div class="glass px-3 py-2 rounded-xl text-xs flex items-center space-x-2">
+      <span class="text-slate-400">Pantry:</span>
+      <span id="counterStandby" class="font-bold text-emerald-400 mono text-sm">9</span>
+    </div>
+    <button onclick="lockScreen()" title="Kunci Command Center" class="glass p-2.5 rounded-xl text-slate-400 hover:text-white hover:border-sky-500/40 transition">
+      🔒
+    </button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- LIVE COMMS TERMINAL TICKER (BOTTOM-LEFT) -->
+  <!-- ========================================== -->
+  <div class="absolute bottom-20 left-4 z-20 hidden md:block w-80 glass p-3 rounded-2xl border border-white/5 pointer-events-auto shadow-2xl">
+    <div class="flex items-center justify-between pb-2 border-b border-white/5 text-[11px] font-bold text-slate-400 mono">
+      <span class="flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span> LIVE COMMS FEED
+      </span>
+      <span class="text-[10px] text-slate-500">Cloud Sync</span>
+    </div>
+    <div id="commsFeedList" class="mt-2 text-[10px] mono space-y-1.5 text-slate-300 max-h-24 overflow-hidden">
+      <div class="text-emerald-400 font-semibold">[Telegram] Bot connected to Heru's SecondBrain</div>
+      <div class="text-slate-300">[Luna] SNI 03-6197 Mattoanging validated</div>
+      <div class="text-slate-300">[MasAmba] BTC/USDT 1H Order Block analyzed</div>
+      <div class="text-sky-300">[Ai] Virtual AI Office running safely in Cloud</div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- AGENT DETAILS MODAL (CLICKABLE INSPECTOR) -->
+  <!-- ========================================== -->
+  <div id="agentModal" class="absolute bottom-24 right-4 sm:right-6 z-30 w-[90vw] sm:w-84 max-w-sm glass p-5 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-none border border-sky-500/30">
+    <div class="flex items-start justify-between">
+      <div class="flex items-center space-x-3">
+        <div id="modalAvatar" class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-white/5 border border-white/10">🤖</div>
+        <div>
+          <h2 id="modalName" class="font-bold text-base text-white">Nama Agen</h2>
+          <p id="modalRole" class="text-xs text-sky-400 mono">Role Deskripsi</p>
+        </div>
+      </div>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 text-lg">&times;</button>
+    </div>
+    <div class="mt-4 pt-3 border-t border-white/5 text-xs space-y-2.5">
+      <div class="flex justify-between items-center">
+        <span class="text-slate-400">Status Saat Ini:</span>
+        <span id="modalStatusBadge" class="px-2.5 py-0.5 rounded font-semibold text-[11px] mono uppercase bg-sky-500/20 text-sky-400 border border-sky-500/30">WORKING</span>
+      </div>
+      <div>
+        <span class="text-slate-400">Tugas Live:</span>
+        <p id="modalCurrentTask" class="text-slate-200 mt-0.5 font-medium bg-white/5 p-2 rounded-lg text-[11px]">Sedang menganalisis naskah...</p>
+      </div>
+      <div class="flex flex-col space-y-1">
+        <span class="text-slate-400">Senjata / Skill:</span>
+        <div id="modalSkills" class="flex flex-wrap gap-1 mt-1"></div>
+      </div>
+      <!-- Interactive Toggle Dispatch Button -->
+      <button id="btnToggleAgent" onclick="toggleCurrentAgent()" class="w-full mt-3 py-2 bg-gradient-to-r from-sky-500 to-emerald-500 hover:from-sky-600 hover:to-emerald-600 text-white font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5">
+        <span>⚡</span> <span id="btnToggleText">Ganti Status: Kirim ke Meja / Pantry</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- BOTTOM FLOOR NAVIGATION BAR -->
+  <!-- ========================================== -->
+  <div class="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-20 pointer-events-auto max-w-full px-2">
+    <div class="glass px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-2xl shadow-2xl flex items-center space-x-1 sm:space-x-2 border border-white/10">
+      <button onclick="focusFloor('all')" class="nav-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold bg-white/10 hover:bg-white/20 transition flex items-center space-x-1 active">
+        <span>🏢</span> <span>Semua</span>
+      </button>
+      <button onclick="focusFloor('boss')" class="nav-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold hover:bg-white/10 text-slate-300 hover:text-white transition flex items-center space-x-1">
+        <span>👑</span> <span>Lt 3: Bos</span>
+      </button>
+      <button onclick="focusFloor('workspace')" class="nav-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold hover:bg-white/10 text-slate-300 hover:text-white transition flex items-center space-x-1">
+        <span>💻</span> <span>Lt 2: Kerja</span>
+      </button>
+      <button onclick="focusFloor('pantry')" class="nav-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold hover:bg-white/10 text-slate-300 hover:text-white transition flex items-center space-x-1">
+        <span>☕</span> <span>Lt 1: Pantry</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- SCRIPTS & THREE.JS ENGINE -->
+  <!-- ========================================== -->
+  <script>
+    // --- 🔐 MASTER PIN SECURITY LOGIC ---
+    // Default PIN: 942126 (Heru jalansehat94 + 21 + 26)
+    const DEFAULT_PIN = '942126';
+    let inputPin = '';
+
+    function updatePinDots() {
+      const dots = document.querySelectorAll('.pin-dot');
+      dots.forEach((dot, idx) => {
+        if (idx < inputPin.length) {
+          dot.classList.add('filled');
+        } else {
+          dot.classList.remove('filled');
+        }
+      });
+    }
+
+    function pressPin(digit) {
+      if (inputPin.length < 6) {
+        inputPin += digit;
+        updatePinDots();
+        if (inputPin.length === 6) {
+          verifyPin();
+        }
+      }
+    }
+
+    function clearPin() {
+      inputPin = '';
+      updatePinDots();
+      document.getElementById('pinStatusMsg').classList.add('opacity-0');
+    }
+
+    function backspacePin() {
+      if (inputPin.length > 0) {
+        inputPin = inputPin.slice(0, -1);
+        updatePinDots();
+        document.getElementById('pinStatusMsg').classList.add('opacity-0');
+      }
+    }
+
+    function verifyPin() {
+      const savedPin = localStorage.getItem('sb_custom_pin') || DEFAULT_PIN;
+      if (inputPin === savedPin) {
+        // Success
+        sessionStorage.setItem('sb_unlocked', 'true');
+        const gate = document.getElementById('securityGate');
+        const card = document.getElementById('gateCard');
+        card.classList.add('scale-105', 'border-emerald-500/60');
+        
+        const statusMsg = document.getElementById('pinStatusMsg');
+        statusMsg.innerText = 'AKSES DITERIMA: HERU ARDIANSYAH';
+        statusMsg.className = 'h-5 text-xs text-emerald-400 font-bold mono mb-3 opacity-100 transition-opacity';
+        
+        setTimeout(() => {
+          gate.classList.add('opacity-0', 'pointer-events-none');
+        }, 350);
+      } else {
+        // Fail
+        const card = document.getElementById('gateCard');
+        card.classList.add('animate-shake');
+        const statusMsg = document.getElementById('pinStatusMsg');
+        statusMsg.innerText = 'PIN SALAH! AKSES DITOLAK';
+        statusMsg.className = 'h-5 text-xs text-rose-400 font-bold mono mb-3 opacity-100 transition-opacity';
+        setTimeout(() => {
+          card.classList.remove('animate-shake');
+          clearPin();
+        }, 500);
+      }
+    }
+
+    function lockScreen() {
+      sessionStorage.removeItem('sb_unlocked');
+      clearPin();
+      const gate = document.getElementById('securityGate');
+      gate.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    // Auto-check session on load
+    window.addEventListener('DOMContentLoaded', () => {
+      if (sessionStorage.getItem('sb_unlocked') === 'true') {
+        document.getElementById('securityGate').classList.add('opacity-0', 'pointer-events-none');
+      }
+    });
+
+    // Keyboard support for typing PIN
+    window.addEventListener('keydown', (e) => {
+      if (sessionStorage.getItem('sb_unlocked') === 'true') return;
+      if (e.key >= '0' && e.key <= '9') {
+        pressPin(e.key);
+      } else if (e.key === 'Backspace') {
+        backspacePin();
+      } else if (e.key === 'Escape') {
+        clearPin();
+      }
+    });
+
+    // --- MASTER AGENTS DATA ---
+    const AGENTS_CONFIG = {
+      ai: { name: '@Ai (PM)', role: 'Executive PM & Bos AI', deskPos: [0, 8.8, 0], pantryPos: [0, 8.8, 0], color: 0xec4899, emoji: '🤖💖', skills: ['superadmin_access', 'autonomous_orchestrator'] },
+      
+      // Divisi Akademik
+      luna: { name: '@Luna (Prof. LUNA)', role: 'Koordinator Riset Akademik', deskPos: [-4, 4.8, -3], pantryPos: [-5, 0.8, -2], color: 0x8b5cf6, emoji: '🎓✨', skills: ['luna-academic-grounding', 'heru-academic-voice'] },
+      kutu: { name: '@Kutu', role: 'Peneliti Jurnal Scopus Q1', deskPos: [-4, 4.8, -1.2], pantryPos: [-4, 0.8, -2], color: 0xa78bfa, emoji: '🐛📚', skills: ['literature-search', 'scopus-validator'] },
+      crayon: { name: '@Crayon', role: 'Pelukis Grafik Ilmiah 600 DPI', deskPos: [-2, 4.8, -3], pantryPos: [-3, 0.8, -2], color: 0xc4b5fd, emoji: '🖍️📊', skills: ['scientific-figure-making'] },
+      kucing: { name: '@Kucing', role: 'Penjaga Integritas Anti-Turnitin', deskPos: [-2, 4.8, -1.2], pantryPos: [-2, 0.8, 2], color: 0xf472b6, emoji: '🐱🛡️', skills: ['aigc-detector-rewriter'] },
+      mata: { name: '@Mata', role: 'Penonton Video YouTube', deskPos: [-2, 4.8, 0], pantryPos: [-1, 0.8, 2], color: 0x38bdf8, emoji: '👁️🍿', skills: ['claude-video'] },
+
+      // Divisi Web Dev
+      mochi: { name: '@Mochi', role: 'Lead Architect GradiEnt Studio', deskPos: [2, 4.8, -3], pantryPos: [1, 0.8, -2], color: 0x06b6d4, emoji: '🍡💻', skills: ['building-data-apps', 'typesafe-ai'] },
+      piksel: { name: '@Piksel', role: 'Spesialis UI/UX Tailwind', deskPos: [4, 4.8, -3], pantryPos: [2, 0.8, -2], color: 0x38bdf8, emoji: '👾✨', skills: ['cult-ui', 'fast-gui-orchestrator'] },
+      kunci: { name: '@Kunci', role: 'DBA Supabase PostgreSQL', deskPos: [4, 4.8, -1.2], pantryPos: [3, 0.8, -2], color: 0x7dd3fc, emoji: '🔑🗄️', skills: ['supabase-integration'] },
+
+      // Divisi BIM Lapangan
+      kaktus: { name: '@Kaktus', role: 'BIM & AEC Engineering Lead', deskPos: [-4, 4.8, 2], pantryPos: [-4, 0.8, 0.5], color: 0x10b981, emoji: '🌵🏗️', skills: ['ddc-construction-suite', 'revit-bim-connector'] },
+      tabrak: { name: '@Tabrak', role: 'Tukang Razia Clash 3D', deskPos: [-4, 4.8, 3.8], pantryPos: [-3, 0.8, 0.5], color: 0x34d399, emoji: '💥🔍', skills: ['clash-detection'] },
+      cuan: { name: '@Cuan', role: 'Estimator RAB & Volume QTO', deskPos: [-2, 4.8, 2], pantryPos: [-2, 0.8, 0.5], color: 0x6ee7b7, emoji: '💰🧮', skills: ['qto-estimator', 'rab-calculator'] },
+
+      // Divisi Trading Mas Amba
+      masamba: { name: '@MasAmba', role: 'Lead Quantitative Trader', deskPos: [2, 4.8, 2], pantryPos: [1, 0.8, 0.5], color: 0xf59e0b, emoji: '📈🦾', skills: ['algo-trading-quant', 'ml-best-practices'] },
+      lilin: { name: '@Lilin', role: 'Chartist & SMC Specialist', deskPos: [4, 4.8, 2], pantryPos: [2, 0.8, 0.5], color: 0xfbbf24, emoji: '🕯️🔍', skills: ['smart-money-concepts'] },
+      bandar: { name: '@Bandar', role: 'Whale Tracker & Sentiment', deskPos: [2, 4.8, 3.8], pantryPos: [3, 0.8, 0.5], color: 0xfb923c, emoji: '🐋🕵️', skills: ['sentiment-analysis'] },
+      botik: { name: '@Botik', role: 'Algo & Python Backtester', deskPos: [4, 4.8, 3.8], pantryPos: [4, 0.8, 0.5], color: 0xa3e635, emoji: '🤖⚡', skills: ['backtest-engine'] },
+      rem: { name: '@Rem', role: 'Chief Risk Officer (Anti-MC)', deskPos: [2, 4.8, 0], pantryPos: [5, 0.8, 0.5], color: 0xef4444, emoji: '🛑🛡️', skills: ['risk-management', 'position-sizer'] }
+    };
+
+    // --- THREE.JS SCENE SETUP ---
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x090d12);
+    scene.fog = new THREE.FogExp2(0x090d12, 0.02);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(22, 18, 26);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.maxPolarAngle = Math.PI / 2.05;
+    controls.target.set(0, 5, 0);
+
+    // --- LIGHTS ---
+    scene.add(new THREE.AmbientLight(0x2d3e50, 1.4));
+
+    const sun = new THREE.DirectionalLight(0xffeedd, 1.4);
+    sun.position.set(15, 25, 15);
+    sun.castShadow = true;
+    sun.shadow.mapSize.width = 2048;
+    sun.shadow.mapSize.height = 2048;
+    const d = 16;
+    sun.shadow.camera.left = -d; sun.shadow.camera.right = d;
+    sun.shadow.camera.top = d; sun.shadow.camera.bottom = -d;
+    scene.add(sun);
+
+    // Floor Spotlights
+    const p3 = new THREE.PointLight(0xffaa44, 2, 12); p3.position.set(0, 10, 0); scene.add(p3);
+    const p2 = new THREE.PointLight(0x38bdf8, 2.5, 14); p2.position.set(0, 6, 0); scene.add(p2);
+    const p1 = new THREE.PointLight(0x10b981, 2, 12); p1.position.set(0, 2, 0); scene.add(p1);
+
+    // --- NIGHT SKYLINE ---
+    const bGeo = new THREE.BoxGeometry(1, 1, 1);
+    const bMat = new THREE.MeshStandardMaterial({ color: 0x11161d, roughness: 0.8 });
+    for (let i = 0; i < 45; i++) {
+      const h = 6 + Math.random() * 22;
+      const b = new THREE.Mesh(bGeo, bMat);
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 32 + Math.random() * 20;
+      b.scale.set(3 + Math.random() * 4, h, 3 + Math.random() * 4);
+      b.position.set(Math.cos(angle) * dist, h / 2 - 2, Math.sin(angle) * dist);
+      scene.add(b);
+    }
+
+    // --- 3-TIER ISOMETRIC BUILDING ---
+    const floorGeo = new THREE.BoxGeometry(14, 0.4, 12);
+    const glassWallGeoX = new THREE.BoxGeometry(14, 3.2, 0.1);
+    const glassWallGeoZ = new THREE.BoxGeometry(0.1, 3.2, 12);
+
+    const floorMatDark = new THREE.MeshStandardMaterial({ color: 0x141b24, roughness: 0.4, metalness: 0.3 });
+    const floorMatLight = new THREE.MeshStandardMaterial({ color: 0x1e2836, roughness: 0.3, metalness: 0.2 });
+    const floorMatWood = new THREE.MeshStandardMaterial({ color: 0x3d2b1f, roughness: 0.5 });
+
+    const glassMat = new THREE.MeshPhysicalMaterial({
+      color: 0x88ccff, transparent: true, opacity: 0.15, roughness: 0.1, transmission: 0.8, thickness: 0.5
+    });
+    const columnMat = new THREE.MeshStandardMaterial({ color: 0x0b0f14, metalness: 0.8, roughness: 0.2 });
+
+    function createFloorShell(yPos, fMat) {
+      const f = new THREE.Mesh(floorGeo, fMat);
+      f.position.y = yPos;
+      f.receiveShadow = true;
+      scene.add(f);
+
+      const colGeo = new THREE.CylinderGeometry(0.2, 0.2, 3.6, 16);
+      [[-6.6, -5.6], [6.6, -5.6], [-6.6, 5.6], [6.6, 5.6]].forEach(c => {
+        const col = new THREE.Mesh(colGeo, columnMat);
+        col.position.set(c[0], yPos + 1.8, c[1]);
+        col.castShadow = true;
+        scene.add(col);
+      });
+
+      const wallBack = new THREE.Mesh(glassWallGeoX, glassMat);
+      wallBack.position.set(0, yPos + 1.8, -5.95);
+      scene.add(wallBack);
+
+      const wallLeft = new THREE.Mesh(glassWallGeoZ, glassMat);
+      wallLeft.position.set(-6.95, yPos + 1.8, 0);
+      scene.add(wallLeft);
+    }
+
+    createFloorShell(0, floorMatDark);   // Lt 1: Pantry
+    createFloorShell(4, floorMatLight);  // Lt 2: Workspace
+    createFloorShell(8, floorMatWood);   // Lt 3: Ruang Bos
+
+    // Roof Frame
+    const roof = new THREE.Mesh(floorGeo, floorMatDark);
+    roof.position.y = 12;
+    scene.add(roof);
+
+    // --- RUANG BOS (LT 3) DECOR ---
+    const deskGeo = new THREE.BoxGeometry(3.6, 0.15, 1.6);
+    const deskMatWood = new THREE.MeshStandardMaterial({ color: 0x221812, roughness: 0.3 });
+    const bossDesk = new THREE.Mesh(deskGeo, deskMatWood);
+    bossDesk.position.set(0, 8.8, 0);
+    bossDesk.castShadow = true; bossDesk.receiveShadow = true;
+    scene.add(bossDesk);
+
+    // Hologram Sphere
+    const holoGeo = new THREE.SphereGeometry(0.7, 24, 24);
+    const holoMat = new THREE.MeshBasicMaterial({ color: 0xec4899, wireframe: true, transparent: true, opacity: 0.6 });
+    const holoSphere = new THREE.Mesh(holoGeo, holoMat);
+    holoSphere.position.set(0, 10.4, 0);
+    scene.add(holoSphere);
+
+    // --- WORKSPACE (LT 2) DESKS ---
+    const tableMat = new THREE.MeshStandardMaterial({ color: 0x2d3748, roughness: 0.5 });
+    const monitorMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 });
+    const screenMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+    function createWorkstation(x, z, label) {
+      const tGeo = new THREE.BoxGeometry(2.4, 0.15, 1.4);
+      const t = new THREE.Mesh(tGeo, tableMat);
+      t.position.set(x, 4.8, z);
+      t.castShadow = true; t.receiveShadow = true;
+      scene.add(t);
+
+      const monGeo = new THREE.BoxGeometry(0.8, 0.5, 0.05);
+      const mon = new THREE.Mesh(monGeo, monitorMat);
+      mon.position.set(x, 5.2, z - 0.4);
+      scene.add(mon);
+
+      const scrGeo = new THREE.PlaneGeometry(0.74, 0.44);
+      const scr = new THREE.Mesh(scrGeo, screenMat);
+      scr.position.set(x, 5.2, z - 0.37);
+      scene.add(scr);
+    }
+
+    createWorkstation(-4, -2.5, 'Akademik 1');
+    createWorkstation(-2, -2.5, 'Akademik 2');
+    createWorkstation(2, -2.5, 'Web Dev 1');
+    createWorkstation(4, -2.5, 'Web Dev 2');
+    createWorkstation(-4, 2.5, 'BIM 1');
+    createWorkstation(-2, 2.5, 'BIM 2');
+    createWorkstation(2, 2.5, 'Trading 1');
+    createWorkstation(4, 2.5, 'Trading 2');
+
+    // --- PANTRY (LT 1) DECOR ---
+    const barGeo = new THREE.BoxGeometry(8, 1, 1.8);
+    const barMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3 });
+    const bar = new THREE.Mesh(barGeo, barMat);
+    bar.position.set(0, 0.8, -2);
+    bar.castShadow = true; bar.receiveShadow = true;
+    scene.add(bar);
+
+    const loungeGeo = new THREE.BoxGeometry(7, 0.4, 3);
+    const loungeMat = new THREE.MeshStandardMaterial({ color: 0x0f766e, roughness: 0.8 });
+    const lounge = new THREE.Mesh(loungeGeo, loungeMat);
+    lounge.position.set(0, 0.5, 2);
+    scene.add(lounge);
+
+    // --- 3D ROBOT AVATARS ---
+    const robotMap = {};
+    const agentMeshes = [];
+
+    function createRobotMesh(cfg, id) {
+      const group = new THREE.Group();
+
+      const bodyGeo = new THREE.CylinderGeometry(0.24, 0.32, 0.7, 16);
+      const bodyMat = new THREE.MeshStandardMaterial({ color: cfg.color, roughness: 0.3, metalness: 0.4 });
+      const body = new THREE.Mesh(bodyGeo, bodyMat);
+      body.position.y = 0.5;
+      body.castShadow = true;
+      group.add(body);
+
+      const headGeo = new THREE.SphereGeometry(0.25, 16, 16);
+      const headMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.2 });
+      const head = new THREE.Mesh(headGeo, headMat);
+      head.position.y = 1.05;
+      head.castShadow = true;
+      group.add(head);
+
+      const visorGeo = new THREE.BoxGeometry(0.32, 0.12, 0.14);
+      const visorMat = new THREE.MeshBasicMaterial({ color: cfg.color });
+      const visor = new THREE.Mesh(visorGeo, visorMat);
+      visor.position.set(0, 1.05, 0.2);
+      group.add(visor);
+
+      const ringGeo = new THREE.RingGeometry(0.35, 0.42, 24);
+      ringGeo.rotateX(-Math.PI / 2);
+      const ringMat = new THREE.MeshBasicMaterial({ color: cfg.color, side: THREE.DoubleSide });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.position.y = 0.05;
+      group.add(ring);
+
+      group.userData = { id, ...cfg, status: 'standby', currentFloor: 1 };
+      return group;
+    }
+
+    Object.keys(AGENTS_CONFIG).forEach(id => {
+      const cfg = AGENTS_CONFIG[id];
+      const robot = createRobotMesh(cfg, id);
+      const initialPos = cfg.deskPos[1] > 6 ? cfg.deskPos : cfg.pantryPos;
+      robot.position.set(initialPos[0], initialPos[1], initialPos[2]);
+      robot.userData.status = cfg.deskPos[1] > 6 ? 'working' : 'standby';
+
+      scene.add(robot);
+      robotMap[id] = robot;
+      agentMeshes.push(robot);
+    });
+
+    // --- ANIMATE ROBOT DISPATCH (TWEEN) ---
+    function animateRobotTo(robot, targetPos, duration = 1400) {
+      if (Math.abs(robot.position.x - targetPos[0]) < 0.1 && 
+          Math.abs(robot.position.y - targetPos[1]) < 0.1 && 
+          Math.abs(robot.position.z - targetPos[2]) < 0.1) {
+        return;
+      }
+
+      new TWEEN.Tween(robot.position)
+        .to({ x: targetPos[0], y: targetPos[1], z: targetPos[2] }, duration)
+        .easing(TWEEN.Easing.Cubic.InOut)
+        .start();
+    }
+
+    // --- REALTIME LIVE SYNC POLLER (CLOUD + LOCAL HYBRID) ---
+    async function pollLiveState() {
+      try {
+        const res = await fetch('./live_state.json?t=' + Date.now());
+        if (res.ok) {
+          const data = await res.json();
+          applyLiveState(data);
+        }
+      } catch (e) {
+        // Fallback or offline graceful handling
+      }
+    }
+
+    function applyLiveState(data) {
+      if (data.counts) {
+        document.getElementById('counterWorking').innerText = data.counts.working;
+        document.getElementById('counterStandby').innerText = data.counts.standby;
+        document.getElementById('badgeWorkspaceText').innerText = `💻 Workspace (${data.counts.working} kerja)`;
+        document.getElementById('badgePantryText').innerText = `☕ Pantry (${data.counts.standby} standby)`;
+      }
+
+      Object.keys(data.agents).forEach(id => {
+        const agentState = data.agents[id];
+        const robot = robotMap[id];
+        if (!robot) return;
+
+        const cfg = AGENTS_CONFIG[id];
+        const newStatus = agentState.status;
+        robot.userData.status = newStatus;
+        robot.userData.task = agentState.task;
+
+        if (newStatus === 'working') {
+          animateRobotTo(robot, cfg.deskPos);
+          robot.userData.currentFloor = cfg.deskPos[1] > 6 ? 3 : 2;
+        } else {
+          animateRobotTo(robot, cfg.pantryPos);
+          robot.userData.currentFloor = 1;
+        }
+      });
+
+      if (currentSelectedAgentId && robotMap[currentSelectedAgentId]) {
+        updateModalContent(robotMap[currentSelectedAgentId].userData);
+      }
+    }
+
+    setInterval(pollLiveState, 2500);
+    pollLiveState();
+
+    // --- TOGGLE AGENT DISPATCH (CLICKABLE FROM MODAL) ---
+    let currentSelectedAgentId = null;
+
+    async function toggleCurrentAgent() {
+      if (!currentSelectedAgentId) return;
+      const robot = robotMap[currentSelectedAgentId];
+      if (!robot) return;
+
+      const nextStatus = robot.userData.status === 'working' ? 'standby' : 'working';
+      robot.userData.status = nextStatus;
+      robot.userData.task = nextStatus === 'working' ? 'Aktif Mengerjakan Tugas' : 'Standby di Pantry';
+      
+      const targetPos = nextStatus === 'working' ? robot.userData.deskPos : robot.userData.pantryPos;
+      animateRobotTo(robot, targetPos);
+      updateModalContent(robot.userData);
+
+      // Re-calculate live stats locally
+      let wCount = 0; let sCount = 0;
+      Object.keys(robotMap).forEach(k => {
+        if (robotMap[k].userData.status === 'working') wCount++; else sCount++;
+      });
+      document.getElementById('counterWorking').innerText = wCount;
+      document.getElementById('counterStandby').innerText = sCount;
+      document.getElementById('badgeWorkspaceText').innerText = `💻 Workspace (${wCount} kerja)`;
+      document.getElementById('badgePantryText').innerText = `☕ Pantry (${sCount} standby)`;
+
+      // Add to comms feed
+      addCommsLog(`[Dispatch] ${robot.userData.name} dipindahkan ke ${nextStatus === 'working' ? 'Workspace' : 'Pantry'}`);
+
+      // Try syncing to backend server if available
+      try {
+        await fetch('/api/toggle', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ agent_id: currentSelectedAgentId })
+        });
+      } catch (e) {}
+    }
+
+    // --- MODAL HANDLING & RAYCASTING ---
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    function updateModalContent(data) {
+      document.getElementById('modalAvatar').innerText = data.emoji || '🤖';
+      document.getElementById('modalName').innerText = data.name;
+      document.getElementById('modalRole').innerText = data.role;
+      document.getElementById('modalCurrentTask').innerText = data.task || 'Siaga';
+
+      const badge = document.getElementById('modalStatusBadge');
+      if (data.status === 'working') {
+        badge.innerText = 'WORKING (AKTIF KERJA)';
+        badge.className = 'px-2.5 py-0.5 rounded font-semibold text-[11px] mono uppercase bg-sky-500/20 text-sky-400 border border-sky-500/30';
+        document.getElementById('btnToggleText').innerText = '☕ Tarik Istirahat ke Pantry';
+      } else {
+        badge.innerText = 'STANDBY (PANTRY)';
+        badge.className = 'px-2.5 py-0.5 rounded font-semibold text-[11px] mono uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30';
+        document.getElementById('btnToggleText').innerText = '⚡ Tugaskan Kerja ke Workspace';
+      }
+
+      const skillsDiv = document.getElementById('modalSkills');
+      skillsDiv.innerHTML = '';
+      data.skills.forEach(s => {
+        const b = document.createElement('span');
+        b.className = 'bg-white/10 px-2 py-0.5 rounded text-[10px] text-slate-300 mono';
+        b.innerText = s;
+        skillsDiv.appendChild(b);
+      });
+    }
+
+    window.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.glass') || e.target.closest('button') || e.target.closest('#securityGate')) return;
+
+      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(agentMeshes, true);
+
+      if (intersects.length > 0) {
+        let obj = intersects[0].object;
+        while (obj.parent && !obj.userData.id) obj = obj.parent;
+        if (obj.userData.id) {
+          currentSelectedAgentId = obj.userData.id;
+          updateModalContent(obj.userData);
+          const modal = document.getElementById('agentModal');
+          modal.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+          modal.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+        }
+      } else {
+        closeModal();
+      }
+    });
+
+    function closeModal() {
+      currentSelectedAgentId = null;
+      const modal = document.getElementById('agentModal');
+      modal.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+      modal.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+    }
+
+    // --- 3D ROOM BADGE SCREEN PROJECTION ---
+    const badgeBoss = document.getElementById('badgeBoss');
+    const badgeWorkspace = document.getElementById('badgeWorkspace');
+    const badgePantry = document.getElementById('badgePantry');
+
+    const vBoss = new THREE.Vector3(0, 11, 0);
+    const vWorkspace = new THREE.Vector3(0, 7, 0);
+    const vPantry = new THREE.Vector3(0, 3, 0);
+
+    function updateBadgePosition(badge, worldVec) {
+      const v = worldVec.clone().project(camera);
+      if (v.z > 1) {
+        badge.style.display = 'none';
+        return;
+      }
+      badge.style.display = 'flex';
+      const x = (v.x * 0.5 + 0.5) * window.innerWidth;
+      const y = (-(v.y * 0.5) + 0.5) * window.innerHeight;
+      badge.style.left = `${x}px`;
+      badge.style.top = `${y}px`;
+    }
+
+    // --- CAMERA FLOOR FOCUS ---
+    function focusFloor(type) {
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.remove('bg-white/20', 'text-white');
+        b.classList.add('text-slate-300');
+      });
+      event.currentTarget.classList.add('bg-white/20', 'text-white');
+
+      let targetCam = { x: 22, y: 18, z: 26 };
+      let targetLook = { x: 0, y: 5, z: 0 };
+
+      if (type === 'boss') {
+        targetCam = { x: 0, y: 13, z: 12 }; targetLook = { x: 0, y: 9.5, z: 0 };
+      } else if (type === 'workspace') {
+        targetCam = { x: 12, y: 9, z: 14 }; targetLook = { x: 0, y: 5.5, z: 0 };
+      } else if (type === 'pantry') {
+        targetCam = { x: 0, y: 3.5, z: 11 }; targetLook = { x: 0, y: 1.5, z: 0 };
+      }
+
+      new TWEEN.Tween(camera.position).to(targetCam, 1200).easing(TWEEN.Easing.Cubic.Out).start();
+      new TWEEN.Tween(controls.target).to(targetLook, 1200).easing(TWEEN.Easing.Cubic.Out).start();
+    }
+
+    // --- LIVE COMMS FEED TICKER LOGIC ---
+    const sampleComms = [
+      '[Telegram] @Luna: Bab II Mattoanging Al-Marwaee & Carter disinkronkan',
+      '[Telegram] @MasAmba: Funding rate Binance net-neutral',
+      '[Cloud] @Piksel: UI component responsive layout synced',
+      '[Cloud] @Kaktus: Menara Dynamo IFC clash free',
+      '[Telegram] @Ai: Heru logged in from Makassar terminal',
+      '[Cloud] @Botik: Python backtest Sharpe ratio 2.14 verified'
+    ];
+
+    function addCommsLog(text) {
+      const feed = document.getElementById('commsFeedList');
+      if (!feed) return;
+      const el = document.createElement('div');
+      el.className = 'text-sky-300 transition-all duration-300';
+      el.innerText = text;
+      feed.prepend(el);
+      if (feed.children.length > 5) feed.lastChild.remove();
+    }
+
+    setInterval(() => {
+      if (Math.random() > 0.4) {
+        const item = sampleComms[Math.floor(Math.random() * sampleComms.length)];
+        addCommsLog(item);
+      }
+    }, 7000);
+
+    // --- ANIMATION LOOP ---
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      TWEEN.update();
+
+      const time = clock.getElapsedTime();
+      if (holoSphere) {
+        holoSphere.rotation.y = time * 0.8;
+        holoSphere.rotation.x = time * 0.4;
+      }
+
+      // Robot breathing bounce
+      agentMeshes.forEach((robot, idx) => {
+        robot.children[0].position.y = 0.5 + Math.sin(time * 3 + idx) * 0.03;
+        robot.children[1].position.y = 1.05 + Math.sin(time * 3 + idx) * 0.03;
+      });
+
+      // Update 3D Badges
+      updateBadgePosition(badgeBoss, vBoss);
+      updateBadgePosition(badgeWorkspace, vWorkspace);
+      updateBadgePosition(badgePantry, vPantry);
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
