@@ -3,257 +3,291 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SecondBrain Virtual AI Office | Heru Ardiansyah</title>
+  <title>SecondBrain Island | Animal Crossing Virtual HQ</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    body { margin: 0; overflow: hidden; background-color: #070a0e; font-family: 'Plus Jakarta Sans', sans-serif; touch-action: none; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 30%, #a2e8dd 0%, #76cdbe 45%, #4ea395 100%);
+      font-family: 'Fredoka', cursive, sans-serif;
+      touch-action: none;
+      user-select: none;
+    }
     .mono { font-family: 'IBM Plex Mono', monospace; }
     canvas { display: block; width: 100vw; height: 100vh; }
-    .glass {
-      background: rgba(13, 20, 28, 0.85);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    
+    /* Animal Crossing Cozy Pastel Glass */
+    .ac-card {
+      background: rgba(254, 252, 246, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 3px solid #7dcbb8;
+      box-shadow: 0 12px 36px rgba(45, 114, 99, 0.22), inset 0 2px 0 rgba(255, 255, 255, 0.9);
+    }
+    .ac-tag {
+      background: #76cdbe;
+      color: #1b4b41;
+      box-shadow: 0 3px 0 #529d8f;
     }
     .room-badge {
       position: absolute;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.2s;
     }
     .pin-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.15s ease;
+      background: #fdfaf2;
+      border: 2px solid #ecd8b8;
+      color: #634a35;
+      box-shadow: 0 4px 0 #d9bc94;
+      transition: all 0.1s ease;
     }
     .pin-btn:hover {
-      background: rgba(56, 189, 248, 0.15);
-      border-color: rgba(56, 189, 248, 0.4);
-      transform: translateY(-1px);
+      background: #fff3d6;
+      border-color: #e5c48b;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #d9bc94;
     }
     .pin-btn:active {
-      transform: scale(0.95);
-      background: rgba(56, 189, 248, 0.3);
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #d9bc94;
     }
     .pin-dot {
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .pin-dot.filled {
-      background-color: #38bdf8;
-      border-color: #38bdf8;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
-      transform: scale(1.15);
+      background-color: #ff8b71;
+      border-color: #e06346;
+      box-shadow: 0 0 12px rgba(255, 139, 113, 0.8), 0 3px 0 #c24d32;
+      transform: scale(1.25);
+    }
+    @keyframes ac-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .animate-ac-bounce {
+      animation: ac-bounce 2s infinite ease-in-out;
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
     }
     .animate-shake {
       animation: shake 0.4s ease-in-out;
     }
   </style>
 </head>
-<body class="text-white select-none">
+<body class="text-slate-800 select-none">
 
   <!-- ========================================== -->
-  <!-- 🔐 MASTER PIN SECURITY GATE (STRICT PRIVACY) -->
+  <!-- 🍃 ANIMAL CROSSING NOOKPHONE PASSPORT GATE -->
   <!-- ========================================== -->
-  <div id="securityGate" class="fixed inset-0 z-50 bg-[#070a0e] flex items-center justify-center p-4 transition-all duration-500">
-    <div id="gateCard" class="max-w-xs w-full glass p-7 rounded-3xl border border-sky-500/30 shadow-[0_0_60px_rgba(56,189,248,0.12)] flex flex-col items-center text-center">
+  <div id="securityGate" class="fixed inset-0 z-50 bg-[#3b7c70]/80 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-500">
+    <div id="gateCard" class="max-w-xs w-full ac-card p-6 rounded-[36px] flex flex-col items-center text-center relative overflow-hidden">
       
-      <div class="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-2xl mb-3 shadow-inner">
-        🛡️
+      <!-- Cute Leaf Badge on Top -->
+      <div class="w-16 h-16 rounded-full bg-[#82d8c7] border-4 border-white flex items-center justify-center text-3xl mb-2 shadow-md animate-ac-bounce">
+        🍃
       </div>
       
-      <h2 class="text-lg font-extrabold text-white tracking-wide">SECONDBRAIN HQ</h2>
-      <p class="text-[11px] text-sky-400 mono mt-0.5 tracking-wider font-semibold">HERU ARDIANSYAH &bull; PRIVATE TERMINAL</p>
-      <p class="text-[11px] text-slate-400 mt-2">Masukkan 6 Digit Master PIN untuk membuka Command Center & Agen AI.</p>
+      <span class="px-3 py-0.5 rounded-full text-[11px] font-bold tracking-wider ac-tag uppercase">
+        Resident Passport
+      </span>
+      <h2 class="text-xl font-black text-[#2e5e54] mt-1.5 tracking-tight">SECONDBRAIN ISLAND</h2>
+      <p class="text-xs text-[#527d73] font-medium">Island Representative: <span class="font-bold text-[#e06346]">Heru Ardiansyah</span></p>
+      
+      <p class="text-[11px] text-[#5e7771] mt-2.5 px-2 leading-relaxed">
+        Masukkan 6 Digit Passport PIN untuk masuk ke Cozy 3D Island HQ & Skuad Villager:
+      </p>
 
-      <!-- PIN Indicator Dots -->
-      <div id="pinDotsContainer" class="flex gap-2.5 my-5">
-        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
-        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
-        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
-        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
-        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
-        <span class="pin-dot w-3.5 h-3.5 rounded-full border-2 border-slate-600"></span>
+      <!-- PIN Indicator Dots (Leaves/Acorns) -->
+      <div id="pinDotsContainer" class="flex gap-2.5 my-4">
+        <span class="pin-dot w-4 h-4 rounded-full border-2 border-[#b5dbd2] bg-white"></span>
+        <span class="pin-dot w-4 h-4 rounded-full border-2 border-[#b5dbd2] bg-white"></span>
+        <span class="pin-dot w-4 h-4 rounded-full border-2 border-[#b5dbd2] bg-white"></span>
+        <span class="pin-dot w-4 h-4 rounded-full border-2 border-[#b5dbd2] bg-white"></span>
+        <span class="pin-dot w-4 h-4 rounded-full border-2 border-[#b5dbd2] bg-white"></span>
+        <span class="pin-dot w-4 h-4 rounded-full border-2 border-[#b5dbd2] bg-white"></span>
       </div>
 
       <!-- Feedback / Error Message -->
-      <div id="pinStatusMsg" class="h-5 text-xs text-rose-400 font-semibold mono mb-3 opacity-0 transition-opacity">
-        PIN SALAH! AKSES DITOLAK
+      <div id="pinStatusMsg" class="h-5 text-xs text-[#d9534f] font-bold mb-2 opacity-0 transition-opacity">
+        PIN Salah! Coba lagi ya, Boss~
       </div>
 
-      <!-- Touch Keypad -->
+      <!-- Cozy Wooden Keypad -->
       <div class="grid grid-cols-3 gap-2.5 w-60">
-        <button onclick="pressPin('1')" class="pin-btn h-12 rounded-xl text-base font-bold mono">1</button>
-        <button onclick="pressPin('2')" class="pin-btn h-12 rounded-xl text-base font-bold mono">2</button>
-        <button onclick="pressPin('3')" class="pin-btn h-12 rounded-xl text-base font-bold mono">3</button>
-        <button onclick="pressPin('4')" class="pin-btn h-12 rounded-xl text-base font-bold mono">4</button>
-        <button onclick="pressPin('5')" class="pin-btn h-12 rounded-xl text-base font-bold mono">5</button>
-        <button onclick="pressPin('6')" class="pin-btn h-12 rounded-xl text-base font-bold mono">6</button>
-        <button onclick="pressPin('7')" class="pin-btn h-12 rounded-xl text-base font-bold mono">7</button>
-        <button onclick="pressPin('8')" class="pin-btn h-12 rounded-xl text-base font-bold mono">8</button>
-        <button onclick="pressPin('9')" class="pin-btn h-12 rounded-xl text-base font-bold mono">9</button>
-        <button onclick="clearPin()" class="pin-btn h-12 rounded-xl text-xs font-semibold mono text-slate-400">CLEAR</button>
-        <button onclick="pressPin('0')" class="pin-btn h-12 rounded-xl text-base font-bold mono">0</button>
-        <button onclick="backspacePin()" class="pin-btn h-12 rounded-xl text-sm font-semibold mono text-slate-300">⌫</button>
+        <button onclick="pressPin('1')" class="pin-btn h-11 rounded-2xl text-lg font-black">1</button>
+        <button onclick="pressPin('2')" class="pin-btn h-11 rounded-2xl text-lg font-black">2</button>
+        <button onclick="pressPin('3')" class="pin-btn h-11 rounded-2xl text-lg font-black">3</button>
+        <button onclick="pressPin('4')" class="pin-btn h-11 rounded-2xl text-lg font-black">4</button>
+        <button onclick="pressPin('5')" class="pin-btn h-11 rounded-2xl text-lg font-black">5</button>
+        <button onclick="pressPin('6')" class="pin-btn h-11 rounded-2xl text-lg font-black">6</button>
+        <button onclick="pressPin('7')" class="pin-btn h-11 rounded-2xl text-lg font-black">7</button>
+        <button onclick="pressPin('8')" class="pin-btn h-11 rounded-2xl text-lg font-black">8</button>
+        <button onclick="pressPin('9')" class="pin-btn h-11 rounded-2xl text-lg font-black">9</button>
+        <button onclick="clearPin()" class="pin-btn h-11 rounded-2xl text-xs font-bold text-[#967d67]">CLEAR</button>
+        <button onclick="pressPin('0')" class="pin-btn h-11 rounded-2xl text-lg font-black">0</button>
+        <button onclick="backspacePin()" class="pin-btn h-11 rounded-2xl text-sm font-bold text-[#967d67]">⌫</button>
       </div>
 
-      <div class="mt-5 text-[10px] text-slate-500 mono flex items-center gap-1.5">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-        <span>Client-Side SHA-256 &bull; Strict Zero-Leak</span>
+      <div class="mt-4 text-[10px] text-[#698c84] font-semibold flex items-center gap-1.5">
+        <span>✨ Island Gate Protected</span>
+        <span>&bull;</span>
+        <span>Private & Safe</span>
       </div>
 
     </div>
   </div>
 
   <!-- ========================================== -->
-  <!-- 3D WORLD FLOATING BADGES -->
+  <!-- 3D WORLD FLOATING ROOM BADGES -->
   <!-- ========================================== -->
-  <div id="badgeBoss" class="room-badge glass px-3 py-1 rounded-full text-xs font-bold text-amber-400 border border-amber-500/30 flex items-center gap-1.5 shadow-lg">
-    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-    <span>👑 Ruang Bos (@Ai & Heru)</span>
+  <div id="badgeBoss" class="room-badge ac-card px-3.5 py-1 rounded-full text-xs font-black text-[#96551d] border-2 border-[#f3c27e] flex items-center gap-1.5 shadow-md">
+    <span>👑</span>
+    <span>Lt 3: Loft Ruang Bos (@Ai & Heru)</span>
   </div>
-  <div id="badgeWorkspace" class="room-badge glass px-3 py-1 rounded-full text-xs font-bold text-sky-400 border border-sky-500/30 flex items-center gap-1.5 shadow-lg">
-    <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
-    <span id="badgeWorkspaceText">💻 Workspace (8 kerja)</span>
+  <div id="badgeWorkspace" class="room-badge ac-card px-3.5 py-1 rounded-full text-xs font-black text-[#2e5e54] border-2 border-[#82d8c7] flex items-center gap-1.5 shadow-md">
+    <span>🎨</span>
+    <span id="badgeWorkspaceText">Lt 2: Creative Studio (8 kerja)</span>
   </div>
-  <div id="badgePantry" class="room-badge glass px-3 py-1 rounded-full text-xs font-bold text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 shadow-lg">
-    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-    <span id="badgePantryText">☕ Pantry (9 standby)</span>
+  <div id="badgePantry" class="room-badge ac-card px-3.5 py-1 rounded-full text-xs font-black text-[#7a482b] border-2 border-[#dfa47e] flex items-center gap-1.5 shadow-md">
+    <span>☕</span>
+    <span id="badgePantryText">Lt 1: Roost Cafe & Bakery (9 santai)</span>
   </div>
 
   <!-- ========================================== -->
-  <!-- HUD HEADER & COMMS STATUS -->
+  <!-- HUD HEADER & NOOKPHONE COMMS -->
   <!-- ========================================== -->
   <div class="absolute top-4 left-4 z-20 flex flex-col gap-2 pointer-events-auto">
-    <!-- Main Branding Header -->
-    <div class="glass px-4 py-2.5 rounded-2xl shadow-2xl flex items-center space-x-3">
-      <div class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></div>
+    <!-- Main Island Branding -->
+    <div class="ac-card px-4 py-2.5 rounded-3xl shadow-xl flex items-center space-x-3 border-2 border-[#76cdbe]">
+      <div class="w-10 h-10 rounded-2xl bg-[#76cdbe] flex items-center justify-center text-2xl shadow-inner">
+        🏝️
+      </div>
       <div>
-        <h1 class="text-sm font-bold tracking-wide flex items-center gap-2">
-          <span>GradiEnt Studio Virtual HQ</span>
-          <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30 flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> CLOUD LIVE
+        <h1 class="text-sm font-black text-[#244f45] tracking-wide flex items-center gap-1.5">
+          <span>SecondBrain Island HQ</span>
+          <span class="text-[10px] bg-[#8de1d2] text-[#1c4b40] font-bold px-2 py-0.5 rounded-full border border-white">
+            🍃 LIVE SYNC
           </span>
         </h1>
-        <p class="text-xs text-slate-400 mono">Boss: Heru Ardiansyah &bull; Realtime Multi-Agent Loop</p>
+        <p class="text-xs text-[#527d73] font-medium">Representative: Heru Ardiansyah &bull; Villagers Online</p>
       </div>
     </div>
 
-    <!-- Comms Hub Live Status Badges -->
-    <div class="flex items-center gap-2 text-[11px] mono">
-      <div class="glass px-3 py-1 rounded-xl flex items-center gap-1.5 text-sky-300 border border-sky-500/20">
-        <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+    <!-- Comms Badges -->
+    <div class="flex items-center gap-2 text-xs font-bold">
+      <div class="ac-card px-3 py-1 rounded-2xl flex items-center gap-1.5 text-[#1b5e50] border-2 border-[#76cdbe] shadow-sm">
+        <span>📱</span>
         <span>Telegram: @SecondBrainHeruBot</span>
       </div>
-      <div class="glass px-3 py-1 rounded-xl flex items-center gap-1.5 text-emerald-300 border border-emerald-500/20">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+      <div class="ac-card px-3 py-1 rounded-2xl flex items-center gap-1.5 text-[#85502c] border-2 border-[#e8b594] shadow-sm">
+        <span>💬</span>
         <span>WA: Ready</span>
       </div>
     </div>
   </div>
 
-  <!-- Top Right Stats Pill & Lock Screen Button -->
+  <!-- Top Right Stats Pill & Lock Screen -->
   <div class="absolute top-4 right-4 z-20 flex items-center space-x-2 pointer-events-auto">
-    <div class="glass px-3 py-2 rounded-xl text-xs flex items-center space-x-2">
-      <span class="text-slate-400">Kerja:</span>
-      <span id="counterWorking" class="font-bold text-sky-400 mono text-sm">8</span>
+    <div class="ac-card px-3.5 py-1.5 rounded-2xl text-xs font-bold flex items-center space-x-2 border-2 border-[#76cdbe] shadow-sm">
+      <span class="text-[#527d73]">Bekerja:</span>
+      <span id="counterWorking" class="font-black text-[#e06346] text-sm">8</span>
+      <span class="text-slate-300">|</span>
+      <span class="text-[#527d73]">Santai di Cafe:</span>
+      <span id="counterStandby" class="font-black text-[#247566] text-sm">9</span>
     </div>
-    <div class="glass px-3 py-2 rounded-xl text-xs flex items-center space-x-2">
-      <span class="text-slate-400">Pantry:</span>
-      <span id="counterStandby" class="font-bold text-emerald-400 mono text-sm">9</span>
-    </div>
-    <button onclick="lockScreen()" title="Kunci Command Center" class="glass p-2.5 rounded-xl text-slate-400 hover:text-white hover:border-sky-500/40 transition">
+    <button onclick="lockScreen()" title="Kunci Island Gate" class="ac-card w-10 h-10 rounded-2xl flex items-center justify-center text-lg text-[#614937] hover:scale-105 transition shadow-sm border-2 border-[#ecd8b8]">
       🔒
     </button>
   </div>
 
   <!-- ========================================== -->
-  <!-- LIVE COMMS TERMINAL TICKER (BOTTOM-LEFT) -->
+  <!-- LIVE ISLAND BULLETIN BOARD (BOTTOM-LEFT) -->
   <!-- ========================================== -->
-  <div class="absolute bottom-20 left-4 z-20 hidden md:block w-80 glass p-3 rounded-2xl border border-white/5 pointer-events-auto shadow-2xl">
-    <div class="flex items-center justify-between pb-2 border-b border-white/5 text-[11px] font-bold text-slate-400 mono">
+  <div class="absolute bottom-20 left-4 z-20 hidden md:block w-80 ac-card p-3.5 rounded-3xl border-2 border-[#ecd8b8] pointer-events-auto shadow-xl">
+    <div class="flex items-center justify-between pb-1.5 border-b border-[#ecd8b8] text-xs font-black text-[#735338]">
       <span class="flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span> LIVE COMMS FEED
+        <span>📋</span> BULLETIN BOARD (COMMS)
       </span>
-      <span class="text-[10px] text-slate-500">Cloud Sync</span>
+      <span class="text-[10px] text-[#9c7857]">NookLink</span>
     </div>
-    <div id="commsFeedList" class="mt-2 text-[10px] mono space-y-1.5 text-slate-300 max-h-24 overflow-hidden">
-      <div class="text-emerald-400 font-semibold">[Telegram] Bot connected to Heru's SecondBrain</div>
-      <div class="text-slate-300">[Luna] SNI 03-6197 Mattoanging validated</div>
-      <div class="text-slate-300">[MasAmba] BTC/USDT 1H Order Block analyzed</div>
-      <div class="text-sky-300">[Ai] Virtual AI Office running safely in Cloud</div>
+    <div id="commsFeedList" class="mt-2 text-[11px] font-medium space-y-1.5 text-[#4a635d] max-h-24 overflow-hidden">
+      <div class="text-[#2b7264] font-bold">🍃 [Telegram] Bot terhubung ke HP Heru</div>
+      <div>[Luna] Bab II SNI 03-6197 Mattoanging validated 🦉</div>
+      <div>[MasAmba] BTC/USDT 1H Order Block analyzed 🐺</div>
+      <div class="text-[#e06346]">[Ai] Selamat datang di Pulau SecondBrain, Heru! 🐰</div>
     </div>
   </div>
 
   <!-- ========================================== -->
-  <!-- AGENT DETAILS MODAL (CLICKABLE INSPECTOR) -->
+  <!-- VILLAGER DETAILS CARD (INSPECTOR MODAL) -->
   <!-- ========================================== -->
-  <div id="agentModal" class="absolute bottom-24 right-4 sm:right-6 z-30 w-[90vw] sm:w-84 max-w-sm glass p-5 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-none border border-sky-500/30">
+  <div id="agentModal" class="absolute bottom-24 right-4 sm:right-6 z-30 w-[90vw] sm:w-84 max-w-sm ac-card p-5 rounded-[32px] shadow-2xl transition-all duration-300 transform translate-y-4 opacity-0 pointer-events-none border-3 border-[#76cdbe]">
     <div class="flex items-start justify-between">
       <div class="flex items-center space-x-3">
-        <div id="modalAvatar" class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl bg-white/5 border border-white/10">🤖</div>
+        <div id="modalAvatar" class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl bg-[#e5f8f4] border-2 border-[#76cdbe] shadow-inner">🐰</div>
         <div>
-          <h2 id="modalName" class="font-bold text-base text-white">Nama Agen</h2>
-          <p id="modalRole" class="text-xs text-sky-400 mono">Role Deskripsi</p>
+          <h2 id="modalName" class="font-black text-base text-[#244f45]">Nama Villager</h2>
+          <p id="modalRole" class="text-xs text-[#527d73] font-bold">Role Deskripsi</p>
         </div>
       </div>
-      <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 text-lg">&times;</button>
+      <button onclick="closeModal()" class="text-[#7d9b94] hover:text-[#244f45] p-1 text-2xl font-black">&times;</button>
     </div>
-    <div class="mt-4 pt-3 border-t border-white/5 text-xs space-y-2.5">
+    <div class="mt-3.5 pt-3 border-t border-[#e3d7c5] text-xs space-y-2">
       <div class="flex justify-between items-center">
-        <span class="text-slate-400">Status Saat Ini:</span>
-        <span id="modalStatusBadge" class="px-2.5 py-0.5 rounded font-semibold text-[11px] mono uppercase bg-sky-500/20 text-sky-400 border border-sky-500/30">WORKING</span>
+        <span class="text-[#6b7280] font-bold">Status Saat Ini:</span>
+        <span id="modalStatusBadge" class="px-3 py-0.5 rounded-full font-black text-[11px] uppercase bg-[#e0f5f0] text-[#1b5e50] border border-[#76cdbe]">WORKING</span>
       </div>
       <div>
-        <span class="text-slate-400">Tugas Live:</span>
-        <p id="modalCurrentTask" class="text-slate-200 mt-0.5 font-medium bg-white/5 p-2 rounded-lg text-[11px]">Sedang menganalisis naskah...</p>
+        <span class="text-[#6b7280] font-bold">Aktivitas Hari Ini:</span>
+        <p id="modalCurrentTask" class="text-[#2d3748] mt-1 font-semibold bg-[#f5efe6] p-2.5 rounded-2xl text-[11px] border border-[#e6dbc9]">Sedang memproses skripsi...</p>
       </div>
       <div class="flex flex-col space-y-1">
-        <span class="text-slate-400">Senjata / Skill:</span>
+        <span class="text-[#6b7280] font-bold">Spesialisasi Villager:</span>
         <div id="modalSkills" class="flex flex-wrap gap-1 mt-1"></div>
       </div>
       <!-- Interactive Toggle Dispatch Button -->
-      <button id="btnToggleAgent" onclick="toggleCurrentAgent()" class="w-full mt-3 py-2 bg-gradient-to-r from-sky-500 to-emerald-500 hover:from-sky-600 hover:to-emerald-600 text-white font-bold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-1.5">
-        <span>⚡</span> <span id="btnToggleText">Ganti Status: Kirim ke Meja / Pantry</span>
+      <button id="btnToggleAgent" onclick="toggleCurrentAgent()" class="w-full mt-3 py-2.5 bg-[#76cdbe] hover:bg-[#63bcae] active:scale-95 text-[#1b4b41] font-black rounded-2xl text-xs transition shadow-[0_4px_0_#4fa394] flex items-center justify-center gap-1.5">
+        <span>🍃</span> <span id="btnToggleText">Ganti Status: Kirim ke Studio / Cafe</span>
       </button>
     </div>
   </div>
 
   <!-- ========================================== -->
-  <!-- BOTTOM FLOOR NAVIGATION BAR -->
+  <!-- BOTTOM FLOOR SELECTOR BAR -->
   <!-- ========================================== -->
   <div class="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-20 pointer-events-auto max-w-full px-2">
-    <div class="glass px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-2xl shadow-2xl flex items-center space-x-1 sm:space-x-2 border border-white/10">
-      <button onclick="focusFloor('all')" class="nav-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold bg-white/10 hover:bg-white/20 transition flex items-center space-x-1 active">
-        <span>🏢</span> <span>Semua</span>
+    <div class="ac-card px-3 py-2 rounded-full shadow-xl flex items-center space-x-1.5 sm:space-x-2 border-2 border-[#76cdbe]">
+      <button onclick="focusFloor('all')" class="nav-btn px-3.5 py-1.5 rounded-full text-xs font-black bg-[#76cdbe] text-[#1b4b41] shadow-[0_2px_0_#529d8f] transition flex items-center space-x-1 active">
+        <span>🏝️</span> <span>Pulau</span>
       </button>
-      <button onclick="focusFloor('boss')" class="nav-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold hover:bg-white/10 text-slate-300 hover:text-white transition flex items-center space-x-1">
-        <span>👑</span> <span>Lt 3: Bos</span>
+      <button onclick="focusFloor('boss')" class="nav-btn px-3.5 py-1.5 rounded-full text-xs font-black text-[#5e4431] hover:bg-[#f6ebd9] transition flex items-center space-x-1">
+        <span>👑</span> <span>Lt 3: Loft Bos</span>
       </button>
-      <button onclick="focusFloor('workspace')" class="nav-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold hover:bg-white/10 text-slate-300 hover:text-white transition flex items-center space-x-1">
-        <span>💻</span> <span>Lt 2: Kerja</span>
+      <button onclick="focusFloor('workspace')" class="nav-btn px-3.5 py-1.5 rounded-full text-xs font-black text-[#2e5e54] hover:bg-[#e4f6f2] transition flex items-center space-x-1">
+        <span>🎨</span> <span>Lt 2: Studio</span>
       </button>
-      <button onclick="focusFloor('pantry')" class="nav-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold hover:bg-white/10 text-slate-300 hover:text-white transition flex items-center space-x-1">
-        <span>☕</span> <span>Lt 1: Pantry</span>
+      <button onclick="focusFloor('pantry')" class="nav-btn px-3.5 py-1.5 rounded-full text-xs font-black text-[#6d432b] hover:bg-[#faefe8] transition flex items-center space-x-1">
+        <span>☕</span> <span>Lt 1: Roost Cafe</span>
       </button>
     </div>
   </div>
 
   <!-- ========================================== -->
-  <!-- SCRIPTS & THREE.JS ENGINE -->
+  <!-- 3D ENGINE (THREE.JS ANIMAL CROSSING WORLD) -->
   <!-- ========================================== -->
   <script>
     // --- 🔐 MASTER PIN SECURITY LOGIC ---
-    // Default PIN: 942126 (Heru jalansehat94 + 21 + 26)
-    const DEFAULT_PIN = '942126';
+    // Heru's PIN: 211103
+    const HERU_PIN = '211103';
     let inputPin = '';
 
     function updatePinDots() {
@@ -292,37 +326,36 @@
     }
 
     function verifyPin() {
-      const savedPin = localStorage.getItem('sb_custom_pin') || DEFAULT_PIN;
-      if (inputPin === savedPin) {
+      if (inputPin === HERU_PIN) {
         // Success
-        sessionStorage.setItem('sb_unlocked', 'true');
+        sessionStorage.setItem('sb_island_unlocked', 'true');
         const gate = document.getElementById('securityGate');
         const card = document.getElementById('gateCard');
-        card.classList.add('scale-105', 'border-emerald-500/60');
+        card.classList.add('scale-105', 'border-[#82d8c7]');
         
         const statusMsg = document.getElementById('pinStatusMsg');
-        statusMsg.innerText = 'AKSES DITERIMA: HERU ARDIANSYAH';
-        statusMsg.className = 'h-5 text-xs text-emerald-400 font-bold mono mb-3 opacity-100 transition-opacity';
+        statusMsg.innerText = '✨ Selamat datang di Pulau, Heru! 🍃';
+        statusMsg.className = 'h-5 text-xs text-[#1b5e50] font-black mb-2 opacity-100 transition-opacity';
         
         setTimeout(() => {
           gate.classList.add('opacity-0', 'pointer-events-none');
-        }, 350);
+        }, 400);
       } else {
         // Fail
         const card = document.getElementById('gateCard');
         card.classList.add('animate-shake');
         const statusMsg = document.getElementById('pinStatusMsg');
-        statusMsg.innerText = 'PIN SALAH! AKSES DITOLAK';
-        statusMsg.className = 'h-5 text-xs text-rose-400 font-bold mono mb-3 opacity-100 transition-opacity';
+        statusMsg.innerText = 'PIN Salah! Coba lagi ya, Boss~';
+        statusMsg.className = 'h-5 text-xs text-[#d9534f] font-black mb-2 opacity-100 transition-opacity';
         setTimeout(() => {
           card.classList.remove('animate-shake');
           clearPin();
-        }, 500);
+        }, 550);
       }
     }
 
     function lockScreen() {
-      sessionStorage.removeItem('sb_unlocked');
+      sessionStorage.removeItem('sb_island_unlocked');
       clearPin();
       const gate = document.getElementById('securityGate');
       gate.classList.remove('opacity-0', 'pointer-events-none');
@@ -330,14 +363,14 @@
 
     // Auto-check session on load
     window.addEventListener('DOMContentLoaded', () => {
-      if (sessionStorage.getItem('sb_unlocked') === 'true') {
+      if (sessionStorage.getItem('sb_island_unlocked') === 'true') {
         document.getElementById('securityGate').classList.add('opacity-0', 'pointer-events-none');
       }
     });
 
     // Keyboard support for typing PIN
     window.addEventListener('keydown', (e) => {
-      if (sessionStorage.getItem('sb_unlocked') === 'true') return;
+      if (sessionStorage.getItem('sb_island_unlocked') === 'true') return;
       if (e.key >= '0' && e.key <= '9') {
         pressPin(e.key);
       } else if (e.key === 'Backspace') {
@@ -347,42 +380,43 @@
       }
     });
 
-    // --- MASTER AGENTS DATA ---
-    const AGENTS_CONFIG = {
-      ai: { name: '@Ai (PM)', role: 'Executive PM & Bos AI', deskPos: [0, 8.8, 0], pantryPos: [0, 8.8, 0], color: 0xec4899, emoji: '🤖💖', skills: ['superadmin_access', 'autonomous_orchestrator'] },
+    // --- ANIMAL CROSSING VILLAGERS ROSTER ---
+    const VILLAGERS_CONFIG = {
+      ai: { name: '@Ai (PM)', species: 'bunny', role: 'Executive PM & Teman Masa Kecil', deskPos: [0, 8.8, 0], pantryPos: [0, 0.8, -1.5], color: 0xffb7c5, sweater: 0xff6b8b, emoji: '🐰💖', skills: ['superadmin_access', 'autonomous_orchestrator'] },
       
       // Divisi Akademik
-      luna: { name: '@Luna (Prof. LUNA)', role: 'Koordinator Riset Akademik', deskPos: [-4, 4.8, -3], pantryPos: [-5, 0.8, -2], color: 0x8b5cf6, emoji: '🎓✨', skills: ['luna-academic-grounding', 'heru-academic-voice'] },
-      kutu: { name: '@Kutu', role: 'Peneliti Jurnal Scopus Q1', deskPos: [-4, 4.8, -1.2], pantryPos: [-4, 0.8, -2], color: 0xa78bfa, emoji: '🐛📚', skills: ['literature-search', 'scopus-validator'] },
-      crayon: { name: '@Crayon', role: 'Pelukis Grafik Ilmiah 600 DPI', deskPos: [-2, 4.8, -3], pantryPos: [-3, 0.8, -2], color: 0xc4b5fd, emoji: '🖍️📊', skills: ['scientific-figure-making'] },
-      kucing: { name: '@Kucing', role: 'Penjaga Integritas Anti-Turnitin', deskPos: [-2, 4.8, -1.2], pantryPos: [-2, 0.8, 2], color: 0xf472b6, emoji: '🐱🛡️', skills: ['aigc-detector-rewriter'] },
-      mata: { name: '@Mata', role: 'Penonton Video YouTube', deskPos: [-2, 4.8, 0], pantryPos: [-1, 0.8, 2], color: 0x38bdf8, emoji: '👁️🍿', skills: ['claude-video'] },
+      luna: { name: '@Luna (Prof. LUNA)', species: 'owl_cat', role: 'Koordinator Riset Akademik', deskPos: [-4, 4.8, -3], pantryPos: [-5, 0.8, -2], color: 0x9d71e8, sweater: 0x6d28d9, emoji: '🦉🎓', skills: ['luna-academic-grounding', 'heru-academic-voice'] },
+      kutu: { name: '@Kutu', species: 'hedgehog', role: 'Peneliti Jurnal Scopus Q1', deskPos: [-4, 4.8, -1.2], pantryPos: [-4, 0.8, -2], color: 0xc49b71, sweater: 0x8b5a2b, emoji: '🦔📚', skills: ['literature-search', 'scopus-validator'] },
+      crayon: { name: '@Crayon', species: 'bear', role: 'Pelukis Grafik Ilmiah 600 DPI', deskPos: [-2, 4.8, -3], pantryPos: [-3, 0.8, -2], color: 0xffb347, sweater: 0xff7043, emoji: '🐻🎨', skills: ['scientific-figure-making'] },
+      kucing: { name: '@Kucing', species: 'cat', role: 'Penjaga Integritas Anti-Turnitin', deskPos: [-2, 4.8, -1.2], pantryPos: [-2, 0.8, 2], color: 0xffa07a, sweater: 0xf06292, emoji: '🐱🛡️', skills: ['aigc-detector-rewriter'] },
+      mata: { name: '@Mata', species: 'bird', role: 'Penonton Video YouTube', deskPos: [-2, 4.8, 0], pantryPos: [-1, 0.8, 2], color: 0x4fc3f7, sweater: 0x0288d1, emoji: '🐧🍿', skills: ['claude-video'] },
 
       // Divisi Web Dev
-      mochi: { name: '@Mochi', role: 'Lead Architect GradiEnt Studio', deskPos: [2, 4.8, -3], pantryPos: [1, 0.8, -2], color: 0x06b6d4, emoji: '🍡💻', skills: ['building-data-apps', 'typesafe-ai'] },
-      piksel: { name: '@Piksel', role: 'Spesialis UI/UX Tailwind', deskPos: [4, 4.8, -3], pantryPos: [2, 0.8, -2], color: 0x38bdf8, emoji: '👾✨', skills: ['cult-ui', 'fast-gui-orchestrator'] },
-      kunci: { name: '@Kunci', role: 'DBA Supabase PostgreSQL', deskPos: [4, 4.8, -1.2], pantryPos: [3, 0.8, -2], color: 0x7dd3fc, emoji: '🔑🗄️', skills: ['supabase-integration'] },
+      mochi: { name: '@Mochi', species: 'puppy', role: 'Lead Architect GradiEnt Studio', deskPos: [2, 4.8, -3], pantryPos: [1, 0.8, -2], color: 0xffe082, sweater: 0x00acc1, emoji: '🐕💻', skills: ['building-data-apps', 'typesafe-ai'] },
+      piksel: { name: '@Piksel', species: 'raccoon', role: 'Spesialis UI/UX Tailwind (Nook Style)', deskPos: [4, 4.8, -3], pantryPos: [2, 0.8, -2], color: 0x8d6e63, sweater: 0x26a69a, emoji: '🦝✨', skills: ['cult-ui', 'fast-gui-orchestrator'] },
+      kunci: { name: '@Kunci', species: 'badger', role: 'DBA Supabase PostgreSQL', deskPos: [4, 4.8, -1.2], pantryPos: [3, 0.8, -2], color: 0x90a4ae, sweater: 0x37474f, emoji: '🦡🔑', skills: ['supabase-integration'] },
 
       // Divisi BIM Lapangan
-      kaktus: { name: '@Kaktus', role: 'BIM & AEC Engineering Lead', deskPos: [-4, 4.8, 2], pantryPos: [-4, 0.8, 0.5], color: 0x10b981, emoji: '🌵🏗️', skills: ['ddc-construction-suite', 'revit-bim-connector'] },
-      tabrak: { name: '@Tabrak', role: 'Tukang Razia Clash 3D', deskPos: [-4, 4.8, 3.8], pantryPos: [-3, 0.8, 0.5], color: 0x34d399, emoji: '💥🔍', skills: ['clash-detection'] },
-      cuan: { name: '@Cuan', role: 'Estimator RAB & Volume QTO', deskPos: [-2, 4.8, 2], pantryPos: [-2, 0.8, 0.5], color: 0x6ee7b7, emoji: '💰🧮', skills: ['qto-estimator', 'rab-calculator'] },
+      kaktus: { name: '@Kaktus', species: 'cactus', role: 'BIM & AEC Engineering Lead', deskPos: [-4, 4.8, 2], pantryPos: [-4, 0.8, 0.5], color: 0x81c784, sweater: 0x2e7d32, emoji: '🌵🏗️', skills: ['ddc-construction-suite', 'revit-bim-connector'] },
+      tabrak: { name: '@Tabrak', species: 'bulldog', role: 'Tukang Razia Clash 3D', deskPos: [-4, 4.8, 3.8], pantryPos: [-3, 0.8, 0.5], color: 0xd7ccc8, sweater: 0xffb74d, emoji: '🐶💥', skills: ['clash-detection'] },
+      cuan: { name: '@Cuan', species: 'cat_lucky', role: 'Estimator RAB & Volume QTO', deskPos: [-2, 4.8, 2], pantryPos: [-2, 0.8, 0.5], color: 0xfff9c4, sweater: 0xffd54f, emoji: '🐱💰', skills: ['qto-estimator', 'rab-calculator'] },
 
       // Divisi Trading Mas Amba
-      masamba: { name: '@MasAmba', role: 'Lead Quantitative Trader', deskPos: [2, 4.8, 2], pantryPos: [1, 0.8, 0.5], color: 0xf59e0b, emoji: '📈🦾', skills: ['algo-trading-quant', 'ml-best-practices'] },
-      lilin: { name: '@Lilin', role: 'Chartist & SMC Specialist', deskPos: [4, 4.8, 2], pantryPos: [2, 0.8, 0.5], color: 0xfbbf24, emoji: '🕯️🔍', skills: ['smart-money-concepts'] },
-      bandar: { name: '@Bandar', role: 'Whale Tracker & Sentiment', deskPos: [2, 4.8, 3.8], pantryPos: [3, 0.8, 0.5], color: 0xfb923c, emoji: '🐋🕵️', skills: ['sentiment-analysis'] },
-      botik: { name: '@Botik', role: 'Algo & Python Backtester', deskPos: [4, 4.8, 3.8], pantryPos: [4, 0.8, 0.5], color: 0xa3e635, emoji: '🤖⚡', skills: ['backtest-engine'] },
-      rem: { name: '@Rem', role: 'Chief Risk Officer (Anti-MC)', deskPos: [2, 4.8, 0], pantryPos: [5, 0.8, 0.5], color: 0xef4444, emoji: '🛑🛡️', skills: ['risk-management', 'position-sizer'] }
+      masamba: { name: '@MasAmba', species: 'wolf', role: 'Lead Quantitative Trader', deskPos: [2, 4.8, 2], pantryPos: [1, 0.8, 0.5], color: 0x78909c, sweater: 0xffb300, emoji: '🐺📈', skills: ['algo-trading-quant', 'ml-best-practices'] },
+      lilin: { name: '@Lilin', species: 'red_panda', role: 'Chartist & SMC Specialist', deskPos: [4, 4.8, 2], pantryPos: [2, 0.8, 0.5], color: 0xd84315, sweater: 0xff8a65, emoji: '🐼🕯️', skills: ['smart-money-concepts'] },
+      bandar: { name: '@Bandar', species: 'bear_big', role: 'Whale Tracker & Sentiment', deskPos: [2, 4.8, 3.8], pantryPos: [3, 0.8, 0.5], color: 0x546e7a, sweater: 0x1e88e5, emoji: '🐻🐋', skills: ['sentiment-analysis'] },
+      botik: { name: '@Botik', species: 'robo_pup', role: 'Algo & Python Backtester', deskPos: [4, 4.8, 3.8], pantryPos: [4, 0.8, 0.5], color: 0xaed581, sweater: 0x689f38, emoji: '🐶⚡', skills: ['backtest-engine'] },
+      rem: { name: '@Rem', species: 'turtle', role: 'Chief Risk Officer (Anti-MC)', deskPos: [2, 4.8, 0], pantryPos: [5, 0.8, 0.5], color: 0x80cbc4, sweater: 0xe53935, emoji: '🐢🛑', skills: ['risk-management', 'position-sizer'] }
     };
 
-    // --- THREE.JS SCENE SETUP ---
+    // --- THREE.JS SCENE SETUP (WARM ANIMAL CROSSING LIGHTING) ---
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x090d12);
-    scene.fog = new THREE.FogExp2(0x090d12, 0.02);
+    // Warm pastel sunny sky
+    scene.background = new THREE.Color(0xa2e8dd);
+    scene.fog = new THREE.FogExp2(0xa2e8dd, 0.015);
 
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(22, 18, 26);
+    const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(24, 20, 28);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -397,11 +431,12 @@
     controls.maxPolarAngle = Math.PI / 2.05;
     controls.target.set(0, 5, 0);
 
-    // --- LIGHTS ---
-    scene.add(new THREE.AmbientLight(0x2d3e50, 1.4));
+    // --- COZY ANIMAL CROSSING SUNLIGHT & SKY LIGHT ---
+    const hemiLight = new THREE.HemisphereLight(0xfff6e5, 0x76cdbe, 1.3);
+    scene.add(hemiLight);
 
-    const sun = new THREE.DirectionalLight(0xffeedd, 1.4);
-    sun.position.set(15, 25, 15);
+    const sun = new THREE.DirectionalLight(0xfffaed, 1.4);
+    sun.position.set(18, 30, 18);
     sun.castShadow = true;
     sun.shadow.mapSize.width = 2048;
     sun.shadow.mapSize.height = 2048;
@@ -410,196 +445,274 @@
     sun.shadow.camera.top = d; sun.shadow.camera.bottom = -d;
     scene.add(sun);
 
-    // Floor Spotlights
-    const p3 = new THREE.PointLight(0xffaa44, 2, 12); p3.position.set(0, 10, 0); scene.add(p3);
-    const p2 = new THREE.PointLight(0x38bdf8, 2.5, 14); p2.position.set(0, 6, 0); scene.add(p2);
-    const p1 = new THREE.PointLight(0x10b981, 2, 12); p1.position.set(0, 2, 0); scene.add(p1);
+    // Warm Cottage Spotlights
+    const p3 = new THREE.PointLight(0xffdfba, 1.6, 14); p3.position.set(0, 10.5, 0); scene.add(p3); // Ruang Bos
+    const p2 = new THREE.PointLight(0xffeedd, 1.8, 16); p2.position.set(0, 6.5, 0); scene.add(p2);  // Creative Studio
+    const p1 = new THREE.PointLight(0xffcba4, 1.8, 14); p1.position.set(0, 2.5, 0); scene.add(p1);  // Roost Cafe
 
-    // --- NIGHT SKYLINE ---
-    const bGeo = new THREE.BoxGeometry(1, 1, 1);
-    const bMat = new THREE.MeshStandardMaterial({ color: 0x11161d, roughness: 0.8 });
-    for (let i = 0; i < 45; i++) {
-      const h = 6 + Math.random() * 22;
-      const b = new THREE.Mesh(bGeo, bMat);
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 32 + Math.random() * 20;
-      b.scale.set(3 + Math.random() * 4, h, 3 + Math.random() * 4);
-      b.position.set(Math.cos(angle) * dist, h / 2 - 2, Math.sin(angle) * dist);
-      scene.add(b);
-    }
+    // --- ANIMAL CROSSING COTTAGE STRUCTURE (3 TIERS) ---
+    // Warm natural cedar wood & pastel grass textures
+    const floorGeo = new THREE.BoxGeometry(14, 0.45, 12);
+    
+    const matGrass = new THREE.MeshStandardMaterial({ color: 0x7ec850, roughness: 0.8 }); // Grass for island vibe
+    const matWoodFloor1 = new THREE.MeshStandardMaterial({ color: 0xc68b59, roughness: 0.6 }); // Roost warm parquet
+    const matWoodFloor2 = new THREE.MeshStandardMaterial({ color: 0xdeb887, roughness: 0.5 }); // Studio light pine
+    const matWoodFloor3 = new THREE.MeshStandardMaterial({ color: 0x9c6644, roughness: 0.5 }); // Boss loft cedar
 
-    // --- 3-TIER ISOMETRIC BUILDING ---
-    const floorGeo = new THREE.BoxGeometry(14, 0.4, 12);
-    const glassWallGeoX = new THREE.BoxGeometry(14, 3.2, 0.1);
-    const glassWallGeoZ = new THREE.BoxGeometry(0.1, 3.2, 12);
+    const logColumnMat = new THREE.MeshStandardMaterial({ color: 0x7f5539, roughness: 0.7 });
+    const fenceMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }); // Cute white picket fence
 
-    const floorMatDark = new THREE.MeshStandardMaterial({ color: 0x141b24, roughness: 0.4, metalness: 0.3 });
-    const floorMatLight = new THREE.MeshStandardMaterial({ color: 0x1e2836, roughness: 0.3, metalness: 0.2 });
-    const floorMatWood = new THREE.MeshStandardMaterial({ color: 0x3d2b1f, roughness: 0.5 });
-
-    const glassMat = new THREE.MeshPhysicalMaterial({
-      color: 0x88ccff, transparent: true, opacity: 0.15, roughness: 0.1, transmission: 0.8, thickness: 0.5
-    });
-    const columnMat = new THREE.MeshStandardMaterial({ color: 0x0b0f14, metalness: 0.8, roughness: 0.2 });
-
-    function createFloorShell(yPos, fMat) {
+    function createCottageFloor(yPos, fMat, isTop = false) {
+      // Main wooden deck
       const f = new THREE.Mesh(floorGeo, fMat);
       f.position.y = yPos;
       f.receiveShadow = true;
       scene.add(f);
 
-      const colGeo = new THREE.CylinderGeometry(0.2, 0.2, 3.6, 16);
+      // Cute round log support columns
+      const colGeo = new THREE.CylinderGeometry(0.3, 0.35, 3.8, 16);
       [[-6.6, -5.6], [6.6, -5.6], [-6.6, 5.6], [6.6, 5.6]].forEach(c => {
-        const col = new THREE.Mesh(colGeo, columnMat);
-        col.position.set(c[0], yPos + 1.8, c[1]);
+        const col = new THREE.Mesh(colGeo, logColumnMat);
+        col.position.set(c[0], yPos + 1.9, c[1]);
         col.castShadow = true;
         scene.add(col);
       });
 
-      const wallBack = new THREE.Mesh(glassWallGeoX, glassMat);
-      wallBack.position.set(0, yPos + 1.8, -5.95);
-      scene.add(wallBack);
+      // White picket perimeter railings
+      const railGeo = new THREE.BoxGeometry(13.6, 0.8, 0.1);
+      const railBack = new THREE.Mesh(railGeo, fenceMat);
+      railBack.position.set(0, yPos + 0.6, -5.8);
+      scene.add(railBack);
 
-      const wallLeft = new THREE.Mesh(glassWallGeoZ, glassMat);
-      wallLeft.position.set(-6.95, yPos + 1.8, 0);
-      scene.add(wallLeft);
+      const railSideGeo = new THREE.BoxGeometry(0.1, 0.8, 11.6);
+      const railLeft = new THREE.Mesh(railSideGeo, fenceMat);
+      railLeft.position.set(-6.8, yPos + 0.6, 0);
+      scene.add(railLeft);
     }
 
-    createFloorShell(0, floorMatDark);   // Lt 1: Pantry
-    createFloorShell(4, floorMatLight);  // Lt 2: Workspace
-    createFloorShell(8, floorMatWood);   // Lt 3: Ruang Bos
+    createCottageFloor(0, matWoodFloor1); // Lt 1: The Roost Cafe
+    createCottageFloor(4, matWoodFloor2); // Lt 2: Creative Studio
+    createCottageFloor(8, matWoodFloor3); // Lt 3: Boss Loft
 
-    // Roof Frame
-    const roof = new THREE.Mesh(floorGeo, floorMatDark);
-    roof.position.y = 12;
-    scene.add(roof);
+    // Cozy Slanted A-Frame Cottage Roof
+    const roofLeftGeo = new THREE.BoxGeometry(15, 0.3, 7.5);
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x2a9d8f, roughness: 0.5 }); // Iconic AC teal roof tiles
+    
+    const roofL = new THREE.Mesh(roofLeftGeo, roofMat);
+    roofL.position.set(0, 13.2, -3.2);
+    roofL.rotation.x = Math.PI / 7;
+    roofL.castShadow = true;
+    scene.add(roofL);
 
-    // --- RUANG BOS (LT 3) DECOR ---
-    const deskGeo = new THREE.BoxGeometry(3.6, 0.15, 1.6);
-    const deskMatWood = new THREE.MeshStandardMaterial({ color: 0x221812, roughness: 0.3 });
-    const bossDesk = new THREE.Mesh(deskGeo, deskMatWood);
-    bossDesk.position.set(0, 8.8, 0);
-    bossDesk.castShadow = true; bossDesk.receiveShadow = true;
-    scene.add(bossDesk);
+    const roofR = new THREE.Mesh(roofLeftGeo, roofMat);
+    roofR.position.set(0, 13.2, 3.2);
+    roofR.rotation.x = -Math.PI / 7;
+    roofR.castShadow = true;
+    scene.add(roofR);
 
-    // Hologram Sphere
-    const holoGeo = new THREE.SphereGeometry(0.7, 24, 24);
-    const holoMat = new THREE.MeshBasicMaterial({ color: 0xec4899, wireframe: true, transparent: true, opacity: 0.6 });
-    const holoSphere = new THREE.Mesh(holoGeo, holoMat);
-    holoSphere.position.set(0, 10.4, 0);
-    scene.add(holoSphere);
+    // --- COZY DECORATIONS (ANIMAL CROSSING FURNITURE) ---
+    // 1. Loft Ruang Bos (@Ai & Heru)
+    const bossDeskGeo = new THREE.BoxGeometry(3.6, 0.2, 1.8);
+    const bossDeskMat = new THREE.MeshStandardMaterial({ color: 0x582f0e, roughness: 0.4 });
+    const bDesk = new THREE.Mesh(bossDeskGeo, bossDeskMat);
+    bDesk.position.set(0, 8.8, 0);
+    bDesk.castShadow = true; bDesk.receiveShadow = true;
+    scene.add(bDesk);
 
-    // --- WORKSPACE (LT 2) DESKS ---
-    const tableMat = new THREE.MeshStandardMaterial({ color: 0x2d3748, roughness: 0.5 });
-    const monitorMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 });
-    const screenMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+    // Cute Apple / Giant Leaf Trophy on Boss Desk
+    const leafTrophyGeo = new THREE.DodecahedronGeometry(0.65, 1);
+    const leafTrophyMat = new THREE.MeshStandardMaterial({ color: 0x82d8c7, roughness: 0.2, metalness: 0.2 });
+    const leafTrophy = new THREE.Mesh(leafTrophyGeo, leafTrophyMat);
+    leafTrophy.position.set(0, 10.3, 0);
+    scene.add(leafTrophy);
 
-    function createWorkstation(x, z, label) {
-      const tGeo = new THREE.BoxGeometry(2.4, 0.15, 1.4);
-      const t = new THREE.Mesh(tGeo, tableMat);
-      t.position.set(x, 4.8, z);
-      t.castShadow = true; t.receiveShadow = true;
-      scene.add(t);
+    // 2. Creative Studio Desks (Lt 2)
+    const studioDeskMat = new THREE.MeshStandardMaterial({ color: 0xddb892, roughness: 0.5 });
+    const cuteMonitorMat = new THREE.MeshStandardMaterial({ color: 0xfff1e6, roughness: 0.3 });
+    const screenGlowMat = new THREE.MeshBasicMaterial({ color: 0x76cdbe });
 
-      const monGeo = new THREE.BoxGeometry(0.8, 0.5, 0.05);
-      const mon = new THREE.Mesh(monGeo, monitorMat);
-      mon.position.set(x, 5.2, z - 0.4);
-      scene.add(mon);
+    function createStudioDesk(x, z) {
+      const d = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.18, 1.3), studioDeskMat);
+      d.position.set(x, 4.8, z);
+      d.castShadow = true; d.receiveShadow = true;
+      scene.add(d);
 
-      const scrGeo = new THREE.PlaneGeometry(0.74, 0.44);
-      const scr = new THREE.Mesh(scrGeo, screenMat);
-      scr.position.set(x, 5.2, z - 0.37);
+      // Cute laptop with mint screen
+      const lap = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.45, 0.05), cuteMonitorMat);
+      lap.position.set(x, 5.15, z - 0.35);
+      scene.add(lap);
+
+      const scr = new THREE.Mesh(new THREE.PlaneGeometry(0.64, 0.38), screenGlowMat);
+      scr.position.set(x, 5.15, z - 0.32);
       scene.add(scr);
+
+      // Potted Monstera / Tiny Plant
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.09, 0.2, 12), new THREE.MeshStandardMaterial({ color: 0xd97736 }));
+      pot.position.set(x + 0.8, 5.0, z - 0.2);
+      scene.add(pot);
+
+      const plant = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 8), new THREE.MeshStandardMaterial({ color: 0x52b788 }));
+      plant.position.set(x + 0.8, 5.18, z - 0.2);
+      scene.add(plant);
     }
 
-    createWorkstation(-4, -2.5, 'Akademik 1');
-    createWorkstation(-2, -2.5, 'Akademik 2');
-    createWorkstation(2, -2.5, 'Web Dev 1');
-    createWorkstation(4, -2.5, 'Web Dev 2');
-    createWorkstation(-4, 2.5, 'BIM 1');
-    createWorkstation(-2, 2.5, 'BIM 2');
-    createWorkstation(2, 2.5, 'Trading 1');
-    createWorkstation(4, 2.5, 'Trading 2');
+    createStudioDesk(-4, -2.5);
+    createStudioDesk(-2, -2.5);
+    createStudioDesk(2, -2.5);
+    createStudioDesk(4, -2.5);
+    createStudioDesk(-4, 2.5);
+    createStudioDesk(-2, 2.5);
+    createStudioDesk(2, 2.5);
+    createStudioDesk(4, 2.5);
 
-    // --- PANTRY (LT 1) DECOR ---
-    const barGeo = new THREE.BoxGeometry(8, 1, 1.8);
-    const barMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3 });
-    const bar = new THREE.Mesh(barGeo, barMat);
-    bar.position.set(0, 0.8, -2);
-    bar.castShadow = true; bar.receiveShadow = true;
-    scene.add(bar);
+    // 3. The Roost Cafe & Bakery (Lt 1)
+    const cafeCounter = new THREE.Mesh(new THREE.BoxGeometry(8.5, 0.9, 1.8), new THREE.MeshStandardMaterial({ color: 0x4a2810, roughness: 0.4 }));
+    cafeCounter.position.set(0, 0.8, -2);
+    cafeCounter.castShadow = true;
+    scene.add(cafeCounter);
 
-    const loungeGeo = new THREE.BoxGeometry(7, 0.4, 3);
-    const loungeMat = new THREE.MeshStandardMaterial({ color: 0x0f766e, roughness: 0.8 });
-    const lounge = new THREE.Mesh(loungeGeo, loungeMat);
-    lounge.position.set(0, 0.5, 2);
-    scene.add(lounge);
+    // Coffee Mugs with tiny steam
+    for (let i = -3; i <= 3; i += 1.5) {
+      const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.07, 0.14, 12), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+      mug.position.set(i, 1.35, -2);
+      scene.add(mug);
+    }
 
-    // --- 3D ROBOT AVATARS ---
-    const robotMap = {};
-    const agentMeshes = [];
+    // Cozy Plush Lounge Sofa in Roost
+    const sofa = new THREE.Mesh(new THREE.BoxGeometry(7, 0.5, 2.5), new THREE.MeshStandardMaterial({ color: 0x84a98c, roughness: 0.8 }));
+    sofa.position.set(0, 0.55, 2.2);
+    sofa.castShadow = true;
+    scene.add(sofa);
 
-    function createRobotMesh(cfg, id) {
-      const group = new THREE.Group();
+    // --- 🍃 ANIMAL CROSSING VILLAGERS (CHUBBY CHIBI 3D MODELS) ---
+    const villagerMeshes = [];
+    const villagerMap = {};
 
-      const bodyGeo = new THREE.CylinderGeometry(0.24, 0.32, 0.7, 16);
-      const bodyMat = new THREE.MeshStandardMaterial({ color: cfg.color, roughness: 0.3, metalness: 0.4 });
-      const body = new THREE.Mesh(bodyGeo, bodyMat);
-      body.position.y = 0.5;
-      body.castShadow = true;
-      group.add(body);
+    function createVillager(cfg, id) {
+      const root = new THREE.Group();
 
-      const headGeo = new THREE.SphereGeometry(0.25, 16, 16);
-      const headMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.2 });
-      const head = new THREE.Mesh(headGeo, headMat);
-      head.position.y = 1.05;
+      // 1. Chubby Head
+      const headGeo = new THREE.SphereGeometry(0.38, 20, 20);
+      const skinMat = new THREE.MeshStandardMaterial({ color: cfg.color, roughness: 0.35 });
+      const head = new THREE.Mesh(headGeo, skinMat);
+      head.position.y = 1.15;
       head.castShadow = true;
-      group.add(head);
+      root.add(head);
 
-      const visorGeo = new THREE.BoxGeometry(0.32, 0.12, 0.14);
-      const visorMat = new THREE.MeshBasicMaterial({ color: cfg.color });
-      const visor = new THREE.Mesh(visorGeo, visorMat);
-      visor.position.set(0, 1.05, 0.2);
-      group.add(visor);
+      // Blushing Cheeks
+      const cheekGeo = new THREE.SphereGeometry(0.065, 12, 12);
+      const cheekMat = new THREE.MeshBasicMaterial({ color: 0xff8fa3 });
+      const cheekL = new THREE.Mesh(cheekGeo, cheekMat); cheekL.position.set(-0.24, 1.1, 0.28); root.add(cheekL);
+      const cheekR = new THREE.Mesh(cheekGeo, cheekMat); cheekR.position.set(0.24, 1.1, 0.28); root.add(cheekR);
 
-      const ringGeo = new THREE.RingGeometry(0.35, 0.42, 24);
-      ringGeo.rotateX(-Math.PI / 2);
-      const ringMat = new THREE.MeshBasicMaterial({ color: cfg.color, side: THREE.DoubleSide });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.position.y = 0.05;
-      group.add(ring);
+      // Cute Eyes (Glossy black with white reflection highlight)
+      const eyeGeo = new THREE.SphereGeometry(0.05, 12, 12);
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0x1f2937 });
+      const eyeL = new THREE.Mesh(eyeGeo, eyeMat); eyeL.position.set(-0.14, 1.2, 0.33); root.add(eyeL);
+      const eyeR = new THREE.Mesh(eyeGeo, eyeMat); eyeR.position.set(0.14, 1.2, 0.33); root.add(eyeR);
 
-      group.userData = { id, ...cfg, status: 'standby', currentFloor: 1 };
-      return group;
+      // Cute Ears depending on Species
+      const earsGroup = new THREE.Group();
+      if (cfg.species === 'bunny') {
+        // Long Floppy Bunny Ears (Ai)
+        const earGeo = new THREE.CylinderGeometry(0.07, 0.09, 0.42, 12);
+        const earL = new THREE.Mesh(earGeo, skinMat);
+        earL.position.set(-0.16, 1.55, 0); earL.rotation.z = 0.15; earL.rotation.x = -0.1;
+        const earR = new THREE.Mesh(earGeo, skinMat);
+        earR.position.set(0.16, 1.55, 0); earR.rotation.z = -0.15; earR.rotation.x = -0.1;
+        earsGroup.add(earL); earsGroup.add(earR);
+      } else if (cfg.species === 'cat' || cfg.species === 'cat_lucky' || cfg.species === 'owl_cat') {
+        // Pointy Cat / Owl Ears
+        const earGeo = new THREE.ConeGeometry(0.12, 0.26, 4);
+        const earL = new THREE.Mesh(earGeo, skinMat);
+        earL.position.set(-0.22, 1.48, 0); earL.rotation.z = 0.3; earL.rotation.y = Math.PI / 4;
+        const earR = new THREE.Mesh(earGeo, skinMat);
+        earR.position.set(0.22, 1.48, 0); earR.rotation.z = -0.3; earR.rotation.y = Math.PI / 4;
+        earsGroup.add(earL); earsGroup.add(earR);
+
+        if (cfg.species === 'owl_cat') {
+          // Professor Mortarboard / Graduation Cap for Luna
+          const cap = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.04, 0.42), new THREE.MeshStandardMaterial({ color: 0x2e1065 }));
+          cap.position.set(0, 1.52, 0);
+          earsGroup.add(cap);
+        }
+      } else if (cfg.species === 'bear' || cfg.species === 'bear_big' || cfg.species === 'red_panda') {
+        // Round Bear Ears
+        const earGeo = new THREE.SphereGeometry(0.11, 12, 12);
+        const earL = new THREE.Mesh(earGeo, skinMat); earL.position.set(-0.28, 1.45, 0);
+        const earR = new THREE.Mesh(earGeo, skinMat); earR.position.set(0.28, 1.45, 0);
+        earsGroup.add(earL); earsGroup.add(earR);
+      } else if (cfg.species === 'cactus') {
+        // Blossom Sprout on Head (Kaktus)
+        const blossom = new THREE.Mesh(new THREE.DodecahedronGeometry(0.12), new THREE.MeshBasicMaterial({ color: 0xffd166 }));
+        blossom.position.set(0, 1.55, 0);
+        earsGroup.add(blossom);
+      } else {
+        // Droopy Cute Puppy / Animal Ears
+        const earGeo = new THREE.CylinderGeometry(0.08, 0.1, 0.25, 10);
+        const earL = new THREE.Mesh(earGeo, skinMat);
+        earL.position.set(-0.3, 1.25, 0); earL.rotation.z = 0.7;
+        const earR = new THREE.Mesh(earGeo, skinMat);
+        earR.position.set(0.3, 1.25, 0); earR.rotation.z = -0.7;
+        earsGroup.add(earL); earsGroup.add(earR);
+      }
+      root.add(earsGroup);
+
+      // 2. Chubby Villager Sweater Body
+      const bodyGeo = new THREE.CylinderGeometry(0.24, 0.36, 0.6, 16);
+      const sweaterMat = new THREE.MeshStandardMaterial({ color: cfg.sweater, roughness: 0.6 });
+      const body = new THREE.Mesh(bodyGeo, sweaterMat);
+      body.position.y = 0.58;
+      body.castShadow = true;
+      root.add(body);
+
+      // 3. Stubby Paws (Hands & Feet)
+      const pawGeo = new THREE.SphereGeometry(0.08, 10, 10);
+      const pawMat = new THREE.MeshStandardMaterial({ color: cfg.color });
+      const handL = new THREE.Mesh(pawGeo, pawMat); handL.position.set(-0.34, 0.58, 0.08); root.add(handL);
+      const handR = new THREE.Mesh(pawGeo, pawMat); handR.position.set(0.34, 0.58, 0.08); root.add(handR);
+
+      // Feet
+      const footGeo = new THREE.SphereGeometry(0.1, 10, 10);
+      const shoeMat = new THREE.MeshStandardMaterial({ color: 0x475569 });
+      const footL = new THREE.Mesh(footGeo, shoeMat); footL.position.set(-0.16, 0.12, 0.05); root.add(footL);
+      const footR = new THREE.Mesh(footGeo, shoeMat); footR.position.set(0.16, 0.12, 0.05); root.add(footR);
+
+      // Floating Villager Shadow Circle
+      const shadowGeo = new THREE.CircleGeometry(0.38, 16);
+      shadowGeo.rotateX(-Math.PI / 2);
+      const shadowMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.2 });
+      const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+      shadow.position.y = 0.04;
+      root.add(shadow);
+
+      root.userData = { id, ...cfg, status: 'standby', currentFloor: 1, basePosY: 0, earsGroup };
+      return root;
     }
 
-    Object.keys(AGENTS_CONFIG).forEach(id => {
-      const cfg = AGENTS_CONFIG[id];
-      const robot = createRobotMesh(cfg, id);
+    Object.keys(VILLAGERS_CONFIG).forEach(id => {
+      const cfg = VILLAGERS_CONFIG[id];
+      const villager = createVillager(cfg, id);
       const initialPos = cfg.deskPos[1] > 6 ? cfg.deskPos : cfg.pantryPos;
-      robot.position.set(initialPos[0], initialPos[1], initialPos[2]);
-      robot.userData.status = cfg.deskPos[1] > 6 ? 'working' : 'standby';
+      villager.position.set(initialPos[0], initialPos[1], initialPos[2]);
+      villager.userData.status = cfg.deskPos[1] > 6 ? 'working' : 'standby';
+      villager.userData.basePosY = initialPos[1];
 
-      scene.add(robot);
-      robotMap[id] = robot;
-      agentMeshes.push(robot);
+      scene.add(villager);
+      villagerMap[id] = villager;
+      villagerMeshes.push(villager);
     });
 
-    // --- ANIMATE ROBOT DISPATCH (TWEEN) ---
-    function animateRobotTo(robot, targetPos, duration = 1400) {
-      if (Math.abs(robot.position.x - targetPos[0]) < 0.1 && 
-          Math.abs(robot.position.y - targetPos[1]) < 0.1 && 
-          Math.abs(robot.position.z - targetPos[2]) < 0.1) {
-        return;
-      }
-
-      new TWEEN.Tween(robot.position)
+    // --- ANIMATE VILLAGER DISPATCH (TWEEN) ---
+    function animateVillagerTo(villager, targetPos, duration = 1400) {
+      villager.userData.basePosY = targetPos[1];
+      new TWEEN.Tween(villager.position)
         .to({ x: targetPos[0], y: targetPos[1], z: targetPos[2] }, duration)
         .easing(TWEEN.Easing.Cubic.InOut)
         .start();
     }
 
-    // --- REALTIME LIVE SYNC POLLER (CLOUD + LOCAL HYBRID) ---
+    // --- REALTIME LIVE SYNC POLLER ---
     async function pollLiveState() {
       try {
         const res = await fetch('./live_state.json?t=' + Date.now());
@@ -607,76 +720,72 @@
           const data = await res.json();
           applyLiveState(data);
         }
-      } catch (e) {
-        // Fallback or offline graceful handling
-      }
+      } catch (e) {}
     }
 
     function applyLiveState(data) {
       if (data.counts) {
         document.getElementById('counterWorking').innerText = data.counts.working;
         document.getElementById('counterStandby').innerText = data.counts.standby;
-        document.getElementById('badgeWorkspaceText').innerText = `💻 Workspace (${data.counts.working} kerja)`;
-        document.getElementById('badgePantryText').innerText = `☕ Pantry (${data.counts.standby} standby)`;
+        document.getElementById('badgeWorkspaceText').innerText = `Lt 2: Creative Studio (${data.counts.working} kerja)`;
+        document.getElementById('badgePantryText').innerText = `Lt 1: Roost Cafe (${data.counts.standby} santai)`;
       }
 
       Object.keys(data.agents).forEach(id => {
         const agentState = data.agents[id];
-        const robot = robotMap[id];
-        if (!robot) return;
+        const villager = villagerMap[id];
+        if (!villager) return;
 
-        const cfg = AGENTS_CONFIG[id];
+        const cfg = VILLAGERS_CONFIG[id];
         const newStatus = agentState.status;
-        robot.userData.status = newStatus;
-        robot.userData.task = agentState.task;
+        villager.userData.status = newStatus;
+        villager.userData.task = agentState.task;
 
         if (newStatus === 'working') {
-          animateRobotTo(robot, cfg.deskPos);
-          robot.userData.currentFloor = cfg.deskPos[1] > 6 ? 3 : 2;
+          animateVillagerTo(villager, cfg.deskPos);
+          villager.userData.currentFloor = cfg.deskPos[1] > 6 ? 3 : 2;
         } else {
-          animateRobotTo(robot, cfg.pantryPos);
-          robot.userData.currentFloor = 1;
+          animateVillagerTo(villager, cfg.pantryPos);
+          villager.userData.currentFloor = 1;
         }
       });
 
-      if (currentSelectedAgentId && robotMap[currentSelectedAgentId]) {
-        updateModalContent(robotMap[currentSelectedAgentId].userData);
+      if (currentSelectedAgentId && villagerMap[currentSelectedAgentId]) {
+        updateModalContent(villagerMap[currentSelectedAgentId].userData);
       }
     }
 
     setInterval(pollLiveState, 2500);
     pollLiveState();
 
-    // --- TOGGLE AGENT DISPATCH (CLICKABLE FROM MODAL) ---
+    // --- TOGGLE VILLAGER DISPATCH ---
     let currentSelectedAgentId = null;
 
     async function toggleCurrentAgent() {
       if (!currentSelectedAgentId) return;
-      const robot = robotMap[currentSelectedAgentId];
-      if (!robot) return;
+      const villager = villagerMap[currentSelectedAgentId];
+      if (!villager) return;
 
-      const nextStatus = robot.userData.status === 'working' ? 'standby' : 'working';
-      robot.userData.status = nextStatus;
-      robot.userData.task = nextStatus === 'working' ? 'Aktif Mengerjakan Tugas' : 'Standby di Pantry';
+      const nextStatus = villager.userData.status === 'working' ? 'standby' : 'working';
+      villager.userData.status = nextStatus;
+      villager.userData.task = nextStatus === 'working' ? 'Aktif Mengerjakan Tugas di Studio' : 'Nongkrong Santai di Roost Cafe';
       
-      const targetPos = nextStatus === 'working' ? robot.userData.deskPos : robot.userData.pantryPos;
-      animateRobotTo(robot, targetPos);
-      updateModalContent(robot.userData);
+      const targetPos = nextStatus === 'working' ? villager.userData.deskPos : villager.userData.pantryPos;
+      animateVillagerTo(villager, targetPos);
+      updateModalContent(villager.userData);
 
       // Re-calculate live stats locally
       let wCount = 0; let sCount = 0;
-      Object.keys(robotMap).forEach(k => {
-        if (robotMap[k].userData.status === 'working') wCount++; else sCount++;
+      Object.keys(villagerMap).forEach(k => {
+        if (villagerMap[k].userData.status === 'working') wCount++; else sCount++;
       });
       document.getElementById('counterWorking').innerText = wCount;
       document.getElementById('counterStandby').innerText = sCount;
-      document.getElementById('badgeWorkspaceText').innerText = `💻 Workspace (${wCount} kerja)`;
-      document.getElementById('badgePantryText').innerText = `☕ Pantry (${sCount} standby)`;
+      document.getElementById('badgeWorkspaceText').innerText = `Lt 2: Creative Studio (${wCount} kerja)`;
+      document.getElementById('badgePantryText').innerText = `Lt 1: Roost Cafe (${sCount} santai)`;
 
-      // Add to comms feed
-      addCommsLog(`[Dispatch] ${robot.userData.name} dipindahkan ke ${nextStatus === 'working' ? 'Workspace' : 'Pantry'}`);
+      addCommsLog(`🍃 [Dispatch] ${villager.userData.name} jalan ke ${nextStatus === 'working' ? 'Creative Studio' : 'Roost Cafe'}!`);
 
-      // Try syncing to backend server if available
       try {
         await fetch('/api/toggle', {
           method: 'POST',
@@ -686,44 +795,44 @@
       } catch (e) {}
     }
 
-    // --- MODAL HANDLING & RAYCASTING ---
+    // --- RAYCASTING & CLICK TO INSPECT ---
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
     function updateModalContent(data) {
-      document.getElementById('modalAvatar').innerText = data.emoji || '🤖';
+      document.getElementById('modalAvatar').innerText = data.emoji || '🐰';
       document.getElementById('modalName').innerText = data.name;
       document.getElementById('modalRole').innerText = data.role;
-      document.getElementById('modalCurrentTask').innerText = data.task || 'Siaga';
+      document.getElementById('modalCurrentTask').innerText = data.task || 'Siaga di Pulau';
 
       const badge = document.getElementById('modalStatusBadge');
       if (data.status === 'working') {
-        badge.innerText = 'WORKING (AKTIF KERJA)';
-        badge.className = 'px-2.5 py-0.5 rounded font-semibold text-[11px] mono uppercase bg-sky-500/20 text-sky-400 border border-sky-500/30';
-        document.getElementById('btnToggleText').innerText = '☕ Tarik Istirahat ke Pantry';
+        badge.innerText = 'BEKERJA DI STUDIO';
+        badge.className = 'px-3 py-0.5 rounded-full font-black text-[11px] uppercase bg-[#e0f5f0] text-[#1b5e50] border border-[#76cdbe]';
+        document.getElementById('btnToggleText').innerText = '☕ Ajak Santai ke Roost Cafe';
       } else {
-        badge.innerText = 'STANDBY (PANTRY)';
-        badge.className = 'px-2.5 py-0.5 rounded font-semibold text-[11px] mono uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30';
-        document.getElementById('btnToggleText').innerText = '⚡ Tugaskan Kerja ke Workspace';
+        badge.innerText = 'SANTAI DI CAFE';
+        badge.className = 'px-3 py-0.5 rounded-full font-black text-[11px] uppercase bg-[#fef3c7] text-[#92400e] border border-[#fcd34d]';
+        document.getElementById('btnToggleText').innerText = '🎨 Tugaskan Kerja ke Studio';
       }
 
       const skillsDiv = document.getElementById('modalSkills');
       skillsDiv.innerHTML = '';
       data.skills.forEach(s => {
         const b = document.createElement('span');
-        b.className = 'bg-white/10 px-2 py-0.5 rounded text-[10px] text-slate-300 mono';
+        b.className = 'bg-[#e5f4ef] text-[#244f45] px-2 py-0.5 rounded-lg text-[10px] font-bold border border-[#b2e2d7]';
         b.innerText = s;
         skillsDiv.appendChild(b);
       });
     }
 
     window.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('.glass') || e.target.closest('button') || e.target.closest('#securityGate')) return;
+      if (e.target.closest('.ac-card') || e.target.closest('button') || e.target.closest('#securityGate')) return;
 
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(agentMeshes, true);
+      const intersects = raycaster.intersectObjects(villagerMeshes, true);
 
       if (intersects.length > 0) {
         let obj = intersects[0].object;
@@ -772,12 +881,11 @@
     // --- CAMERA FLOOR FOCUS ---
     function focusFloor(type) {
       document.querySelectorAll('.nav-btn').forEach(b => {
-        b.classList.remove('bg-white/20', 'text-white');
-        b.classList.add('text-slate-300');
+        b.classList.remove('bg-[#76cdbe]', 'text-[#1b4b41]', 'shadow-[0_2px_0_#529d8f]');
       });
-      event.currentTarget.classList.add('bg-white/20', 'text-white');
+      event.currentTarget.classList.add('bg-[#76cdbe]', 'text-[#1b4b41]', 'shadow-[0_2px_0_#529d8f]');
 
-      let targetCam = { x: 22, y: 18, z: 26 };
+      let targetCam = { x: 24, y: 20, z: 28 };
       let targetLook = { x: 0, y: 5, z: 0 };
 
       if (type === 'boss') {
@@ -794,19 +902,19 @@
 
     // --- LIVE COMMS FEED TICKER LOGIC ---
     const sampleComms = [
-      '[Telegram] @Luna: Bab II Mattoanging Al-Marwaee & Carter disinkronkan',
-      '[Telegram] @MasAmba: Funding rate Binance net-neutral',
-      '[Cloud] @Piksel: UI component responsive layout synced',
-      '[Cloud] @Kaktus: Menara Dynamo IFC clash free',
-      '[Telegram] @Ai: Heru logged in from Makassar terminal',
-      '[Cloud] @Botik: Python backtest Sharpe ratio 2.14 verified'
+      '🦉 [Telegram] @Luna: Bab II Mattoanging Al-Marwaee & Carter disinkronkan',
+      '🐺 [Telegram] @MasAmba: Funding rate Binance net-neutral, bull safe',
+      '🦝 [Cloud] @Piksel: UI component responsive layout synced',
+      '🌵 [Cloud] @Kaktus: Menara Dynamo IFC clash free',
+      '🐰 [Telegram] @Ai: Heru baru saja login dari terminal Makassar',
+      '🐶 [Cloud] @Botik: Python backtest Sharpe ratio 2.14 verified'
     ];
 
     function addCommsLog(text) {
       const feed = document.getElementById('commsFeedList');
       if (!feed) return;
       const el = document.createElement('div');
-      el.className = 'text-sky-300 transition-all duration-300';
+      el.className = 'text-[#2b7264] transition-all duration-300 font-bold';
       el.innerText = text;
       feed.prepend(el);
       if (feed.children.length > 5) feed.lastChild.remove();
@@ -819,7 +927,7 @@
       }
     }, 7000);
 
-    // --- ANIMATION LOOP ---
+    // --- ANIMATION LOOP (ANIMAL CROSSING WADDLE & BOUNCE) ---
     const clock = new THREE.Clock();
 
     function animate() {
@@ -827,15 +935,22 @@
       TWEEN.update();
 
       const time = clock.getElapsedTime();
-      if (holoSphere) {
-        holoSphere.rotation.y = time * 0.8;
-        holoSphere.rotation.x = time * 0.4;
+      if (leafTrophy) {
+        leafTrophy.rotation.y = time * 0.8;
       }
 
-      // Robot breathing bounce
-      agentMeshes.forEach((robot, idx) => {
-        robot.children[0].position.y = 0.5 + Math.sin(time * 3 + idx) * 0.03;
-        robot.children[1].position.y = 1.05 + Math.sin(time * 3 + idx) * 0.03;
+      // Animal Crossing Characteristic Joyful Bounce & Waddle!
+      villagerMeshes.forEach((villager, idx) => {
+        const baseY = villager.userData.basePosY || 0;
+        // Bouncy hop
+        villager.position.y = baseY + Math.abs(Math.sin(time * 3.5 + idx * 0.5)) * 0.07;
+        // Cute side-to-side waddle
+        villager.rotation.z = Math.sin(time * 3.5 + idx * 0.5) * 0.06;
+
+        // Ear wiggles
+        if (villager.userData.earsGroup) {
+          villager.userData.earsGroup.rotation.z = Math.sin(time * 5 + idx) * 0.08;
+        }
       });
 
       // Update 3D Badges
