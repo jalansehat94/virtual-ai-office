@@ -4,9 +4,9 @@ export const AGENTS_DATA = {
     name: '@Ai (PM)',
     species: 'bunny',
     role: 'Executive PM & Teman Masa Kecil Heru',
-    deskPos: [0.0, 4.3, -8.2],
-    pantryPos: [0.0, 0.6, 5.0],
-    meetingPos: [-3.5, 4.3, -8.0],
+    deskPos: [0.0, 4.6, -15.5],
+    pantryPos: [0.0, 0.6, 7.5],
+    meetingPos: [-4.5, 4.6, -15.5],
     color: '#ffb7c5',
     sweater: '#ff6b8b',
     emoji: '🐰💖',
@@ -27,16 +27,16 @@ export const AGENTS_DATA = {
     ]
   },
   
-  // Divisi 01 Akademik (Left Wing Back)
+  // Divisi 01 Akademik (Far Left Wing)
   luna: {
     id: 'luna',
     name: '@Luna (Prof. LUNA)',
     species: 'owl_cat',
     role: 'Koordinator Riset Akademik & Skripsi',
-    deskPos: [-5.5, 2.3, -3.0],
-    pantryPos: [-3.8, 0.6, 6.5],
-    meetingPos: [-3.5, 4.3, -8.0],
-    bookshelfPos: [-5.0, 2.3, -3.8],
+    deskPos: [-10.0, 2.4, -7.5],
+    pantryPos: [-7.0, 0.6, 8.5],
+    meetingPos: [-4.5, 4.6, -15.5],
+    bookshelfPos: [-12.0, 2.4, -9.5],
     color: '#9d71e8',
     sweater: '#6d28d9',
     emoji: '🦉🎓',
@@ -60,9 +60,9 @@ export const AGENTS_DATA = {
     name: '@Kutu',
     species: 'hedgehog',
     role: 'Peneliti Jurnal Scopus Q1 & Standar SNI',
-    deskPos: [-3.5, 2.3, -3.0],
-    pantryPos: [-4.8, 0.6, 6.5],
-    bookshelfPos: [-1.2, 2.3, -3.8],
+    deskPos: [-6.5, 2.4, -7.5],
+    pantryPos: [-8.5, 0.6, 8.5],
+    bookshelfPos: [-5.0, 2.4, -9.5],
     color: '#c49b71',
     sweater: '#8b5a2b',
     emoji: '🦔📚',
@@ -84,8 +84,8 @@ export const AGENTS_DATA = {
     name: '@Crayon',
     species: 'bear',
     role: 'Pelukis Grafik Ilmiah 600 DPI (GradiEnt Style)',
-    deskPos: [-1.5, 2.3, -3.0],
-    pantryPos: [-3.8, 0.6, 7.3],
+    deskPos: [-10.0, 2.4, -3.5],
+    pantryPos: [-7.0, 0.6, 10.0],
     color: '#ffb347',
     sweater: '#ff7043',
     emoji: '🐻🎨',
@@ -108,8 +108,8 @@ export const AGENTS_DATA = {
     name: '@Kucing',
     species: 'cat',
     role: 'Penjaga Integritas Anti-Turnitin',
-    deskPos: [-4.5, 2.3, -1.2],
-    pantryPos: [-4.8, 0.6, 7.3],
+    deskPos: [-6.5, 2.4, -3.5],
+    pantryPos: [-8.5, 0.6, 10.0],
     color: '#ffa07a',
     sweater: '#c084fc',
     emoji: '🐱🛡️',
@@ -131,8 +131,8 @@ export const AGENTS_DATA = {
     name: '@Mata',
     species: 'bird',
     role: 'Penonton Video YouTube & Transkrip Tutorial',
-    deskPos: [-2.5, 2.3, -1.2],
-    pantryPos: [-6.5, 0.6, 5.0],
+    deskPos: [-8.25, 2.4, 0.5],
+    pantryPos: [-11.0, 0.6, 8.5],
     color: '#38bdf8',
     sweater: '#0284c7',
     emoji: '🐧🍿',
@@ -150,15 +150,15 @@ export const AGENTS_DATA = {
     ]
   },
 
-  // Divisi 03 BIM & Konstruksi (Left Wing Front)
+  // Divisi 03 BIM & Konstruksi (Center-Left Wing)
   kaktus: {
     id: 'kaktus',
     name: '@Kaktus',
     species: 'cactus',
     role: 'BIM & AEC Engineering Lead',
-    deskPos: [-5.5, 2.3, 0.5],
-    pantryPos: [-2.0, 0.6, 5.0],
-    meetingPos: [-3.5, 4.3, -8.0],
+    deskPos: [-2.5, 2.4, -7.5],
+    pantryPos: [-3.0, 0.6, 7.5],
+    meetingPos: [-4.5, 4.6, -15.5],
     color: '#4ade80',
     sweater: '#15803d',
     emoji: '🌵🏗️',
@@ -181,8 +181,8 @@ export const AGENTS_DATA = {
     name: '@Tabrak',
     species: 'bulldog',
     role: 'Tukang Razia Clash 3D Pipa vs Balok',
-    deskPos: [-3.5, 2.3, 0.5],
-    pantryPos: [-1.0, 0.6, 5.0],
+    deskPos: [-2.5, 2.4, -3.5],
+    pantryPos: [-1.5, 0.6, 7.5],
     color: '#d7ccc8',
     sweater: '#f59e0b',
     emoji: '🐶💥',
@@ -204,8 +204,8 @@ export const AGENTS_DATA = {
     name: '@Cuan',
     species: 'cat_lucky',
     role: 'Estimator RAB & Volume QTO Makassar',
-    deskPos: [-1.5, 2.3, 0.5],
-    pantryPos: [-7.0, 0.6, 4.5],
+    deskPos: [-2.5, 2.4, 0.5],
+    pantryPos: [-12.0, 0.6, 6.0],
     color: '#fffbeb',
     sweater: '#f59e0b',
     emoji: '🐱💰',
@@ -224,15 +224,15 @@ export const AGENTS_DATA = {
     ]
   },
 
-  // Divisi 04 Trading & Kuantitatif (Right Wing Back)
+  // Divisi 04 Trading & Kuantitatif (Center-Right Wing)
   masamba: {
     id: 'masamba',
     name: '@MasAmba',
     species: 'wolf',
     role: 'Lead Quantitative Trader',
-    deskPos: [1.5, 2.3, -3.0],
-    pantryPos: [3.2, 0.6, 6.5],
-    meetingPos: [-1.0, 4.3, -8.0],
+    deskPos: [2.5, 2.4, -7.5],
+    pantryPos: [1.5, 0.6, 7.5],
+    meetingPos: [-1.0, 4.6, -15.5],
     color: '#64748b',
     sweater: '#d97706',
     emoji: '🐺📈',
@@ -256,8 +256,8 @@ export const AGENTS_DATA = {
     name: '@Lilin',
     species: 'red_panda',
     role: 'Chartist & SMC Specialist (FVG & Liquidity)',
-    deskPos: [3.5, 2.3, -3.0],
-    pantryPos: [4.4, 0.6, 6.5],
+    deskPos: [2.5, 2.4, -3.5],
+    pantryPos: [3.0, 0.6, 7.5],
     color: '#c2410c',
     sweater: '#ea580c',
     emoji: '🐼🕯️',
@@ -279,8 +279,8 @@ export const AGENTS_DATA = {
     name: '@Bandar',
     species: 'bear_big',
     role: 'Whale Tracker & Sentiment Analyzer',
-    deskPos: [5.5, 2.3, -3.0],
-    pantryPos: [3.2, 0.6, 7.3],
+    deskPos: [2.5, 2.4, 0.5],
+    pantryPos: [7.0, 0.6, 8.5],
     color: '#334155',
     sweater: '#1d4ed8',
     emoji: '🐻🐋',
@@ -297,63 +297,16 @@ export const AGENTS_DATA = {
       { name: 'Onchain_Whale_Flow_Report.pdf', type: 'pdf', size: '390 KB', date: 'Hari ini' }
     ]
   },
-  botik: {
-    id: 'botik',
-    name: '@Botik',
-    species: 'robo_pup',
-    role: 'Algo & Python Backtest Engine',
-    deskPos: [2.5, 2.3, -1.2],
-    pantryPos: [4.4, 0.6, 7.3],
-    color: '#84cc16',
-    sweater: '#4d7c0f',
-    emoji: '🐶⚡',
-    bubbleIcon: '💻',
-    bubbleText: 'Backtest Sharpe 2.14',
-    skills: ['backtest-engine', 'risk-parity'],
-    terminalLogs: [
-      '$ python backtest_engine.py --strategy SMC_Breakout --years 5',
-      '[SIMULATE] 1,482 transaksi historis diproses',
-      '[STATS] Win Rate: 63.8% | Sharpe: 2.14 | Max DD: 6.4%',
-      '[PASSED] Parameter strategi siap untuk live-paper-trade'
-    ],
-    deliverables: [
-      { name: 'Hasil_Backtest_Python_5_Tahun.xlsx', type: 'excel', size: '4.2 MB', date: 'Kemarin' },
-      { name: 'Script_Algo_Trading_Binance.py', type: 'code', size: '32 KB', date: 'Kemarin' }
-    ]
-  },
-  rem: {
-    id: 'rem',
-    name: '@Rem',
-    species: 'turtle',
-    role: 'Chief Risk Officer (Batas Lot 1-2%)',
-    deskPos: [4.5, 2.3, -1.2],
-    pantryPos: [1.0, 0.6, 5.0],
-    color: '#14b8a6',
-    sweater: '#dc2626',
-    emoji: '🐢🛑',
-    bubbleIcon: '🛡️',
-    bubbleText: 'Kunci Batas Risiko 1.5%',
-    skills: ['risk-management', 'position-sizer'],
-    terminalLogs: [
-      '$ risk-guard calculate --equity 50000 --risk-pct 1.5 --stop 450',
-      '[CALC] Ukuran posisi maksimal: 1.66 kontrak',
-      '[GUARD] Margin call prevention buffer: 94.2%',
-      '[APPROVED] Eksekusi order diperbolehkan dengan batas risiko ketat'
-    ],
-    deliverables: [
-      { name: 'Kalkulator_Ukuran_Lot_Anti_MC.xlsx', type: 'excel', size: '310 KB', date: 'Hari ini' }
-    ]
-  },
 
-  // Divisi 02 Web & Software (Right Wing Front)
+  // Divisi 02 Web & Software (Far Right Wing)
   mochi: {
     id: 'mochi',
     name: '@Mochi',
     species: 'puppy',
     role: 'Lead Architect GradiEnt Studio',
-    deskPos: [1.5, 2.3, 0.5],
-    pantryPos: [2.0, 0.6, 5.0],
-    meetingPos: [1.0, 4.3, -8.0],
+    deskPos: [6.5, 2.4, -7.5],
+    pantryPos: [8.5, 0.6, 8.5],
+    meetingPos: [2.5, 4.6, -15.5],
     color: '#fbbf24',
     sweater: '#0891b2',
     emoji: '🐕💻',
@@ -376,8 +329,8 @@ export const AGENTS_DATA = {
     name: '@Piksel',
     species: 'raccoon',
     role: 'Spesialis UI/UX Tailwind (Nook Style)',
-    deskPos: [3.5, 2.3, 0.5],
-    pantryPos: [6.5, 0.6, 4.5],
+    deskPos: [10.0, 2.4, -7.5],
+    pantryPos: [11.0, 0.6, 8.5],
     color: '#78716c',
     sweater: '#0d9488',
     emoji: '🦝✨',
@@ -399,8 +352,8 @@ export const AGENTS_DATA = {
     name: '@Kunci',
     species: 'badger',
     role: 'DBA Supabase PostgreSQL & RLS Security',
-    deskPos: [5.5, 2.3, 0.5],
-    pantryPos: [5.5, 0.6, 5.5],
+    deskPos: [6.5, 2.4, -3.5],
+    pantryPos: [7.0, 0.6, 10.0],
     color: '#64748b',
     sweater: '#334155',
     emoji: '🦡🔑',
@@ -415,6 +368,53 @@ export const AGENTS_DATA = {
     ],
     deliverables: [
       { name: 'Audit_Keamanan_Database_RLS.xlsx', type: 'excel', size: '190 KB', date: 'Kemarin' }
+    ]
+  },
+  botik: {
+    id: 'botik',
+    name: '@Botik',
+    species: 'robo_pup',
+    role: 'Algo & Python Backtest Engine',
+    deskPos: [10.0, 2.4, -3.5],
+    pantryPos: [8.5, 0.6, 10.0],
+    color: '#84cc16',
+    sweater: '#4d7c0f',
+    emoji: '🐶⚡',
+    bubbleIcon: '💻',
+    bubbleText: 'Backtest Sharpe 2.14',
+    skills: ['backtest-engine', 'risk-parity'],
+    terminalLogs: [
+      '$ python backtest_engine.py --strategy SMC_Breakout --years 5',
+      '[SIMULATE] 1,482 transaksi historis diproses',
+      '[STATS] Win Rate: 63.8% | Sharpe: 2.14 | Max DD: 6.4%',
+      '[PASSED] Parameter strategi siap untuk live-paper-trade'
+    ],
+    deliverables: [
+      { name: 'Hasil_Backtest_Python_5_Tahun.xlsx', type: 'excel', size: '4.2 MB', date: 'Kemarin' },
+      { name: 'Script_Algo_Trading_Binance.py', type: 'code', size: '32 KB', date: 'Kemarin' }
+    ]
+  },
+  rem: {
+    id: 'rem',
+    name: '@Rem',
+    species: 'turtle',
+    role: 'Chief Risk Officer (Batas Lot 1-2%)',
+    deskPos: [8.25, 2.4, 0.5],
+    pantryPos: [12.0, 0.6, 6.0],
+    color: '#14b8a6',
+    sweater: '#dc2626',
+    emoji: '🐢🛑',
+    bubbleIcon: '🛡️',
+    bubbleText: 'Kunci Batas Risiko 1.5%',
+    skills: ['risk-management', 'position-sizer'],
+    terminalLogs: [
+      '$ risk-guard calculate --equity 50000 --risk-pct 1.5 --stop 450',
+      '[CALC] Ukuran posisi maksimal: 1.66 kontrak',
+      '[GUARD] Margin call prevention buffer: 94.2%',
+      '[APPROVED] Eksekusi order diperbolehkan dengan batas risiko ketat'
+    ],
+    deliverables: [
+      { name: 'Kalkulator_Ukuran_Lot_Anti_MC.xlsx', type: 'excel', size: '310 KB', date: 'Hari ini' }
     ]
   }
 }

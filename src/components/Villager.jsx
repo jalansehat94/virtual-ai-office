@@ -13,15 +13,15 @@ function getNavigationPath(startPos, endPos) {
   }
 
   // Stairway 1 (Tier 1 <-> Tier 2, Center X: 0)
-  const s1Bottom = [0.0, 0.6, 2.5]
-  const s1Mid = [0.0, 1.45, 1.7]
-  const s1Top = [0.0, 2.3, 0.8]
+  const s1Bottom = [0.0, 0.6, 4.2]
+  const s1Mid = [0.0, 1.5, 3.2]
+  const s1Top = [0.0, 2.4, 2.0]
 
-  // Stairway 2 (Tier 2 <-> Tier 3, Right X: 5.4)
-  const s2Bottom = [5.4, 2.3, -3.2]
-  const s2Mid = [5.4, 3.3, -4.5]
-  const s2Top = [5.4, 4.3, -5.8]
-  const s2Lounge = [3.5, 4.3, -7.0]
+  // Stairway 2 (Tier 2 <-> Tier 3, Right X: 11.5)
+  const s2Bottom = [11.5, 2.4, -9.5]
+  const s2Mid = [11.5, 3.5, -11.0]
+  const s2Top = [11.5, 4.6, -12.5]
+  const s2Lounge = [9.0, 4.6, -14.0]
 
   const path = []
 
@@ -56,10 +56,10 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
   const rightLegRef = useRef()
 
   // Target final position based on status
-  // When working at desk, sit on the chair behind the desk
+  // When working at desk, sit on the chair behind the desk properly
   const finalPos = useMemo(() => {
     if (status === 'working') {
-      return [agent.deskPos[0], agent.deskPos[1] + 0.35, agent.deskPos[2] - 0.42]
+      return [agent.deskPos[0], agent.deskPos[1] + 0.38, agent.deskPos[2] - 0.52]
     }
     if (status === 'collaborating' && agent.meetingPos) {
       return agent.meetingPos
@@ -108,20 +108,20 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     }
 
     // Waypoint reached -> pop next waypoint
-    if (horizontalDist < 0.22 && pathRef.current.length > 1) {
+    if (horizontalDist < 0.25 && pathRef.current.length > 1) {
       pathRef.current.shift()
       targetWaypointRef.current = pathRef.current[0] || finalPos
     }
 
     // Smooth movement
-    const moveSpeed = moving ? 4.2 : 2.5
+    const moveSpeed = moving ? 4.5 : 2.8
     groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, target[0], delta * moveSpeed)
     groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, target[2], delta * moveSpeed)
 
     // Height lerp
     const hopSpeed = moving ? 9.5 : 1.8
-    const hopHeight = moving ? 0.14 : (status === 'working' ? 0.02 : 0.05)
-    const hop = Math.abs(Math.sin(t * hopSpeed + idx * 0.7)) * hopHeight
+    const hopHeight = moving ? 0.14 : (status === 'working' ? 0.0 : 0.05)
+    const hop = moving ? Math.abs(Math.sin(t * hopSpeed + idx * 0.7)) * hopHeight : 0
     const targetY = (moving ? target[1] : finalPos[1]) + hop
     groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, delta * 7)
 
@@ -129,10 +129,9 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     if (moving) {
       const targetAngle = Math.atan2(dx, dz)
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetAngle, delta * 7)
-      // Slight forward lean while running
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, 0.12, delta * 6)
     } else {
-      // At desk: face desk forward (0 rad). At Roost: face front/viewer (0 or PI)
+      // At desk: face forward into laptop (0 rad). At Roost: face front/viewer (0 or PI)
       const idleRot = status === 'working' ? 0 : Math.PI
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, idleRot, delta * 4)
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, 0, delta * 5)
@@ -147,15 +146,19 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
         groupRef.current.rotation.z = Math.sin(t * 5 + idx) * 0.08
       } else {
         // Gentle breathing idle
-        const breath = Math.sin(t * 2.2 + idx) * 0.02
-        bodyRef.current.scale.set(1 + breath * 0.3, 1 + breath, 1 + breath * 0.3)
+        const breath = Math.sin(t * 2.2 + idx) * 0.015
+        bodyRef.current.scale.set(1 + breath * 0.2, 1 + breath, 1 + breath * 0.2)
         groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, 0, delta * 5)
       }
     }
 
-    // Leg swinging while walking
+    // SITTING VS WALKING LEGS:
     if (leftLegRef.current && rightLegRef.current) {
-      if (moving) {
+      if (status === 'working' && !moving) {
+        // PROPER SITTING POSE: Legs bend forward 90 degrees onto chair cushion!
+        leftLegRef.current.rotation.x = THREE.MathUtils.lerp(leftLegRef.current.rotation.x, -Math.PI / 2.3, delta * 8)
+        rightLegRef.current.rotation.x = THREE.MathUtils.lerp(rightLegRef.current.rotation.x, -Math.PI / 2.3, delta * 8)
+      } else if (moving) {
         leftLegRef.current.rotation.x = Math.sin(t * 12 + idx) * 0.55
         rightLegRef.current.rotation.x = -Math.sin(t * 12 + idx) * 0.55
       } else {
@@ -164,24 +167,33 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
       }
     }
 
-    // Arm animation: Clacking on Laptop Keyboard vs Swinging while Walking
+    // TYPING ON LAPTOP VS SWINGING ARMS:
     if (leftArmRef.current && rightArmRef.current) {
       if (status === 'working' && !moving) {
-        // Active typing clack motion on laptop
-        leftArmRef.current.rotation.x = -0.72 + Math.sin(t * 15 + idx) * 0.14
-        rightArmRef.current.rotation.x = -0.72 + Math.cos(t * 15 + idx) * 0.14
-        leftArmRef.current.rotation.y = 0.2
-        rightArmRef.current.rotation.y = -0.2
+        // Arms reach forward onto laptop keyboard with clacking motion
+        leftArmRef.current.rotation.x = -1.05 + Math.sin(t * 15 + idx) * 0.12
+        rightArmRef.current.rotation.x = -1.05 + Math.cos(t * 15 + idx) * 0.12
+        leftArmRef.current.rotation.y = 0.25
+        rightArmRef.current.rotation.y = -0.25
       } else if (moving) {
-        // Running arms swing
         leftArmRef.current.rotation.x = Math.sin(t * 12 + idx) * 0.5
         rightArmRef.current.rotation.x = -Math.sin(t * 12 + idx) * 0.5
         leftArmRef.current.rotation.y = 0
         rightArmRef.current.rotation.y = 0
       } else {
-        // Idle relaxed arms
         leftArmRef.current.rotation.x = THREE.MathUtils.lerp(leftArmRef.current.rotation.x, -0.2, delta * 6)
         rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, -0.2, delta * 6)
+      }
+    }
+
+    // Head tilt while working/observing laptop screen
+    if (headRef.current) {
+      if (status === 'working' && !moving) {
+        headRef.current.rotation.x = 0.14 + Math.sin(t * 2 + idx) * 0.03
+        headRef.current.rotation.y = Math.sin(t * 1.5 + idx) * 0.05
+      } else {
+        headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, 0, delta * 5)
+        headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, 0, delta * 5)
       }
     }
 
@@ -190,7 +202,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
       earsRef.current.rotation.z = Math.sin(t * 4 + idx) * 0.08
     }
 
-    // Tail wagging / physics sway
+    // Tail physics sway
     if (tailRef.current) {
       tailRef.current.rotation.y = Math.sin(t * 6 + idx) * 0.25
       tailRef.current.rotation.x = moving ? 0.35 : 0.15
@@ -212,7 +224,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     >
       {/* --- 1. FLOATING 3D THOUGHT / ACTION BUBBLE --- */}
       {showLabels && (
-        <Html position={[0, 2.35, 0]} center distanceFactor={14}>
+        <Html position={[0, 2.35, 0]} center distanceFactor={16}>
           <div
             className={`px-2.5 py-1 rounded-2xl flex items-center gap-1.5 shadow-[0_3px_0_rgba(0,0,0,0.15)] text-[10px] font-black whitespace-nowrap select-none transition-all duration-300 pointer-events-none ${
               isAlerted
@@ -289,7 +301,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
         {/* --- 4. SPECIES TAIL --- */}
         <group ref={tailRef} position={[0, 0.42, -0.32]}>
           {sp === 'bunny' && (
-            /* Fluffy Cotton Ball Bunny Tail */
             <mesh castShadow>
               <sphereGeometry args={[0.11, 14, 14]} />
               <meshStandardMaterial color="#ffffff" roughness={0.8} />
@@ -303,7 +314,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 <cylinderGeometry args={[0.12, 0.07, 0.45, 16]} />
                 <meshStandardMaterial color="#c2410c" roughness={0.6} />
               </mesh>
-              {/* White rings */}
               <mesh position={[0, 0.08, -0.09]}>
                 <cylinderGeometry args={[0.122, 0.10, 0.06, 16]} />
                 <meshBasicMaterial color="#fefae0" />
@@ -316,7 +326,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
           )}
 
           {sp === 'wolf' && (
-            /* Sleek Bushy Wolf Tail */
             <mesh position={[0, 0.14, -0.08]} rotation={[0.4, 0, 0]} castShadow>
               <coneGeometry args={[0.13, 0.42, 12]} />
               <meshStandardMaterial color="#64748b" roughness={0.6} />
@@ -324,7 +333,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
           )}
 
           {['cat', 'cat_lucky'].includes(sp) && (
-            /* Curled Cat Tail */
             <mesh position={[0, 0.16, -0.05]} rotation={[0.6, 0, 0]} castShadow>
               <cylinderGeometry args={[0.04, 0.05, 0.35, 10]} />
               <meshStandardMaterial color={agent.color} roughness={0.5} />
@@ -332,7 +340,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
           )}
 
           {sp === 'raccoon' && (
-            /* Striped Tanuki Tail */
             <mesh position={[0, 0.15, -0.08]} rotation={[0.4, 0, 0]} castShadow>
               <cylinderGeometry args={[0.13, 0.08, 0.38, 14]} />
               <meshStandardMaterial color="#57534e" roughness={0.7} />
@@ -340,7 +347,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
           )}
 
           {sp === 'puppy' && (
-            /* Wagging Puppy Tail */
             <mesh position={[0, 0.12, -0.05]} rotation={[0.5, 0, 0]} castShadow>
               <cylinderGeometry args={[0.05, 0.06, 0.28, 10]} />
               <meshStandardMaterial color={agent.color} roughness={0.5} />
@@ -348,7 +354,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
           )}
 
           {sp === 'robo_pup' && (
-            /* Mecha Coiled Antenna Tail */
             <mesh position={[0, 0.14, -0.06]} rotation={[0.5, 0, 0]}>
               <cylinderGeometry args={[0.02, 0.02, 0.26, 8]} />
               <meshStandardMaterial color="#94a3b8" metalness={0.9} />
@@ -358,7 +363,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
 
         {/* --- 5. HEAD & FACIAL SCULPT --- */}
         <group ref={headRef} position={[0, 1.22, 0]}>
-          {/* Main Chubby Round Head */}
           <mesh
             scale={sp === 'owl_cat' ? [1.16, 1.05, 1.1] : (sp === 'bulldog' ? [1.22, 0.92, 1.12] : [1.12, 0.98, 1.04])}
             castShadow
@@ -367,12 +371,9 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             <meshStandardMaterial color={agent.color} roughness={0.4} />
           </mesh>
 
-          {/* --- SPECIES-SPECIFIC DETAILS --- */}
-
-          {/* 1. OWL (Prof. LUNA - Blathers Style) */}
+          {/* OWL (Prof. LUNA) */}
           {sp === 'owl_cat' && (
             <>
-              {/* Cream Eyering Discs */}
               <mesh position={[-0.18, 0.06, 0.37]}>
                 <circleGeometry args={[0.13, 20]} />
                 <meshBasicMaterial color="#fefae0" />
@@ -381,7 +382,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 <circleGeometry args={[0.13, 20]} />
                 <meshBasicMaterial color="#fefae0" />
               </mesh>
-              {/* Big Wise Golden Eyes */}
               <mesh position={[-0.18, 0.06, 0.38]}>
                 <circleGeometry args={[0.09, 16]} />
                 <meshBasicMaterial color="#d97706" />
@@ -398,12 +398,10 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 <circleGeometry args={[0.05, 12]} />
                 <meshBasicMaterial color="#111827" />
               </mesh>
-              {/* Curved Owl Beak */}
               <mesh position={[0, -0.06, 0.45]} rotation={[0.4, 0, 0]} castShadow>
                 <coneGeometry args={[0.07, 0.18, 4]} />
                 <meshStandardMaterial color="#f59e0b" roughness={0.3} />
               </mesh>
-              {/* Graduation Mortarboard Toga Cap */}
               <mesh position={[0, 0.46, 0]} castShadow>
                 <boxGeometry args={[0.56, 0.04, 0.56]} />
                 <meshStandardMaterial color="#2e1065" roughness={0.3} />
@@ -412,7 +410,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 <cylinderGeometry args={[0.12, 0.12, 0.07, 12]} />
                 <meshStandardMaterial color="#fbbf24" />
               </mesh>
-              {/* Gold Tassel dangling to side */}
               <mesh position={[0.25, 0.38, 0.2]}>
                 <sphereGeometry args={[0.045, 8, 8]} />
                 <meshBasicMaterial color="#fbbf24" />
@@ -420,15 +417,13 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* 2. RACCOON / TANUKI (Piksel - Tom Nook Style) */}
+          {/* RACCOON (Piksel) */}
           {sp === 'raccoon' && (
             <>
-              {/* Dark Mask across eyes */}
               <mesh position={[0, 0.05, 0.37]}>
                 <boxGeometry args={[0.72, 0.22, 0.08]} />
                 <meshStandardMaterial color="#3e2723" roughness={0.5} />
               </mesh>
-              {/* Cream Snout */}
               <mesh position={[0, -0.08, 0.39]} scale={[1.1, 0.8, 0.9]} castShadow>
                 <sphereGeometry args={[0.16, 16, 16]} />
                 <meshStandardMaterial color="#fefae0" />
@@ -440,10 +435,9 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* 3. WOLF (Mas Amba - Sleek Fang Style) */}
+          {/* WOLF (Mas Amba) */}
           {sp === 'wolf' && (
             <>
-              {/* Long Sharp Wolf Snout */}
               <mesh position={[0, -0.06, 0.43]} rotation={[0.2, 0, 0]} castShadow>
                 <coneGeometry args={[0.16, 0.36, 12]} />
                 <meshStandardMaterial color="#f1f5f9" roughness={0.4} />
@@ -452,7 +446,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 <sphereGeometry args={[0.04, 10, 10]} />
                 <meshBasicMaterial color="#111827" />
               </mesh>
-              {/* Piercing Golden Trader Eyes */}
               <mesh position={[-0.16, 0.08, 0.38]}>
                 <circleGeometry args={[0.07, 16]} />
                 <meshBasicMaterial color="#f59e0b" />
@@ -472,10 +465,9 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* 4. HEDGEHOG (Kutu - Sable/Mabel Style) */}
+          {/* HEDGEHOG (Kutu) */}
           {sp === 'hedgehog' && (
             <>
-              {/* Spiky Quills on Back of Head */}
               <group position={[0, 0.1, -0.2]}>
                 {[-0.2, 0, 0.2].map((qx, i) => (
                   <mesh key={i} position={[qx, 0.2, -0.1]} rotation={[-0.4, 0, qx]}>
@@ -484,7 +476,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                   </mesh>
                 ))}
               </group>
-              {/* Soft Muzzle */}
               <mesh position={[0, -0.08, 0.36]} scale={[1.1, 0.8, 0.9]} castShadow>
                 <sphereGeometry args={[0.16, 16, 16]} />
                 <meshStandardMaterial color="#f5ebe0" />
@@ -496,7 +487,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* 5. TURTLE (Rem - Kapp'n Style) */}
+          {/* TURTLE (Rem) */}
           {sp === 'turtle' && (
             <>
               <mesh position={[0, 0.41, 0]}>
@@ -510,10 +501,9 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* 6. CACTUS (Kaktus - Blooming Flower) */}
+          {/* CACTUS (Kaktus) */}
           {sp === 'cactus' && (
             <>
-              {/* Golden Desert Blossom Flower on Head */}
               <mesh position={[0, 0.47, 0]} castShadow>
                 <dodecahedronGeometry args={[0.17]} />
                 <meshStandardMaterial color="#facc15" roughness={0.3} />
@@ -525,10 +515,9 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* 7. ROBO PUP (Botik - Sprocket Style) */}
+          {/* ROBO PUP (Botik) */}
           {sp === 'robo_pup' && (
             <>
-              {/* Antenna on head */}
               <mesh position={[0, 0.5, 0]}>
                 <cylinderGeometry args={[0.02, 0.02, 0.25, 8]} />
                 <meshStandardMaterial color="#94a3b8" metalness={0.8} />
@@ -537,7 +526,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 <sphereGeometry args={[0.06, 12, 12]} />
                 <meshBasicMaterial color="#ef4444" />
               </mesh>
-              {/* Glowing Cyan Visor Eyes */}
               <mesh position={[0, 0.06, 0.39]}>
                 <boxGeometry args={[0.44, 0.12, 0.06]} />
                 <meshBasicMaterial color="#06b6d4" />
@@ -545,10 +533,9 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* 8. BULLDOG (Tabrak - Hardhat) */}
+          {/* BULLDOG (Tabrak) */}
           {sp === 'bulldog' && (
             <>
-              {/* Yellow Safety Hardhat */}
               <mesh position={[0, 0.38, 0]} castShadow>
                 <sphereGeometry args={[0.38, 20, 12, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
                 <meshStandardMaterial color="#eab308" roughness={0.3} />
@@ -560,10 +547,9 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* 9. STANDARD / RED PANDA / CAT / BEAR / BUNNY EYES & SNOUT */}
+          {/* STANDARD / RED PANDA / CAT / BEAR / PUPPY */}
           {!['owl_cat', 'wolf', 'robo_pup'].includes(sp) && (
             <>
-              {/* Cheek Patches */}
               <mesh position={[-0.25, -0.06, 0.23]} rotation={[0, -0.3, 0]}>
                 <sphereGeometry args={[0.18, 16, 16]} />
                 <meshStandardMaterial color="#fefae0" roughness={0.5} />
@@ -573,7 +559,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 <meshStandardMaterial color="#fefae0" roughness={0.5} />
               </mesh>
 
-              {/* Muzzle / Snout */}
               <mesh position={[0, -0.08, 0.35]} scale={[1.2, 0.85, 0.9]} castShadow>
                 <sphereGeometry args={[0.16, 18, 18]} />
                 <meshStandardMaterial color="#ffffff" roughness={0.35} />
@@ -605,7 +590,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 </mesh>
               </group>
 
-              {/* Brow Dots for Red Panda (Lilin - matching Heru's Craiyon ref) */}
+              {/* Brow Dots for Red Panda Lilin */}
               {sp === 'red_panda' && (
                 <>
                   <mesh position={[-0.15, 0.22, 0.39]}>
@@ -616,7 +601,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                     <sphereGeometry args={[0.038, 12, 12]} />
                     <meshBasicMaterial color="#fefae0" />
                   </mesh>
-                  {/* Tear Track cheek markings */}
                   <mesh position={[-0.26, -0.08, 0.34]}>
                     <planeGeometry args={[0.05, 0.15]} />
                     <meshBasicMaterial color="#fefae0" />
@@ -630,11 +614,10 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             </>
           )}
 
-          {/* EARS HIERARCHY */}
+          {/* EARS */}
           <group ref={earsRef}>
             {sp === 'bunny' && (
               <>
-                {/* Ai Floppy Bunny Ears */}
                 <group position={[-0.18, 0.43, 0]} rotation={[-0.1, 0, 0.18]}>
                   <mesh castShadow>
                     <cylinderGeometry args={[0.07, 0.1, 0.48, 16]} />
@@ -655,7 +638,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                     <meshBasicMaterial color="#fecdd3" />
                   </mesh>
                 </group>
-                {/* Golden Star Pin */}
                 <mesh position={[0.28, 0.28, 0.26]}>
                   <dodecahedronGeometry args={[0.07]} />
                   <meshStandardMaterial color="#fbbf24" metalness={0.8} />
@@ -665,7 +647,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
 
             {['bear', 'bear_big', 'raccoon'].includes(sp) && (
               <>
-                {/* Round Bear/Tanuki Ears */}
                 <mesh position={[-0.33, 0.36, 0]} castShadow>
                   <sphereGeometry args={[0.13, 14, 14]} />
                   <meshStandardMaterial color={agent.color} roughness={0.4} />
@@ -683,7 +664,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                   <meshBasicMaterial color="#fefae0" />
                 </mesh>
 
-                {/* Artist Beret on Crayon */}
                 {agent.id === 'crayon' && (
                   <mesh position={[0.16, 0.46, 0]} rotation={[0.2, 0, -0.3]} castShadow>
                     <cylinderGeometry args={[0.28, 0.22, 0.12, 16]} />
@@ -695,7 +675,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
 
             {sp === 'puppy' && (
               <>
-                {/* Droopy Floppy Dog Ears */}
                 <group position={[-0.36, 0.25, 0]} rotation={[0, 0, -0.4]}>
                   <mesh castShadow>
                     <cylinderGeometry args={[0.08, 0.12, 0.38, 12]} />
@@ -713,7 +692,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
 
             {['cat', 'cat_lucky', 'wolf', 'red_panda', 'hedgehog'].includes(sp) && (
               <>
-                {/* Pointed Triangular Ears with Inner Fur */}
                 <group position={[-0.32, 0.35, 0]} rotation={[0, 0.2, 0.45]}>
                   <mesh scale={[1.2, 1.4, 0.5]} castShadow>
                     <coneGeometry args={[0.18, 0.34, 4]} />

@@ -6,6 +6,7 @@ import * as THREE from 'three'
 import ErrorBoundary from './components/ErrorBoundary'
 import LoadingScreen from './components/LoadingScreen'
 import SecurityGate from './components/SecurityGate'
+import IslandEnvironment from './components/IslandEnvironment'
 import AnimalCrossingIsland from './components/AnimalCrossingIsland'
 import Villager from './components/Villager'
 import UIOverlay from './components/UIOverlay'
@@ -13,7 +14,7 @@ import CameraDirector from './components/CameraDirector'
 import { AGENTS_DATA } from './data/agents'
 
 export default function App() {
-  // Auto-unlock on localhost for instant developer & user preview without barriers
+  // Auto-unlock on localhost for instant preview
   const [unlocked, setUnlocked] = useState(() => {
     if (typeof window !== 'undefined') {
       const host = window.location.hostname
@@ -42,9 +43,12 @@ export default function App() {
   const [alertedAgentId, setAlertedAgentId] = useState(null)
   const [autoMode, setAutoMode] = useState(true)
 
+  // Camera Mode: Director vs Free Cam
+  const [isFreeCam, setIsFreeCam] = useState(false)
+
   // Camera targets for smooth cinematic director
-  const [camPos, setCamPos] = useState(() => new THREE.Vector3(22, 16, 24))
-  const [lookPos, setLookPos] = useState(() => new THREE.Vector3(0, 2, 0))
+  const [camPos, setCamPos] = useState(() => new THREE.Vector3(28, 22, 34))
+  const [lookPos, setLookPos] = useState(() => new THREE.Vector3(0, 2, -2))
 
   const [commsLogs, setCommsLogs] = useState([
     '🦉 [Telegram] @Luna: Bab II Mattoanging Al-Marwaee & Carter disinkronkan',
@@ -84,33 +88,28 @@ export default function App() {
     return () => clearInterval(interval)
   }, [])
 
-  // Auto Office Autonomous Mode: Villagers spontaneously collaborate, walk, research
+  // Auto Office Autonomous Mode
   useEffect(() => {
     if (!autoMode) return
 
     const autonomousScenarios = [
       () => {
-        // Luna goes to bookcase to research
         setAgentStatuses(p => ({ ...p, luna: 'researching' }))
         setCommsLogs(l => ['🦉 @Luna berjalan ke rak buku meneliti jurnal Scopus Q1...', ...l.slice(0, 8)])
       },
       () => {
-        // MasAmba and Botik collaborate at meeting table
         setAgentStatuses(p => ({ ...p, masamba: 'collaborating', botik: 'collaborating' }))
         setCommsLogs(l => ['🐺📈 @MasAmba & @Botik rapat di lounge membahas FVG BTC/USDT...', ...l.slice(0, 8)])
       },
       () => {
-        // Mochi finishes coding and goes to Roost for coffee
         setAgentStatuses(p => ({ ...p, mochi: 'standby' }))
         setCommsLogs(l => ['🐕☕ @Mochi istirahat ngopi di The Roost Cafe...', ...l.slice(0, 8)])
       },
       () => {
-        // Kaktus heads back to desk to check BIM
         setAgentStatuses(p => ({ ...p, kaktus: 'working' }))
         setCommsLogs(l => ['🌵📐 @Kaktus membuka laptop memeriksa clash IFC Revit...', ...l.slice(0, 8)])
       },
       () => {
-        // Luna returns to desk with laptop
         setAgentStatuses(p => ({ ...p, luna: 'working' }))
         setCommsLogs(l => ['🦉💻 @Luna kembali ke bilik labirin buku mengetik revisi Bab II...', ...l.slice(0, 8)])
       }
@@ -130,7 +129,7 @@ export default function App() {
     standby: Object.values(agentStatuses).filter(s => s === 'standby').length,
   }
 
-  // Dispatch Command Handler (Prompt / Quick Chips)
+  // Dispatch Command Handler
   const handleDispatchCommand = (type, taskText) => {
     let targetAgentId = 'ai'
 
@@ -147,7 +146,6 @@ export default function App() {
       targetAgentId = 'mochi'
       setBossMessage(`@Ai: "@Mochi, deploy fitur visual office V3 ke server production!"`)
     } else if (type === 'all_rest') {
-      // Put everyone to Roost Cafe
       setBossMessage(`@Ai: "Waktunya santai! Semua agen istirahat ngopi di Roost Cafe! ☕"`)
       setAgentStatuses(p => {
         const next = { ...p }
@@ -161,25 +159,22 @@ export default function App() {
       setBossMessage(`@Ai: "Instruksi diterima: '${taskText}'. Mendelegasikan ke tim..."`)
     }
 
-    // Trigger alert reaction on target agent
     setAlertedAgentId(targetAgentId)
     setTimeout(() => setAlertedAgentId(null), 2500)
-
-    // Put agent to working state
     setAgentStatuses(prev => ({ ...prev, [targetAgentId]: 'working' }))
 
-    // Add live log
     const agent = AGENTS_DATA[targetAgentId]
     setCommsLogs(l => [
       `🚀 [Command] ${agent?.name || '@Ai'} menerima tugas: "${taskText}"!`,
       ...l
     ])
 
-    // Smoothly focus camera on the working area
+    // Focus camera on working area
+    setIsFreeCam(false)
     if (targetAgentId === 'ai') {
       handleFocusTier('boss')
     } else {
-      setCamPos(new THREE.Vector3(8, 10, 8))
+      setCamPos(new THREE.Vector3(agent.deskPos[0] + 6, agent.deskPos[1] + 6, agent.deskPos[2] + 7))
       setLookPos(new THREE.Vector3(agent.deskPos[0], agent.deskPos[1], agent.deskPos[2]))
     }
   }
@@ -198,20 +193,21 @@ export default function App() {
     })
   }
 
-  // Camera Focus Tier with Smooth Cinematic Director
+  // Camera Focus Tier with Smooth Glide
   const handleFocusTier = (tier) => {
+    setIsFreeCam(false)
     if (tier === 'all') {
-      setCamPos(new THREE.Vector3(22, 16, 24))
-      setLookPos(new THREE.Vector3(0, 2, 0))
+      setCamPos(new THREE.Vector3(28, 22, 34))
+      setLookPos(new THREE.Vector3(0, 2, -2))
     } else if (tier === 'boss') {
-      setCamPos(new THREE.Vector3(0, 9.0, -2.5))
-      setLookPos(new THREE.Vector3(0, 4.3, -8.2))
+      setCamPos(new THREE.Vector3(0, 11.0, -8.0))
+      setLookPos(new THREE.Vector3(0, 4.6, -15.5))
     } else if (tier === 'workspace') {
-      setCamPos(new THREE.Vector3(0, 10.0, 7.0))
-      setLookPos(new THREE.Vector3(0, 2.5, -1.2))
+      setCamPos(new THREE.Vector3(0, 13.0, 9.0))
+      setLookPos(new THREE.Vector3(0, 2.4, -3.5))
     } else if (tier === 'pantry') {
-      setCamPos(new THREE.Vector3(0, 5.0, 13.5))
-      setLookPos(new THREE.Vector3(0, 0.6, 5.0))
+      setCamPos(new THREE.Vector3(0, 6.5, 18.0))
+      setLookPos(new THREE.Vector3(0, 0.6, 7.5))
     }
   }
 
@@ -223,71 +219,78 @@ export default function App() {
   return (
     <ErrorBoundary>
       <div className="relative w-screen h-screen overflow-hidden bg-[#a2e8dd]">
-        {/* 1. Security Gate PIN Overlay (Active only if locked and not on localhost) */}
+        {/* 1. Security Gate PIN Overlay */}
         {!unlocked && <SecurityGate onUnlocked={() => setUnlocked(true)} />}
 
         {/* 2. Three.js Canvas Scene */}
         <Canvas
           shadows
-          camera={{ position: [22, 16, 24], fov: 40, near: 0.1, far: 1000 }}
+          camera={{ position: [28, 22, 34], fov: 42, near: 0.1, far: 1000 }}
           className="w-full h-full"
         >
-          {/* Cinematic Camera Director with Smooth Damping */}
+          {/* Cinematic Camera Director */}
           <CameraDirector
             cameraPos={camPos}
             lookAtPos={lookPos}
             controlsRef={controlsRef}
+            isFreeCam={isFreeCam}
           />
 
-          {/* Soft Animal Crossing Sunlight */}
+          {/* Soft Sunlight */}
           <ambientLight intensity={0.7} color="#ffffff" />
           <hemisphereLight intensity={1.1} groundColor="#8fcc70" color="#fff6e5" />
           <directionalLight
-            position={[18, 32, 12]}
+            position={[25, 45, 20]}
             intensity={1.5}
             castShadow
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
             shadow-camera-near={0.5}
-            shadow-camera-far={60}
-            shadow-camera-left={-16}
-            shadow-camera-right={16}
-            shadow-camera-top={16}
-            shadow-camera-bottom={-16}
+            shadow-camera-far={120}
+            shadow-camera-left={-28}
+            shadow-camera-right={28}
+            shadow-camera-top={28}
+            shadow-camera-bottom={-28}
             color="#fff5db"
           />
 
           <Sky
             distance={450000}
-            sunPosition={[18, 30, 12]}
+            sunPosition={[25, 40, 20]}
             inclination={0.6}
             azimuth={0.25}
-            turbidity={6}
+            turbidity={5}
             rayleigh={0.5}
           />
 
-          <fog attach="fog" args={['#a2e8dd', 15, 65]} />
+          <fog attach="fog" args={['#a2e8dd', 35, 120]} />
 
+          {/* Orbit Controls with full free cam capabilities */}
           <OrbitControls
             ref={controlsRef}
             enableDamping
-            dampingFactor={0.05}
-            maxPolarAngle={Math.PI / 2.1}
-            minDistance={6}
-            maxDistance={55}
-            target={[0, 2, 0]}
+            dampingFactor={0.06}
+            maxPolarAngle={Math.PI / 2.05}
+            minDistance={3}
+            maxDistance={120}
+            enablePan={true}
+            screenSpacePanning={true}
+            target={[0, 2, -2]}
           />
 
-          {/* Suspense wrapper with cute Animal Crossing Loading Screen */}
+          {/* Suspense wrapper with 3D Assets */}
           <Suspense fallback={null}>
-            {/* Island Terrain and Room Divisions (Hedge Lounge & Bookcase Maze) */}
+            {/* Vast Ocean, Sandy Beach, Palm Trees, Clouds & Mountains */}
+            <IslandEnvironment />
+
+            {/* Expanded Island Terraces, Desks & Laptops */}
             <AnimalCrossingIsland
               counts={counts}
               showLabels={unlocked}
               onOpenBulletin={() => setBulletinOpen(true)}
             />
 
-            {/* 17 Villagers with Laptops, Walking Cycles, and Thought Bubbles */}
+            {/* 17 Villagers with Laptops and Sitting Poses */}
             {Object.values(AGENTS_DATA).map(agent => (
               <Villager
                 key={agent.id}
@@ -320,6 +323,8 @@ export default function App() {
             bossMessage={bossMessage}
             autoMode={autoMode}
             onToggleAutoMode={() => setAutoMode(!autoMode)}
+            isFreeCam={isFreeCam}
+            onToggleFreeCam={() => setIsFreeCam(!isFreeCam)}
           />
         )}
       </div>

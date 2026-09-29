@@ -17,7 +17,8 @@ import {
   Calendar,
   Play,
   Pause,
-  Bot
+  Bot,
+  Video
 } from 'lucide-react'
 
 export default function UIOverlay({
@@ -35,7 +36,9 @@ export default function UIOverlay({
   onDispatchCommand,
   bossMessage,
   autoMode,
-  onToggleAutoMode
+  onToggleAutoMode,
+  isFreeCam,
+  onToggleFreeCam
 }) {
   const [activeTab, setActiveTab] = useState('thoughts')
   const [customCommand, setCustomCommand] = useState('')
@@ -206,7 +209,7 @@ export default function UIOverlay({
         </form>
 
         {/* Camera Tier Selector */}
-        <div className="flex items-center gap-1.5 bg-[#fefae0]/95 border-2 border-[#d4a373] p-1 rounded-2xl shadow-[0_3px_0_#b07d52] backdrop-blur-md">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 bg-[#fefae0]/95 border-2 border-[#d4a373] p-1 rounded-2xl shadow-[0_3px_0_#b07d52] backdrop-blur-md">
           <button
             onClick={() => onFocusTier('all')}
             className="px-3 py-1 rounded-xl text-[11px] font-black text-[#286f63] hover:bg-[#e0f5f0] transition-all flex items-center gap-1"
@@ -231,7 +234,25 @@ export default function UIOverlay({
           >
             <Coffee size={13} /> Roost Cafe
           </button>
+          <button
+            onClick={onToggleFreeCam}
+            className={`px-3 py-1 rounded-xl text-[11px] font-black transition-all flex items-center gap-1 shadow-sm ${
+              isFreeCam
+                ? 'bg-[#3b82f6] text-white shadow-inner animate-pulse'
+                : 'bg-[#dbeafe] text-[#1e40af] hover:bg-[#bfdbfe]'
+            }`}
+          >
+            <Video size={13} />
+            <span>{isFreeCam ? '🎥 Mode Bebas (Aktif)' : '🎥 Kamera Bebas'}</span>
+          </button>
         </div>
+
+        {/* Free Cam Active Hint */}
+        {isFreeCam && (
+          <div className="bg-[#1e40af]/90 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-md backdrop-blur-sm animate-in fade-in">
+            🎥 Mode Bebas Aktif: Klik kiri putar 360° • Klik kanan/dua jari geser pulau • Scroll zoom dekat/jauh
+          </div>
+        )}
       </div>
 
       {/* --- RIGHT: NOOKPHONE INSPECTOR V2 --- */}
