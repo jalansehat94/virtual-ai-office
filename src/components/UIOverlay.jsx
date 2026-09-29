@@ -14,9 +14,10 @@ import {
   Terminal,
   FileText,
   Brain,
-  Download,
   Calendar,
-  ExternalLink
+  Play,
+  Pause,
+  Bot
 } from 'lucide-react'
 
 export default function UIOverlay({
@@ -30,9 +31,21 @@ export default function UIOverlay({
   commsLogs,
   bulletinOpen,
   onCloseBulletin,
-  onOpenBulletin
+  onOpenBulletin,
+  onDispatchCommand,
+  bossMessage,
+  autoMode,
+  onToggleAutoMode
 }) {
-  const [activeTab, setActiveTab] = useState('thoughts') // 'thoughts' | 'terminal' | 'deliverables'
+  const [activeTab, setActiveTab] = useState('thoughts')
+  const [customCommand, setCustomCommand] = useState('')
+
+  const handleSendPrompt = (e) => {
+    e.preventDefault()
+    if (!customCommand.trim()) return
+    onDispatchCommand('custom', customCommand)
+    setCustomCommand('')
+  }
 
   return (
     <div className="absolute inset-0 pointer-events-none select-none overflow-hidden font-sans">
@@ -59,26 +72,41 @@ export default function UIOverlay({
           </div>
         </div>
 
-        {/* Cloud Comms Status (Telegram & WhatsApp) & Bulletin */}
+        {/* Boss Announcement Banner (When Command Dispatched) */}
+        {bossMessage && (
+          <div className="hidden lg:flex items-center gap-2 bg-[#fefae0] border-2 border-[#f59e0b] px-4 py-2 rounded-2xl shadow-[0_4px_0_#d97706] text-xs font-black text-[#78350f] animate-in slide-in-from-top-2">
+            <span className="text-base">👑</span>
+            <span>{bossMessage}</span>
+          </div>
+        )}
+
+        {/* Cloud Comms Status & Controls */}
         <div className="flex items-center gap-2">
-          {/* Bulletin Board Shortcut */}
+          {/* Auto Mode Toggle */}
+          <button
+            onClick={onToggleAutoMode}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 text-[11px] font-black transition-all shadow-[0_3px_0_rgba(0,0,0,0.15)] active:translate-y-0.5 ${
+              autoMode
+                ? 'bg-[#e0f5f0] border-[#10b981] text-[#065f46]'
+                : 'bg-[#fee2e2] border-[#f87171] text-[#991b1b]'
+            }`}
+          >
+            {autoMode ? <Play size={12} className="fill-current" /> : <Pause size={12} />}
+            <span>Auto Office: {autoMode ? 'ON' : 'OFF'}</span>
+          </button>
+
+          {/* Bulletin Board Button */}
           <button
             onClick={onOpenBulletin}
             className="flex items-center gap-1.5 bg-[#fefae0] border-2 border-[#d4a373] px-3 py-1.5 rounded-xl shadow-[0_3px_0_#b07d52] text-[11px] font-black text-[#5c3a21] hover:bg-[#ede0d4] transition-all"
           >
-            <span>📌</span> Buletin Harian
+            <span>📌</span> Buletin
           </button>
 
           <div className="flex items-center gap-1.5 bg-[#fefae0] border-2 border-[#60a5fa] px-3 py-1.5 rounded-xl shadow-[0_3px_0_#3b82f6] text-[11px] font-black text-[#1e40af]">
             <Send size={13} className="text-[#3b82f6]" />
             <span>@SecondBrainHeruBot</span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#3b82f6]" />
-          </div>
-
-          <div className="flex items-center gap-1.5 bg-[#fefae0] border-2 border-[#4ade80] px-3 py-1.5 rounded-xl shadow-[0_3px_0_#22c55e] text-[11px] font-black text-[#166534]">
-            <MessageSquare size={13} className="text-[#22c55e]" />
-            <span>WA: Ready</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
           </div>
 
           {/* Counts & Lock */}
@@ -97,19 +125,19 @@ export default function UIOverlay({
         </div>
       </div>
 
-      {/* --- BOTTOM LEFT: BULLETIN BOARD TICKER --- */}
-      <div className="absolute bottom-4 left-4 max-w-sm pointer-events-auto">
-        <div className="bg-[#fef9e7] border-2 border-[#d4a373] rounded-2xl p-3.5 shadow-[0_4px_0_#b07d52] backdrop-blur-sm">
-          <div className="flex items-center justify-between border-b border-[#e6ccb2] pb-1.5 mb-2">
-            <span className="text-xs font-black text-[#5c3a21] flex items-center gap-1.5">
-              📌 NOOKLINK LIVE COMMS FEED
+      {/* --- BOTTOM LEFT: LIVE COMMS TICKER --- */}
+      <div className="absolute bottom-24 left-4 max-w-sm pointer-events-auto">
+        <div className="bg-[#fef9e7] border-2 border-[#d4a373] rounded-2xl p-3 shadow-[0_4px_0_#b07d52] backdrop-blur-sm">
+          <div className="flex items-center justify-between border-b border-[#e6ccb2] pb-1 mb-1.5">
+            <span className="text-[11px] font-black text-[#5c3a21] flex items-center gap-1">
+              📌 NOOKLINK LIVE COMMS
             </span>
-            <span className="text-[10px] font-bold text-[#8b5a2b] bg-[#ede0d4] px-2 py-0.5 rounded-full">
+            <span className="text-[9px] font-bold text-[#8b5a2b] bg-[#ede0d4] px-1.5 py-0.5 rounded-full">
               Session 1
             </span>
           </div>
-          <div className="space-y-1.5 text-xs font-bold">
-            {commsLogs.slice(0, 4).map((log, idx) => (
+          <div className="space-y-1 text-[11px] font-bold">
+            {commsLogs.slice(0, 3).map((log, idx) => (
               <div key={idx} className="text-[#2b7264] truncate leading-tight">
                 {log}
               </div>
@@ -118,39 +146,98 @@ export default function UIOverlay({
         </div>
       </div>
 
-      {/* --- BOTTOM CENTER: CAMERA TIER NAVIGATION PILL --- */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#fefae0]/95 border-2 border-[#76cdbe] p-1.5 rounded-2xl shadow-[0_4px_0_#529d8f] backdrop-blur-md pointer-events-auto">
-        <button
-          onClick={() => onFocusTier('all')}
-          className="px-3 py-1.5 rounded-xl text-xs font-black text-[#286f63] hover:bg-[#e0f5f0] transition-all flex items-center gap-1"
+      {/* --- BOTTOM CENTER: NOOKPHONE COMMAND BAR & CAMERA SELECTOR --- */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 flex flex-col items-center gap-2 pointer-events-auto">
+        
+        {/* Quick Action Dispatch Chips (Triggering Live Walking & Typing!) */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5">
+          <button
+            onClick={() => onDispatchCommand('luna', 'Audit Skripsi Bab II SNI 03-6197')}
+            className="px-2.5 py-1 rounded-xl bg-[#fefae0] border-2 border-[#9d71e8] shadow-[0_2px_0_#6d28d9] text-[11px] font-black text-[#5b21b6] hover:bg-[#ede9fe] active:translate-y-0.5 transition-all flex items-center gap-1"
+          >
+            <span>🎓</span> @Luna: Skripsi
+          </button>
+          <button
+            onClick={() => onDispatchCommand('masamba', 'Analisis Order Block BTC & FVG')}
+            className="px-2.5 py-1 rounded-xl bg-[#fefae0] border-2 border-[#f59e0b] shadow-[0_2px_0_#d97706] text-[11px] font-black text-[#92400e] hover:bg-[#fef3c7] active:translate-y-0.5 transition-all flex items-center gap-1"
+          >
+            <span>🐺</span> @MasAmba: Trading
+          </button>
+          <button
+            onClick={() => onDispatchCommand('kaktus', 'Razia Clash BIM Menara Dynamo')}
+            className="px-2.5 py-1 rounded-xl bg-[#fefae0] border-2 border-[#10b981] shadow-[0_2px_0_#059669] text-[11px] font-black text-[#065f46] hover:bg-[#d1fae5] active:translate-y-0.5 transition-all flex items-center gap-1"
+          >
+            <span>🌵</span> @Kaktus: BIM
+          </button>
+          <button
+            onClick={() => onDispatchCommand('mochi', 'Deploy GradiEnt Studio Web V3')}
+            className="px-2.5 py-1 rounded-xl bg-[#fefae0] border-2 border-[#06b6d4] shadow-[0_2px_0_#0891b2] text-[11px] font-black text-[#0e7490] hover:bg-[#cffafe] active:translate-y-0.5 transition-all flex items-center gap-1"
+          >
+            <span>🐕</span> @Mochi: Web
+          </button>
+          <button
+            onClick={() => onDispatchCommand('all_rest', 'Semua agen istirahat di Roost Cafe')}
+            className="px-2.5 py-1 rounded-xl bg-[#fefae0] border-2 border-[#f97316] shadow-[0_2px_0_#ea580c] text-[11px] font-black text-[#c2410c] hover:bg-[#ffedd5] active:translate-y-0.5 transition-all flex items-center gap-1"
+          >
+            <span>☕</span> Semua Ngopi
+          </button>
+        </div>
+
+        {/* Input Prompt Bar */}
+        <form
+          onSubmit={handleSendPrompt}
+          className="w-full flex items-center gap-2 bg-[#fefae0] border-3 border-[#76cdbe] p-1.5 pl-4 rounded-2xl shadow-[0_4px_0_#529d8f] backdrop-blur-md"
         >
-          <Compass size={14} /> Seluruh Pulau
-        </button>
-        <button
-          onClick={() => onFocusTier('boss')}
-          className="px-3 py-1.5 rounded-xl text-xs font-black text-[#5c3a21] hover:bg-[#ede0d4] transition-all flex items-center gap-1"
-        >
-          <Crown size={14} /> Ruang Bos
-        </button>
-        <button
-          onClick={() => onFocusTier('workspace')}
-          className="px-3 py-1.5 rounded-xl text-xs font-black text-[#1b4b41] bg-[#76cdbe] shadow-[0_2px_0_#529d8f] transition-all flex items-center gap-1"
-        >
-          <Palette size={14} /> Studio Kerja
-        </button>
-        <button
-          onClick={() => onFocusTier('pantry')}
-          className="px-3 py-1.5 rounded-xl text-xs font-black text-[#92400e] hover:bg-[#fef3c7] transition-all flex items-center gap-1"
-        >
-          <Coffee size={14} /> Roost Cafe
-        </button>
+          <Bot size={18} className="text-[#286f63] flex-shrink-0" />
+          <input
+            type="text"
+            value={customCommand}
+            onChange={(e) => setCustomCommand(e.target.value)}
+            placeholder="Perintahkan agen pulau... (contoh: @luna cek referensi jurnal)"
+            className="w-full bg-transparent text-xs font-bold text-[#5c3a21] placeholder-[#a98467] focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="h-8 px-4 rounded-xl bg-[#76cdbe] hover:bg-[#529d8f] text-[#1b4b41] text-xs font-black shadow-[0_2px_0_#3d8276] active:translate-y-0.5 active:shadow-none transition-all flex items-center gap-1 flex-shrink-0"
+          >
+            <span>Kirim</span>
+            <Send size={12} />
+          </button>
+        </form>
+
+        {/* Camera Tier Selector */}
+        <div className="flex items-center gap-1.5 bg-[#fefae0]/95 border-2 border-[#d4a373] p-1 rounded-2xl shadow-[0_3px_0_#b07d52] backdrop-blur-md">
+          <button
+            onClick={() => onFocusTier('all')}
+            className="px-3 py-1 rounded-xl text-[11px] font-black text-[#286f63] hover:bg-[#e0f5f0] transition-all flex items-center gap-1"
+          >
+            <Compass size={13} /> Seluruh Pulau
+          </button>
+          <button
+            onClick={() => onFocusTier('boss')}
+            className="px-3 py-1 rounded-xl text-[11px] font-black text-[#5c3a21] hover:bg-[#ede0d4] transition-all flex items-center gap-1"
+          >
+            <Crown size={13} /> Hedge Lounge
+          </button>
+          <button
+            onClick={() => onFocusTier('workspace')}
+            className="px-3 py-1 rounded-xl text-[11px] font-black text-[#1b4b41] hover:bg-[#e0f5f0] transition-all flex items-center gap-1"
+          >
+            <Palette size={13} /> Library Maze
+          </button>
+          <button
+            onClick={() => onFocusTier('pantry')}
+            className="px-3 py-1 rounded-xl text-[11px] font-black text-[#92400e] hover:bg-[#fef3c7] transition-all flex items-center gap-1"
+          >
+            <Coffee size={13} /> Roost Cafe
+          </button>
+        </div>
       </div>
 
-      {/* --- RIGHT: NOOKPHONE INSPECTOR V2 (AGENT-OFFICE & OFFICECLI STYLE) --- */}
+      {/* --- RIGHT: NOOKPHONE INSPECTOR V2 --- */}
       {selectedAgent && (
-        <div className="absolute bottom-20 right-4 w-96 bg-[#fefae0] border-4 border-[#76cdbe] rounded-3xl p-5 shadow-[0_8px_0_#529d8f,0_20px_25px_-5px_rgba(0,0,0,0.15)] pointer-events-auto transition-all animate-in fade-in slide-in-from-bottom-4">
+        <div className="absolute bottom-24 right-4 w-96 bg-[#fefae0] border-4 border-[#76cdbe] rounded-3xl p-5 shadow-[0_8px_0_#529d8f,0_20px_25px_-5px_rgba(0,0,0,0.15)] pointer-events-auto transition-all animate-in fade-in slide-in-from-bottom-4">
           
-          {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-3">
               <div
@@ -176,7 +263,6 @@ export default function UIOverlay({
             </button>
           </div>
 
-          {/* Status Badge */}
           <div className="mb-3 flex items-center justify-between">
             <div
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase border ${
@@ -190,7 +276,7 @@ export default function UIOverlay({
             </div>
           </div>
 
-          {/* 3 TABS (Agent-Office Concept) */}
+          {/* 3 Tabs */}
           <div className="flex items-center gap-1 bg-[#ede0d4] p-1 rounded-xl mb-3">
             <button
               onClick={() => setActiveTab('thoughts')}
@@ -218,7 +304,6 @@ export default function UIOverlay({
             </button>
           </div>
 
-          {/* TAB 1: THOUGHTS & SKILLS */}
           {activeTab === 'thoughts' && (
             <div className="space-y-3 mb-4">
               <div className="bg-[#fffdf5] border-2 border-[#e6ccb2] rounded-2xl p-3 shadow-inner">
@@ -249,7 +334,6 @@ export default function UIOverlay({
             </div>
           )}
 
-          {/* TAB 2: LIVE TERMINAL CONSOLE */}
           {activeTab === 'terminal' && (
             <div className="mb-4 bg-[#0f172a] text-[#38bdf8] font-mono text-[10px] p-3 rounded-2xl shadow-inner border border-[#334155] space-y-1 h-36 overflow-y-auto">
               <div className="text-[#64748b] text-[9px] border-b border-[#1e293b] pb-1 mb-1">
@@ -266,7 +350,6 @@ export default function UIOverlay({
             </div>
           )}
 
-          {/* TAB 3: OFFICECLI DELIVERABLES (DOCUMENTS & SPREADSHEETS) */}
           {activeTab === 'deliverables' && (
             <div className="mb-4 space-y-2 h-36 overflow-y-auto pr-1">
               {selectedAgent.deliverables?.map((doc, i) => (
@@ -291,7 +374,6 @@ export default function UIOverlay({
             </div>
           )}
 
-          {/* Action Dispatch Button */}
           <button
             onClick={() => onToggleAgent(selectedAgent.id)}
             className={`w-full py-2.5 rounded-2xl text-xs font-black shadow-[0_4px_0_rgba(0,0,0,0.15)] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2 ${
@@ -313,7 +395,7 @@ export default function UIOverlay({
         </div>
       )}
 
-      {/* --- CORK BULLETIN BOARD POPUP MODAL --- */}
+      {/* --- CORK BULLETIN BOARD POPUP --- */}
       {bulletinOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm pointer-events-auto p-4">
           <div className="w-full max-w-lg bg-[#fef9e7] border-4 border-[#8b5a2b] rounded-3xl p-6 shadow-[0_12px_0_#5c3a21] animate-in zoom-in-95">

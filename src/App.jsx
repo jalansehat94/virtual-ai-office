@@ -7,6 +7,7 @@ import SecurityGate from './components/SecurityGate'
 import AnimalCrossingIsland from './components/AnimalCrossingIsland'
 import Villager from './components/Villager'
 import UIOverlay from './components/UIOverlay'
+import CameraDirector from './components/CameraDirector'
 import { AGENTS_DATA } from './data/agents'
 
 export default function App() {
@@ -14,11 +15,10 @@ export default function App() {
     return sessionStorage.getItem('sb_unlocked') === '1'
   })
 
-  // Agents status map: { [id]: 'working' | 'standby' | 'collaborating' | 'researching' }
+  // Agents status map
   const [agentStatuses, setAgentStatuses] = useState(() => {
     const init = {}
     Object.keys(AGENTS_DATA).forEach(id => {
-      // Default: 8 working on laptops, 9 standby at Roost cafe
       init[id] = ['ai', 'luna', 'kutu', 'mochi', 'piksel', 'kaktus', 'masamba', 'botik'].includes(id)
         ? 'working'
         : 'standby'
@@ -28,6 +28,14 @@ export default function App() {
 
   const [selectedAgent, setSelectedAgent] = useState(null)
   const [bulletinOpen, setBulletinOpen] = useState(false)
+  const [bossMessage, setBossMessage] = useState('')
+  const [alertedAgentId, setAlertedAgentId] = useState(null)
+  const [autoMode, setAutoMode] = useState(true)
+
+  // Camera targets for smooth cinematic director
+  const [camPos, setCamPos] = useState(() => new THREE.Vector3(22, 16, 24))
+  const [lookPos, setLookPos] = useState(() => new THREE.Vector3(0, 2, 0))
+
   const [commsLogs, setCommsLogs] = useState([
     '🦉 [Telegram] @Luna: Bab II Mattoanging Al-Marwaee & Carter disinkronkan',
     '🐺 [Telegram] @MasAmba: Funding rate Binance net-neutral, bull safe',
@@ -39,7 +47,7 @@ export default function App() {
 
   const controlsRef = useRef()
 
-  // Polling live_state.json if available
+  // Polling live_state.json
   useEffect(() => {
     const fetchLiveState = async () => {
       try {
@@ -66,28 +74,45 @@ export default function App() {
     return () => clearInterval(interval)
   }, [])
 
-  // Comms feed & autonomous actions simulator
+  // Auto Office Autonomous Mode: Villagers spontaneously collaborate, walk, research
   useEffect(() => {
-    const sampleMsgs = [
-      '🦉 @Luna: Rujukan SNI 03-6197 diverifikasi untuk Bab 4',
-      '🐺 @MasAmba: Order block H4 BTC dipertahankan, risk 1.2%',
-      '🦝 @Piksel: Tailwind grid layout selesai dioptimasi',
-      '🌵 @Kaktus: MEP vs Struktur clash-free di Revit LOD 350',
-      '🐰 @Ai: Seluruh 17 agen aktif memantau SecondBrain Heru',
-      '🐼 @Lilin: Fair Value Gap M15 terisi sempurna',
-      '🐶 @Botik: Script backtest Python selesai dieksekusi (Sharpe 2.14)',
-      '🐱 @Cuan: Volume beton Menara Dynamo terekstraksi ke Excel RAB'
+    if (!autoMode) return
+
+    const autonomousScenarios = [
+      () => {
+        // Luna goes to bookcase to research
+        setAgentStatuses(p => ({ ...p, luna: 'researching' }))
+        setCommsLogs(l => ['🦉 @Luna berjalan ke rak buku meneliti jurnal Scopus Q1...', ...l.slice(0, 8)])
+      },
+      () => {
+        // MasAmba and Botik collaborate at meeting table
+        setAgentStatuses(p => ({ ...p, masamba: 'collaborating', botik: 'collaborating' }))
+        setCommsLogs(l => ['🐺📈 @MasAmba & @Botik rapat di lounge membahas FVG BTC/USDT...', ...l.slice(0, 8)])
+      },
+      () => {
+        // Mochi finishes coding and goes to Roost for coffee
+        setAgentStatuses(p => ({ ...p, mochi: 'standby' }))
+        setCommsLogs(l => ['🐕☕ @Mochi istirahat ngopi di The Roost Cafe...', ...l.slice(0, 8)])
+      },
+      () => {
+        // Kaktus heads back to desk to check BIM
+        setAgentStatuses(p => ({ ...p, kaktus: 'working' }))
+        setCommsLogs(l => ['🌵📐 @Kaktus membuka laptop memeriksa clash IFC Revit...', ...l.slice(0, 8)])
+      },
+      () => {
+        // Luna returns to desk with laptop
+        setAgentStatuses(p => ({ ...p, luna: 'working' }))
+        setCommsLogs(l => ['🦉💻 @Luna kembali ke bilik labirin buku mengetik revisi Bab II...', ...l.slice(0, 8)])
+      }
     ]
 
     const interval = setInterval(() => {
-      if (Math.random() > 0.35) {
-        const msg = sampleMsgs[Math.floor(Math.random() * sampleMsgs.length)]
-        setCommsLogs(prev => [msg, ...prev.slice(0, 10)])
-      }
-    }, 7000)
+      const scenario = autonomousScenarios[Math.floor(Math.random() * autonomousScenarios.length)]
+      scenario()
+    }, 14000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [autoMode])
 
   // Working & Standby counts
   const counts = {
@@ -95,39 +120,89 @@ export default function App() {
     standby: Object.values(agentStatuses).filter(s => s === 'standby').length,
   }
 
-  // Toggle single agent status
+  // Dispatch Command Handler (Prompt / Quick Chips)
+  const handleDispatchCommand = (type, taskText) => {
+    let targetAgentId = 'ai'
+
+    if (type === 'luna' || taskText.toLowerCase().includes('@luna') || taskText.toLowerCase().includes('skripsi')) {
+      targetAgentId = 'luna'
+      setBossMessage(`@Ai: "@Luna, tolong verifikasi sitasi SNI 03-6197 untuk Bab 2 sekarang!"`)
+    } else if (type === 'masamba' || taskText.toLowerCase().includes('@masamba') || taskText.toLowerCase().includes('trading') || taskText.toLowerCase().includes('btc')) {
+      targetAgentId = 'masamba'
+      setBossMessage(`@Ai: "@MasAmba, cek Order Block & FVG BTC/USDT timeframe H4!"`)
+    } else if (type === 'kaktus' || taskText.toLowerCase().includes('@kaktus') || taskText.toLowerCase().includes('bim') || taskText.toLowerCase().includes('revit')) {
+      targetAgentId = 'kaktus'
+      setBossMessage(`@Ai: "@Kaktus, razia benturan clash pipa vs balok Menara Dynamo!"`)
+    } else if (type === 'mochi' || taskText.toLowerCase().includes('@mochi') || taskText.toLowerCase().includes('web')) {
+      targetAgentId = 'mochi'
+      setBossMessage(`@Ai: "@Mochi, deploy fitur visual office V3 ke server production!"`)
+    } else if (type === 'all_rest') {
+      // Put everyone to Roost Cafe
+      setBossMessage(`@Ai: "Waktunya santai! Semua agen istirahat ngopi di Roost Cafe! ☕"`)
+      setAgentStatuses(p => {
+        const next = { ...p }
+        Object.keys(next).forEach(k => { next[k] = 'standby' })
+        return next
+      })
+      handleFocusTier('pantry')
+      return
+    } else {
+      targetAgentId = 'luna'
+      setBossMessage(`@Ai: "Instruksi diterima: '${taskText}'. Mendelegasikan ke tim..."`)
+    }
+
+    // Trigger alert reaction on target agent
+    setAlertedAgentId(targetAgentId)
+    setTimeout(() => setAlertedAgentId(null), 2500)
+
+    // Put agent to working state
+    setAgentStatuses(prev => ({ ...prev, [targetAgentId]: 'working' }))
+
+    // Add live log
+    const agent = AGENTS_DATA[targetAgentId]
+    setCommsLogs(l => [
+      `🚀 [Command] ${agent?.name || '@Ai'} menerima tugas: "${taskText}"!`,
+      ...l
+    ])
+
+    // Smoothly focus camera on the working area
+    if (targetAgentId === 'ai') {
+      handleFocusTier('boss')
+    } else {
+      setCamPos(new THREE.Vector3(8, 10, 8))
+      setLookPos(new THREE.Vector3(agent.deskPos[0], agent.deskPos[1], agent.deskPos[2]))
+    }
+  }
+
+  // Toggle single agent
   const handleToggleAgent = (id) => {
     setAgentStatuses(prev => {
       const current = prev[id]
       const next = current === 'working' ? 'standby' : 'working'
       const agent = AGENTS_DATA[id]
       setCommsLogs(l => [
-        `🍃 [Dispatch] ${agent.name} ${next === 'working' ? 'membuka laptop di Studio' : 'menutup laptop & santai di Roost Cafe'}!`,
+        `🍃 [Dispatch] ${agent.name} ${next === 'working' ? 'membuka laptop di Studio' : 'santai di Roost Cafe'}!`,
         ...l
       ])
       return { ...prev, [id]: next }
     })
   }
 
-  // Camera focus positions
+  // Camera Focus Tier with Smooth Cinematic Director
   const handleFocusTier = (tier) => {
-    if (!controlsRef.current) return
-    const controls = controlsRef.current
-
     if (tier === 'all') {
-      controls.target.set(0, 2, 0)
-      controls.object.position.set(22, 16, 24)
+      setCamPos(new THREE.Vector3(22, 16, 24))
+      setLookPos(new THREE.Vector3(0, 2, 0))
     } else if (tier === 'boss') {
-      controls.target.set(0, 4.5, -9)
-      controls.object.position.set(0, 9, 0)
+      setCamPos(new THREE.Vector3(-1, 8.5, -2))
+      setLookPos(new THREE.Vector3(-1, 4.5, -8))
     } else if (tier === 'workspace') {
-      controls.target.set(0, 2.5, -2)
-      controls.object.position.set(11, 7, 7)
+      setCamPos(new THREE.Vector3(0, 9, 6))
+      setLookPos(new THREE.Vector3(0, 2.5, -1))
     } else if (tier === 'pantry') {
-      controls.target.set(0, 0.6, 6)
-      controls.object.position.set(0, 5, 17)
+      setCamPos(new THREE.Vector3(0, 4.5, 14))
+      setLookPos(new THREE.Vector3(0, 0.6, 6))
     }
-    controls.update()
   }
 
   const handleLock = () => {
@@ -146,7 +221,14 @@ export default function App() {
         camera={{ position: [22, 16, 24], fov: 40, near: 0.1, far: 1000 }}
         className="w-full h-full"
       >
-        {/* Soft Animal Crossing Golden Hour Lighting */}
+        {/* Cinematic Camera Director with Smooth Damping */}
+        <CameraDirector
+          cameraPos={camPos}
+          lookAtPos={lookPos}
+          controlsRef={controlsRef}
+        />
+
+        {/* Soft Animal Crossing Sunlight */}
         <ambientLight intensity={0.7} color="#ffffff" />
         <hemisphereLight intensity={1.1} groundColor="#8fcc70" color="#fff6e5" />
         <directionalLight
@@ -164,7 +246,6 @@ export default function App() {
           color="#fff5db"
         />
 
-        {/* Soft sunny sky */}
         <Sky
           distance={450000}
           sunPosition={[18, 30, 12]}
@@ -174,28 +255,26 @@ export default function App() {
           rayleigh={0.5}
         />
 
-        {/* Soft Fog for Cozy Island Atmosphere */}
         <fog attach="fog" args={['#a2e8dd', 15, 65]} />
 
-        {/* Orbit Controls with Damping */}
         <OrbitControls
           ref={controlsRef}
           enableDamping
           dampingFactor={0.05}
           maxPolarAngle={Math.PI / 2.1}
-          minDistance={8}
+          minDistance={6}
           maxDistance={55}
           target={[0, 2, 0]}
         />
 
-        {/* Island Terrain and Outdoor Library Architecture */}
+        {/* Island Terrain and Room Divisions (Hedge Lounge & Bookcase Maze) */}
         <AnimalCrossingIsland
           counts={counts}
           showLabels={unlocked}
           onOpenBulletin={() => setBulletinOpen(true)}
         />
 
-        {/* 17 Animal Crossing Villagers with Laptops & Thought Bubbles */}
+        {/* 17 Villagers with Laptops, Walking Cycles, and Thought Bubbles */}
         {Object.values(AGENTS_DATA).map(agent => (
           <Villager
             key={agent.id}
@@ -203,6 +282,7 @@ export default function App() {
             status={agentStatuses[agent.id] || 'standby'}
             isSelected={selectedAgent?.id === agent.id}
             showLabels={unlocked}
+            isAlerted={alertedAgentId === agent.id}
             onClick={(a) => setSelectedAgent(a)}
           />
         ))}
@@ -222,6 +302,10 @@ export default function App() {
           bulletinOpen={bulletinOpen}
           onOpenBulletin={() => setBulletinOpen(true)}
           onCloseBulletin={() => setBulletinOpen(false)}
+          onDispatchCommand={handleDispatchCommand}
+          bossMessage={bossMessage}
+          autoMode={autoMode}
+          onToggleAutoMode={() => setAutoMode(!autoMode)}
         />
       )}
     </div>
