@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three'
@@ -43,7 +43,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     if (moving) {
       const targetAngle = Math.atan2(dx, dz)
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetAngle, delta * 6)
-      groupRef.current.rotation.x = 0.1 // Lean forward while running
+      groupRef.current.rotation.x = 0.1
     } else {
       const idleRot = status === 'working' ? 0 : Math.PI
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, idleRot, delta * 4)
@@ -89,6 +89,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
   })
 
   const isWorking = status === 'working'
+  const sp = agent.species
 
   return (
     <group
@@ -100,7 +101,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
       }}
       cursor="pointer"
     >
-      {/* --- 1. FLOATING 3D THOUGHT / ACTION / EXCLAMATION BUBBLE --- */}
+      {/* --- 1. FLOATING 3D THOUGHT / ACTION BUBBLE --- */}
       {showLabels && (
         <Html position={[0, 2.35, 0]} center distanceFactor={14}>
           <div
@@ -136,7 +137,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             <meshBasicMaterial color="#334155" />
           </mesh>
 
-          {/* Open Laptop Screen Lid */}
           <group position={[0, 0.03, -0.19]} rotation={[-0.35, 0, 0]}>
             <mesh position={[0, 0.18, 0]} castShadow>
               <boxGeometry args={[0.55, 0.36, 0.02]} />
@@ -165,98 +165,264 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
         </group>
       )}
 
-      {/* --- 4. ANIMAL CROSSING VILLAGER MODEL --- */}
+      {/* --- 4. INDIVIDUAL ANIMAL CROSSING SPECIES MODELING --- */}
       
-      {/* A. Chubby Rounded Head (Squircle AC Silhouette) */}
+      {/* HEAD GROUP */}
       <group position={[0, 1.2, 0]}>
-        <mesh scale={[1.1, 0.96, 1.02]} castShadow>
+        
+        {/* Base Head Sphere (Scaled for natural species shapes) */}
+        <mesh
+          scale={sp === 'owl_cat' ? [1.15, 1.05, 1.1] : (sp === 'bulldog' ? [1.2, 0.9, 1.1] : [1.1, 0.96, 1.02])}
+          castShadow
+        >
           <sphereGeometry args={[0.42, 28, 28]} />
           <meshStandardMaterial color={agent.color} roughness={0.4} />
         </mesh>
 
-        {/* White / Cream Cheek Patches */}
-        <mesh position={[-0.24, -0.06, 0.22]} rotation={[0, -0.3, 0]}>
-          <sphereGeometry args={[0.18, 16, 16]} />
-          <meshStandardMaterial color="#fefae0" roughness={0.5} />
-        </mesh>
-        <mesh position={[0.24, -0.06, 0.22]} rotation={[0, 0.3, 0]}>
-          <sphereGeometry args={[0.18, 16, 16]} />
-          <meshStandardMaterial color="#fefae0" roughness={0.5} />
-        </mesh>
+        {/* --- SPECIES-SPECIFIC FACIAL FEATURES --- */}
 
-        {/* Muzzle / Snout (Cream Ellipsoid) */}
-        <mesh position={[0, -0.08, 0.34]} scale={[1.2, 0.85, 0.9]} castShadow>
-          <sphereGeometry args={[0.16, 18, 18]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.35} />
-        </mesh>
+        {/* 1. OWL (Prof. LUNA - Blathers Style) */}
+        {sp === 'owl_cat' && (
+          <>
+            {/* White/Cream Eyering Discs */}
+            <mesh position={[-0.18, 0.06, 0.36]}>
+              <circleGeometry args={[0.13, 20]} />
+              <meshBasicMaterial color="#fefae0" />
+            </mesh>
+            <mesh position={[0.18, 0.06, 0.36]}>
+              <circleGeometry args={[0.13, 20]} />
+              <meshBasicMaterial color="#fefae0" />
+            </mesh>
+            {/* Big Wise Golden Eyes */}
+            <mesh position={[-0.18, 0.06, 0.37]}>
+              <circleGeometry args={[0.09, 16]} />
+              <meshBasicMaterial color="#d97706" />
+            </mesh>
+            <mesh position={[0.18, 0.06, 0.37]}>
+              <circleGeometry args={[0.09, 16]} />
+              <meshBasicMaterial color="#d97706" />
+            </mesh>
+            <mesh position={[-0.18, 0.06, 0.38]}>
+              <circleGeometry args={[0.05, 12]} />
+              <meshBasicMaterial color="#111827" />
+            </mesh>
+            <mesh position={[0.18, 0.06, 0.38]}>
+              <circleGeometry args={[0.05, 12]} />
+              <meshBasicMaterial color="#111827" />
+            </mesh>
+            {/* Curved Owl Beak */}
+            <mesh position={[0, -0.06, 0.44]} rotation={[0.4, 0, 0]} castShadow>
+              <coneGeometry args={[0.07, 0.18, 4]} />
+              <meshStandardMaterial color="#f59e0b" roughness={0.3} />
+            </mesh>
+            {/* Graduation Mortarboard Toga Cap */}
+            <mesh position={[0, 0.45, 0]} castShadow>
+              <boxGeometry args={[0.55, 0.04, 0.55]} />
+              <meshStandardMaterial color="#2e1065" roughness={0.3} />
+            </mesh>
+            <mesh position={[0, 0.49, 0]}>
+              <cylinderGeometry args={[0.12, 0.12, 0.07, 12]} />
+              <meshStandardMaterial color="#fbbf24" />
+            </mesh>
+            {/* Gold Tassel dangling to side */}
+            <mesh position={[0.24, 0.36, 0.2]}>
+              <sphereGeometry args={[0.04, 8, 8]} />
+              <meshBasicMaterial color="#fbbf24" />
+            </mesh>
+          </>
+        )}
 
-        {/* Tiny Button Nose */}
-        <mesh position={[0, -0.02, 0.47]}>
-          <sphereGeometry args={[0.04, 12, 12]} />
-          <meshBasicMaterial color="#1f2937" />
-        </mesh>
+        {/* 2. RACCOON / TANUKI (Piksel - Tom Nook Style) */}
+        {sp === 'raccoon' && (
+          <>
+            {/* Dark Mask across eyes */}
+            <mesh position={[0, 0.05, 0.36]}>
+              <boxGeometry args={[0.7, 0.22, 0.08]} />
+              <meshStandardMaterial color="#3e2723" roughness={0.5} />
+            </mesh>
+            {/* Cream Snout */}
+            <mesh position={[0, -0.08, 0.38]} scale={[1.1, 0.8, 0.9]} castShadow>
+              <sphereGeometry args={[0.15, 16, 16]} />
+              <meshStandardMaterial color="#fefae0" />
+            </mesh>
+            <mesh position={[0, -0.02, 0.5]}>
+              <sphereGeometry args={[0.04, 10, 10]} />
+              <meshBasicMaterial color="#111827" />
+            </mesh>
+          </>
+        )}
 
-        {/* Smiling Mouth */}
-        <mesh position={[0, -0.11, 0.47]} rotation={[0, 0, Math.PI]}>
-          <torusGeometry args={[0.035, 0.008, 8, 16, Math.PI]} />
-          <meshBasicMaterial color="#7f1d1d" />
-        </mesh>
+        {/* 3. WOLF (Mas Amba - Sleek Fang Style) */}
+        {sp === 'wolf' && (
+          <>
+            {/* Long Sharp Wolf Snout */}
+            <mesh position={[0, -0.06, 0.42]} rotation={[0.2, 0, 0]} castShadow>
+              <coneGeometry args={[0.16, 0.35, 12]} />
+              <meshStandardMaterial color="#f1f5f9" roughness={0.4} />
+            </mesh>
+            <mesh position={[0, 0.04, 0.56]}>
+              <sphereGeometry args={[0.04, 10, 10]} />
+              <meshBasicMaterial color="#111827" />
+            </mesh>
+            {/* Piercing Golden Trader Eyes */}
+            <mesh position={[-0.16, 0.08, 0.37]}>
+              <circleGeometry args={[0.07, 16]} />
+              <meshBasicMaterial color="#f59e0b" />
+            </mesh>
+            <mesh position={[0.16, 0.08, 0.37]}>
+              <circleGeometry args={[0.07, 16]} />
+              <meshBasicMaterial color="#f59e0b" />
+            </mesh>
+            <mesh position={[-0.16, 0.08, 0.375]}>
+              <circleGeometry args={[0.04, 12]} />
+              <meshBasicMaterial color="#111827" />
+            </mesh>
+            <mesh position={[0.16, 0.08, 0.375]}>
+              <circleGeometry args={[0.04, 12]} />
+              <meshBasicMaterial color="#111827" />
+            </mesh>
+          </>
+        )}
 
-        {/* Big Expressive Animal Crossing Eyes */}
-        <group position={[-0.17, 0.05, 0.36]} rotation={[0, -0.15, 0]}>
-          <mesh>
-            <circleGeometry args={[0.075, 20]} />
-            <meshBasicMaterial color="#1e1e24" />
-          </mesh>
-          <mesh position={[-0.025, 0.025, 0.002]}>
-            <circleGeometry args={[0.025, 12]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-          <mesh position={[0.02, -0.02, 0.002]}>
-            <circleGeometry args={[0.012, 10]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-        </group>
+        {/* 4. HEDGEHOG (Kutu - Sable/Mabel Style) */}
+        {sp === 'hedgehog' && (
+          <>
+            {/* Spiky Quills on Back of Head */}
+            <group position={[0, 0.1, -0.2]}>
+              {[-0.2, 0, 0.2].map((qx, i) => (
+                <mesh key={i} position={[qx, 0.2, -0.1]} rotation={[-0.4, 0, qx]}>
+                  <coneGeometry args={[0.14, 0.45, 6]} />
+                  <meshStandardMaterial color="#5c3a21" roughness={0.9} />
+                </mesh>
+              ))}
+            </group>
+            {/* Soft Muzzle */}
+            <mesh position={[0, -0.08, 0.35]} scale={[1.1, 0.8, 0.9]} castShadow>
+              <sphereGeometry args={[0.16, 16, 16]} />
+              <meshStandardMaterial color="#f5ebe0" />
+            </mesh>
+            <mesh position={[0, -0.02, 0.48]}>
+              <sphereGeometry args={[0.04, 10, 10]} />
+              <meshBasicMaterial color="#111827" />
+            </mesh>
+          </>
+        )}
 
-        <group position={[0.17, 0.05, 0.36]} rotation={[0, 0.15, 0]}>
-          <mesh>
-            <circleGeometry args={[0.075, 20]} />
-            <meshBasicMaterial color="#1e1e24" />
-          </mesh>
-          <mesh position={[-0.025, 0.025, 0.002]}>
-            <circleGeometry args={[0.025, 12]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-          <mesh position={[0.02, -0.02, 0.002]}>
-            <circleGeometry args={[0.012, 10]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-        </group>
+        {/* 5. TURTLE (Rem - Kapp'n Style) */}
+        {sp === 'turtle' && (
+          <>
+            <mesh position={[0, 0.4, 0]}>
+              <cylinderGeometry args={[0.18, 0.22, 0.05, 12]} />
+              <meshStandardMaterial color="#2d6a4f" roughness={0.6} />
+            </mesh>
+            <mesh position={[0, -0.08, 0.38]} scale={[1.2, 0.8, 0.9]}>
+              <sphereGeometry args={[0.15, 16, 16]} />
+              <meshStandardMaterial color="#a7f3d0" />
+            </mesh>
+          </>
+        )}
 
-        {/* Cream Eyebrow Dots */}
-        <mesh position={[-0.15, 0.22, 0.38]}>
-          <sphereGeometry args={[0.035, 12, 12]} />
-          <meshBasicMaterial color="#fefae0" />
-        </mesh>
-        <mesh position={[0.15, 0.22, 0.38]}>
-          <sphereGeometry args={[0.035, 12, 12]} />
-          <meshBasicMaterial color="#fefae0" />
-        </mesh>
+        {/* 6. CACTUS (Kaktus - Blooming Flower) */}
+        {sp === 'cactus' && (
+          <>
+            {/* Golden Desert Blossom Flower on Head */}
+            <mesh position={[0, 0.46, 0]} castShadow>
+              <dodecahedronGeometry args={[0.16]} />
+              <meshStandardMaterial color="#facc15" roughness={0.3} />
+            </mesh>
+            <mesh position={[0, 0.56, 0]}>
+              <sphereGeometry args={[0.08, 8, 8]} />
+              <meshStandardMaterial color="#ef4444" />
+            </mesh>
+          </>
+        )}
 
-        {/* Blushing Pink Cheeks */}
-        <mesh position={[-0.27, -0.08, 0.3]}>
-          <sphereGeometry args={[0.05, 12, 12]} />
-          <meshBasicMaterial color="#ff758f" />
-        </mesh>
-        <mesh position={[0.27, -0.08, 0.3]}>
-          <sphereGeometry args={[0.05, 12, 12]} />
-          <meshBasicMaterial color="#ff758f" />
-        </mesh>
+        {/* 7. ROBO PUP (Botik - Sprocket Style) */}
+        {sp === 'robo_pup' && (
+          <>
+            {/* Antenna on head */}
+            <mesh position={[0, 0.5, 0]}>
+              <cylinderGeometry args={[0.02, 0.02, 0.25, 8]} />
+              <meshStandardMaterial color="#94a3b8" metalness={0.8} />
+            </mesh>
+            <mesh position={[0, 0.65, 0]}>
+              <sphereGeometry args={[0.06, 12, 12]} />
+              <meshBasicMaterial color="#ef4444" />
+            </mesh>
+            {/* Glowing Cyan Visor Eyes */}
+            <mesh position={[0, 0.06, 0.38]}>
+              <boxGeometry args={[0.42, 0.12, 0.06]} />
+              <meshBasicMaterial color="#06b6d4" />
+            </mesh>
+          </>
+        )}
 
-        {/* Ears Hierarchy */}
+        {/* 8. STANDARD / RED PANDA / CAT / BEAR / BUNNY EYES & SNOUT */}
+        {!['owl_cat', 'wolf', 'robo_pup'].includes(sp) && (
+          <>
+            {/* Cheek Patches */}
+            <mesh position={[-0.24, -0.06, 0.22]} rotation={[0, -0.3, 0]}>
+              <sphereGeometry args={[0.18, 16, 16]} />
+              <meshStandardMaterial color="#fefae0" roughness={0.5} />
+            </mesh>
+            <mesh position={[0.24, -0.06, 0.22]} rotation={[0, 0.3, 0]}>
+              <sphereGeometry args={[0.18, 16, 16]} />
+              <meshStandardMaterial color="#fefae0" roughness={0.5} />
+            </mesh>
+
+            {/* Muzzle / Snout */}
+            <mesh position={[0, -0.08, 0.34]} scale={[1.2, 0.85, 0.9]} castShadow>
+              <sphereGeometry args={[0.16, 18, 18]} />
+              <meshStandardMaterial color="#ffffff" roughness={0.35} />
+            </mesh>
+            <mesh position={[0, -0.02, 0.47]}>
+              <sphereGeometry args={[0.04, 12, 12]} />
+              <meshBasicMaterial color="#1f2937" />
+            </mesh>
+
+            {/* Big Expressive Eyes */}
+            <group position={[-0.17, 0.05, 0.36]} rotation={[0, -0.15, 0]}>
+              <mesh>
+                <circleGeometry args={[0.075, 20]} />
+                <meshBasicMaterial color="#1e1e24" />
+              </mesh>
+              <mesh position={[-0.025, 0.025, 0.002]}>
+                <circleGeometry args={[0.025, 12]} />
+                <meshBasicMaterial color="#ffffff" />
+              </mesh>
+            </group>
+            <group position={[0.17, 0.05, 0.36]} rotation={[0, 0.15, 0]}>
+              <mesh>
+                <circleGeometry args={[0.075, 20]} />
+                <meshBasicMaterial color="#1e1e24" />
+              </mesh>
+              <mesh position={[-0.025, 0.025, 0.002]}>
+                <circleGeometry args={[0.025, 12]} />
+                <meshBasicMaterial color="#ffffff" />
+              </mesh>
+            </group>
+
+            {/* Brow dots for Red Panda (Lilin) */}
+            {sp === 'red_panda' && (
+              <>
+                <mesh position={[-0.15, 0.22, 0.38]}>
+                  <sphereGeometry args={[0.035, 12, 12]} />
+                  <meshBasicMaterial color="#fefae0" />
+                </mesh>
+                <mesh position={[0.15, 0.22, 0.38]}>
+                  <sphereGeometry args={[0.035, 12, 12]} />
+                  <meshBasicMaterial color="#fefae0" />
+                </mesh>
+              </>
+            )}
+          </>
+        )}
+
+        {/* EARS HIERARCHY */}
         <group ref={earsRef}>
-          {agent.species === 'bunny' ? (
+          {sp === 'bunny' && (
             <>
+              {/* Ai Floppy Bunny Ears */}
               <group position={[-0.18, 0.42, 0]} rotation={[-0.1, 0, 0.18]}>
                 <mesh castShadow>
                   <cylinderGeometry args={[0.07, 0.1, 0.46, 16]} />
@@ -278,19 +444,51 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                 </mesh>
               </group>
             </>
-          ) : agent.species === 'owl_cat' ? (
+          )}
+
+          {['bear', 'bear_big', 'raccoon'].includes(sp) && (
             <>
-              <mesh position={[0, 0.44, 0]} castShadow>
-                <boxGeometry args={[0.55, 0.04, 0.55]} />
-                <meshStandardMaterial color="#2e1065" roughness={0.3} />
+              {/* Round Bear/Tanuki Ears */}
+              <mesh position={[-0.32, 0.35, 0]} castShadow>
+                <sphereGeometry args={[0.13, 14, 14]} />
+                <meshStandardMaterial color={agent.color} roughness={0.4} />
               </mesh>
-              <mesh position={[0, 0.48, 0]}>
-                <cylinderGeometry args={[0.12, 0.12, 0.07, 12]} />
-                <meshStandardMaterial color="#fbbf24" />
+              <mesh position={[-0.32, 0.35, 0.05]}>
+                <sphereGeometry args={[0.08, 10, 10]} />
+                <meshBasicMaterial color="#fefae0" />
+              </mesh>
+              <mesh position={[0.32, 0.35, 0]} castShadow>
+                <sphereGeometry args={[0.13, 14, 14]} />
+                <meshStandardMaterial color={agent.color} roughness={0.4} />
+              </mesh>
+              <mesh position={[0.32, 0.35, 0.05]}>
+                <sphereGeometry args={[0.08, 10, 10]} />
+                <meshBasicMaterial color="#fefae0" />
               </mesh>
             </>
-          ) : (
+          )}
+
+          {sp === 'puppy' && (
             <>
+              {/* Droopy Floppy Dog Ears */}
+              <group position={[-0.36, 0.25, 0]} rotation={[0, 0, -0.4]}>
+                <mesh castShadow>
+                  <cylinderGeometry args={[0.08, 0.11, 0.38, 12]} />
+                  <meshStandardMaterial color={agent.color} roughness={0.5} />
+                </mesh>
+              </group>
+              <group position={[0.36, 0.25, 0]} rotation={[0, 0, 0.4]}>
+                <mesh castShadow>
+                  <cylinderGeometry args={[0.08, 0.11, 0.38, 12]} />
+                  <meshStandardMaterial color={agent.color} roughness={0.5} />
+                </mesh>
+              </group>
+            </>
+          )}
+
+          {['cat', 'cat_lucky', 'wolf', 'red_panda', 'hedgehog'].includes(sp) && (
+            <>
+              {/* Pointed Triangular Ears with Inner Fur */}
               <group position={[-0.32, 0.34, 0]} rotation={[0, 0.2, 0.45]}>
                 <mesh scale={[1.2, 1.4, 0.5]} castShadow>
                   <coneGeometry args={[0.18, 0.34, 4]} />
@@ -301,7 +499,6 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
                   <meshBasicMaterial color="#fefae0" />
                 </mesh>
               </group>
-
               <group position={[0.32, 0.34, 0]} rotation={[0, -0.2, -0.45]}>
                 <mesh scale={[1.2, 1.4, 0.5]} castShadow>
                   <coneGeometry args={[0.18, 0.34, 4]} />
@@ -317,7 +514,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
         </group>
       </group>
 
-      {/* B. Animal Crossing Conical A-Line Sweater Tunic */}
+      {/* --- BODY & SWEATER TUNIC --- */}
       <mesh position={[0, 0.62, 0]} castShadow>
         <cylinderGeometry args={[0.18, 0.36, 0.58, 20]} />
         <meshStandardMaterial color={agent.sweater} roughness={0.6} />
@@ -327,7 +524,23 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
         <meshStandardMaterial color="#ffffff" roughness={0.4} />
       </mesh>
 
-      {/* C. Slim Arms & White Paws */}
+      {/* Turtle Shell on Back (Rem) */}
+      {sp === 'turtle' && (
+        <mesh position={[0, 0.6, -0.24]} rotation={[0.4, 0, 0]} castShadow>
+          <sphereGeometry args={[0.26, 16, 16]} />
+          <meshStandardMaterial color="#1b4332" roughness={0.6} />
+        </mesh>
+      )}
+
+      {/* Lucky Coin on Chest (Cuan) */}
+      {sp === 'cat_lucky' && (
+        <mesh position={[0, 0.72, 0.24]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.02, 16]} />
+          <meshStandardMaterial color="#fbbf24" metalness={0.8} roughness={0.2} />
+        </mesh>
+      )}
+
+      {/* --- SLIM ARMS & WHITE PAWS --- */}
       <group ref={leftArmRef} position={[-0.26, 0.74, 0.02]}>
         <mesh position={[0, -0.16, 0]} rotation={[0, 0, 0.25]} castShadow>
           <cylinderGeometry args={[0.06, 0.065, 0.32, 12]} />
@@ -350,7 +563,7 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
         </mesh>
       </group>
 
-      {/* D. Animated Walking Legs & Foot Pads */}
+      {/* --- LEGS & SHOES --- */}
       <group ref={leftLegRef} position={[-0.14, 0.3, 0]}>
         <mesh position={[0, -0.1, 0]} castShadow>
           <cylinderGeometry args={[0.065, 0.065, 0.24, 12]} />

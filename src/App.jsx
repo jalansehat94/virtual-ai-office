@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Sky } from '@react-three/drei'
 import * as THREE from 'three'
@@ -267,25 +267,28 @@ export default function App() {
           target={[0, 2, 0]}
         />
 
-        {/* Island Terrain and Room Divisions (Hedge Lounge & Bookcase Maze) */}
-        <AnimalCrossingIsland
-          counts={counts}
-          showLabels={unlocked}
-          onOpenBulletin={() => setBulletinOpen(true)}
-        />
-
-        {/* 17 Villagers with Laptops, Walking Cycles, and Thought Bubbles */}
-        {Object.values(AGENTS_DATA).map(agent => (
-          <Villager
-            key={agent.id}
-            agent={agent}
-            status={agentStatuses[agent.id] || 'standby'}
-            isSelected={selectedAgent?.id === agent.id}
+        {/* Suspense wrapper for 3D GLB assets */}
+        <Suspense fallback={null}>
+          {/* Island Terrain and Room Divisions (Hedge Lounge & Bookcase Maze) */}
+          <AnimalCrossingIsland
+            counts={counts}
             showLabels={unlocked}
-            isAlerted={alertedAgentId === agent.id}
-            onClick={(a) => setSelectedAgent(a)}
+            onOpenBulletin={() => setBulletinOpen(true)}
           />
-        ))}
+
+          {/* 17 Villagers with Laptops, Walking Cycles, and Thought Bubbles */}
+          {Object.values(AGENTS_DATA).map(agent => (
+            <Villager
+              key={agent.id}
+              agent={agent}
+              status={agentStatuses[agent.id] || 'standby'}
+              isSelected={selectedAgent?.id === agent.id}
+              showLabels={unlocked}
+              isAlerted={alertedAgentId === agent.id}
+              onClick={(a) => setSelectedAgent(a)}
+            />
+          ))}
+        </Suspense>
       </Canvas>
 
       {/* 3. HTML NookPhone Style UI Overlay */}

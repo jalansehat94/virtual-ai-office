@@ -1,16 +1,9 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three'
+import ModelProp from './ModelProp'
 
 export default function AnimalCrossingIsland({ counts, showLabels = true, onOpenBulletin }) {
-  // Hedge block helper: Animal Crossing Boxwood Hedge Wall
-  const createHedge = (width, height, depth) => (
-    <mesh castShadow receiveShadow>
-      <boxGeometry args={[width, height, depth]} />
-      <meshStandardMaterial color="#2d6a4f" roughness={0.9} />
-    </mesh>
-  )
-
   return (
     <group>
       {/* ============================================================== */}
@@ -45,7 +38,7 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           <boxGeometry args={[18.1, 0.05, 7.6]} />
           <meshStandardMaterial color="#7ec850" roughness={0.8} />
         </mesh>
-        {/* Terracotta / Herringbone Wood Plank Floor */}
+        {/* Warm Terracotta / Wood Floor */}
         <mesh position={[0, 2.26, 0]} receiveShadow castShadow>
           <boxGeometry args={[17.4, 0.08, 6.9]} />
           <meshStandardMaterial color="#b5651d" roughness={0.6} />
@@ -89,7 +82,6 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       {/* ============================================================== */}
       {/* 2. ROOM DIVISION A: HEDGE WALLS (PEMBAGIAN RUANGAN LOUNGE)    */}
       {/* ============================================================== */}
-      {/* Exact replica of the hedge-enclosed Upper Lounge in the reference */}
       <group position={[0, 4.3, -8]}>
         {/* Back Hedge Wall */}
         <mesh position={[-0.8, 0.65, -3.1]} castShadow receiveShadow>
@@ -103,22 +95,19 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           <meshStandardMaterial color="#2d6a4f" roughness={0.9} />
         </mesh>
 
-        {/* Front Dividing Hedge Wall (Separates Upper Lounge from Lower Maze) */}
-        {/* Left segment */}
+        {/* Front Dividing Hedge Wall */}
         <mesh position={[-4.0, 0.65, 3.1]} castShadow receiveShadow>
           <boxGeometry args={[8.0, 1.3, 0.7]} />
           <meshStandardMaterial color="#2d6a4f" roughness={0.9} />
         </mesh>
-        {/* Middle segment hedge divider */}
         <mesh position={[2.5, 0.65, 3.1]} castShadow receiveShadow>
           <boxGeometry args={[3.2, 1.3, 0.7]} />
           <meshStandardMaterial color="#2d6a4f" roughness={0.9} />
         </mesh>
-        {/* Gap at X: 5.5 is for the Wooden Incline Stairs! */}
       </group>
 
       {/* ============================================================== */}
-      {/* 3. WOODEN INCLINE STAIRCASE (CONNECTING LOWER MAZE TO LOUNGE) */}
+      {/* 3. WOODEN INCLINE STAIRS                                       */}
       {/* ============================================================== */}
       <group position={[5.4, 2.3, -4.8]}>
         {[0, 1, 2, 3, 4, 5, 6].map(step => (
@@ -134,7 +123,6 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
         ))}
       </group>
 
-      {/* Lower incline connecting Tier 1 lawn to Tier 2 library */}
       <group position={[0, 0.6, 1.8]}>
         {[0, 1, 2, 3, 4, 5].map(step => (
           <mesh
@@ -150,10 +138,10 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       </group>
 
       {/* ============================================================== */}
-      {/* 4. UPPER LOUNGE FURNITURE (FROM REFERENCE IMAGE)               */}
+      {/* 4. UPPER LOUNGE (WITH 3D GLB MODELS & FIREPLACE)               */}
       {/* ============================================================== */}
       <group position={[-1, 4.3, -8]}>
-        {/* A. Brick Fireplace Centered at Back */}
+        {/* Brick Fireplace */}
         <group position={[0, 0, -2.4]}>
           <mesh position={[0, 0.7, 0]} castShadow receiveShadow>
             <boxGeometry args={[2.0, 1.4, 0.8]} />
@@ -164,18 +152,21 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
             <meshBasicMaterial color="#111827" />
           </mesh>
           <pointLight position={[0, 0.5, 0.3]} color="#ff7b00" intensity={2.5} distance={3} />
-          {/* Books and Plant on Mantelpiece */}
           <mesh position={[0, 1.5, 0]} castShadow>
             <boxGeometry args={[0.5, 0.2, 0.3]} />
             <meshStandardMaterial color="#2a9d8f" />
           </mesh>
-          <mesh position={[0.6, 1.52, 0]} castShadow>
-            <sphereGeometry args={[0.12, 12, 12]} />
-            <meshStandardMaterial color="#52b788" />
-          </mesh>
         </group>
 
-        {/* B. Dark Two-Seater Sofa on Left */}
+        {/* 3D GLB Coffee Table */}
+        <Suspense fallback={null}>
+          <ModelProp url="./models/tableCoffee.glb" position={[0, 0, 0]} scale={1.8} />
+          <ModelProp url="./models/chairModernCushion.glb" position={[-1.8, 0, 0]} rotation={[0, Math.PI / 2, 0]} scale={1.5} />
+          <ModelProp url="./models/chairModernCushion.glb" position={[1.8, 0, 0]} rotation={[0, -Math.PI / 2, 0]} scale={1.5} />
+          <ModelProp url="./models/lampRoundFloor.glb" position={[4.2, 0, -1.8]} scale={1.5} />
+        </Suspense>
+
+        {/* Dark Two-Seater Couch on Left */}
         <group position={[-4.5, 0, -1.8]}>
           <mesh position={[0, 0.4, 0]} castShadow receiveShadow>
             <boxGeometry args={[1.8, 0.65, 0.9]} />
@@ -187,61 +178,7 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           </mesh>
         </group>
 
-        {/* C. Pair of Wooden Armchairs with White Cushions */}
-        <group position={[-2.2, 0, 0]}>
-          {/* Chair 1 */}
-          <mesh position={[0, 0.35, 0]} castShadow receiveShadow>
-            <boxGeometry args={[0.9, 0.6, 0.85]} />
-            <meshStandardMaterial color="#c68b59" roughness={0.6} />
-          </mesh>
-          <mesh position={[0, 0.68, 0]} castShadow>
-            <boxGeometry args={[0.75, 0.12, 0.7]} />
-            <meshStandardMaterial color="#fefae0" roughness={0.9} />
-          </mesh>
-        </group>
-
-        {/* Chair 2 */}
-        <group position={[2.2, 0, 0]}>
-          <mesh position={[0, 0.35, 0]} castShadow receiveShadow>
-            <boxGeometry args={[0.9, 0.6, 0.85]} />
-            <meshStandardMaterial color="#c68b59" roughness={0.6} />
-          </mesh>
-          <mesh position={[0, 0.68, 0]} castShadow>
-            <boxGeometry args={[0.75, 0.12, 0.7]} />
-            <meshStandardMaterial color="#fefae0" roughness={0.9} />
-          </mesh>
-        </group>
-
-        {/* D. Center Wooden Coffee Table with White Potted Succulent */}
-        <group position={[0, 0, 0]}>
-          <mesh position={[0, 0.3, 0]} castShadow receiveShadow>
-            <boxGeometry args={[1.6, 0.45, 0.9]} />
-            <meshStandardMaterial color="#d4a373" roughness={0.6} />
-          </mesh>
-          <mesh position={[0, 0.58, 0]} castShadow>
-            <cylinderGeometry args={[0.12, 0.1, 0.15, 12]} />
-            <meshStandardMaterial color="#ffffff" roughness={0.2} />
-          </mesh>
-          <mesh position={[0, 0.72, 0]} castShadow>
-            <sphereGeometry args={[0.14, 8, 8]} />
-            <meshStandardMaterial color="#40916c" />
-          </mesh>
-        </group>
-
-        {/* E. Potted Plants: Monstera & Cocoa Tree (Right side of Lounge) */}
-        <group position={[4.2, 0, -1.8]}>
-          <mesh position={[0, 0.3, 0]} castShadow>
-            <cylinderGeometry args={[0.25, 0.2, 0.5, 14]} />
-            <meshStandardMaterial color="#7f5539" roughness={0.8} />
-          </mesh>
-          {/* Fan Palm / Monstera Leaves */}
-          <mesh position={[0, 1.1, 0]} castShadow>
-            <sphereGeometry args={[0.65, 10, 10]} />
-            <meshStandardMaterial color="#2d6a4f" roughness={0.8} />
-          </mesh>
-        </group>
-
-        {/* F. Wooden Coat Rack with Sun Hat */}
+        {/* Coat Rack */}
         <group position={[4.6, 0, 1.2]}>
           <mesh position={[0, 0.9, 0]} castShadow>
             <cylinderGeometry args={[0.04, 0.05, 1.8, 8]} />
@@ -255,70 +192,35 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       </group>
 
       {/* ============================================================== */}
-      {/* 5. ROOM DIVISION B: BOOKCASE MAZE (STUDIO & WORK CUBICLES)    */}
+      {/* 5. LOWER TERRACE BOOKCASE MAZE (AUTHENTIC 3D GLB BOOKCASES)    */}
       {/* ============================================================== */}
-      {/* L-shaped interconnected tall bookshelves creating maze corridors */}
       <group position={[0, 2.3, -1]}>
-        
-        {/* Helper function to generate authentic dark wood bookcase with books */}
-        {([
-          // Back Bookcase Wall (Left side)
-          { pos: [-5.2, 1.6, -3.0], rot: 0, w: 4.8 },
-          // Back Bookcase Wall (Center-Left)
-          { pos: [-0.6, 1.6, -3.0], rot: 0, w: 4.2 },
+        <Suspense fallback={null}>
+          {/* Back Row Bookcases */}
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-5.0, 0, -3.0]} scale={1.6} />
+          <ModelProp url="./models/bookcaseOpen.glb" position={[-1.2, 0, -3.0]} scale={1.6} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[2.6, 0, -3.0]} scale={1.6} />
 
-          // L-Shaped Divider 1 (Perpendicular into corridor)
-          { pos: [-3.0, 1.6, -1.2], rot: Math.PI / 2, w: 3.2 },
+          {/* L-Shaped Divider Bookcases */}
+          <ModelProp url="./models/bookcaseOpen.glb" position={[-3.0, 0, -1.2]} rotation={[0, Math.PI / 2, 0]} scale={1.6} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[1.5, 0, -1.2]} rotation={[0, Math.PI / 2, 0]} scale={1.6} />
 
-          // Front-facing Bookcase Row
-          { pos: [-5.2, 1.6, 0.6], rot: 0, w: 4.2 },
-          { pos: [0.2, 1.6, 0.6], rot: 0, w: 4.8 },
+          {/* Front Row Bookcases */}
+          <ModelProp url="./models/bookcaseOpen.glb" position={[-5.0, 0, 0.6]} scale={1.6} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[0.2, 0, 0.6]} scale={1.6} />
 
-          // L-Shaped Divider 2 (Right corridor)
-          { pos: [2.6, 1.6, -1.2], rot: Math.PI / 2, w: 3.2 },
-        ]).map((shelf, sIdx) => (
-          <group key={`shelf-${sIdx}`} position={shelf.pos} rotation={[0, shelf.rot, 0]}>
-            {/* Bookcase Wooden Frame */}
-            <mesh castShadow receiveShadow>
-              <boxGeometry args={[shelf.w, 3.2, 0.65]} />
-              <meshStandardMaterial color="#4a2810" roughness={0.5} />
-            </mesh>
-            {/* Book rows (Red, Navy, Gold, Teal bindings) */}
-            {[-1.0, -0.3, 0.4, 1.1].map((yOff, rIdx) => (
-              <mesh key={rIdx} position={[0, yOff, 0.05]} castShadow>
-                <boxGeometry args={[shelf.w - 0.3, 0.55, 0.6]} />
-                <meshStandardMaterial
-                  color={['#991b1b', '#1e3a8a', '#d97706', '#0f766e'][(sIdx + rIdx) % 4]}
-                  roughness={0.7}
-                />
-              </mesh>
-            ))}
-          </group>
-        ))}
-
-        {/* Small Table with open book stack in the maze nook */}
-        <group position={[-5.5, 0, -1.2]}>
-          <mesh position={[0, 0.3, 0]} castShadow receiveShadow>
-            <boxGeometry args={[0.8, 0.55, 0.65]} />
-            <meshStandardMaterial color="#5c3a21" />
-          </mesh>
-          <mesh position={[0, 0.62, 0]} castShadow>
-            <boxGeometry args={[0.4, 0.12, 0.3]} />
-            <meshStandardMaterial color="#fefae0" />
-          </mesh>
-        </group>
-
-        {/* Workstation Desks embedded inside the maze cubicles */}
-        {[-3, 3].map((x, i) => (
-          <group key={`desk-row-${i}`}>
-            {[-2, 0.2, 2, 3.8].map(z => (
-              <mesh key={`desk-${x}-${z}`} position={[x, 0.45, z + 0.35]} castShadow receiveShadow>
-                <boxGeometry args={[1.5, 0.1, 0.8]} />
-                <meshStandardMaterial color="#d4a373" roughness={0.7} />
-              </mesh>
-            ))}
-          </group>
-        ))}
+          {/* 3D GLB Desks in the Maze Nooks */}
+          {[-3, 3].map((x, i) => (
+            <group key={`desk-glb-${i}`}>
+              {[-2, 0.2, 2, 3.8].map(z => (
+                <group key={`d-${x}-${z}`} position={[x, 0, z + 0.35]}>
+                  <ModelProp url="./models/desk.glb" scale={1.3} />
+                  <ModelProp url="./models/chairDesk.glb" position={[0, 0, -0.45]} rotation={[0, Math.PI, 0]} scale={1.3} />
+                </group>
+              ))}
+            </group>
+          ))}
+        </Suspense>
       </group>
 
       {/* ============================================================== */}
@@ -330,7 +232,6 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           <boxGeometry args={[8.5, 0.9, 1.6]} />
           <meshStandardMaterial color="#3b1d0a" roughness={0.4} />
         </mesh>
-        {/* Coffee Mugs with Saucers */}
         {[-3, -1.5, 0, 1.5, 3].map((mx, idx) => (
           <group key={idx} position={[mx, 1.02, 0]}>
             <mesh castShadow>
@@ -344,7 +245,7 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           </group>
         ))}
 
-        {/* Low Boxwood Hedge Bordering the River */}
+        {/* Low Hedge Bordering the River */}
         <mesh position={[-5.5, 0.45, 1.8]} castShadow receiveShadow>
           <boxGeometry args={[5.5, 0.9, 0.6]} />
           <meshStandardMaterial color="#2d6a4f" roughness={0.9} />
@@ -402,33 +303,16 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       </group>
 
       {/* ============================================================== */}
-      {/* 8. PINE CEDAR TREES SURROUNDING THE CLIFFS                     */}
+      {/* 8. 3D GLB TREES SURROUNDING THE CLIFFS                         */}
       {/* ============================================================== */}
-      {[
-        [-9.5, 4.3, -9.5],
-        [-9.2, 2.3, -3.5],
-        [-10, 0.6, 4.5],
-        [9.5, 0.6, 4.5],
-      ].map(([tx, ty, tz], idx) => (
-        <group key={`tree-${idx}`} position={[tx, ty, tz]}>
-          <mesh position={[0, 1.0, 0]} castShadow>
-            <cylinderGeometry args={[0.22, 0.32, 2.0, 10]} />
-            <meshStandardMaterial color="#6f4e37" roughness={0.8} />
-          </mesh>
-          <mesh position={[0, 2.6, 0]} castShadow>
-            <coneGeometry args={[1.5, 2.0, 10]} />
-            <meshStandardMaterial color="#2d6a4f" roughness={0.9} />
-          </mesh>
-          <mesh position={[0, 3.8, 0]} castShadow>
-            <coneGeometry args={[1.2, 1.8, 10]} />
-            <meshStandardMaterial color="#40916c" roughness={0.9} />
-          </mesh>
-          <mesh position={[0, 4.8, 0]} castShadow>
-            <coneGeometry args={[0.8, 1.4, 10]} />
-            <meshStandardMaterial color="#52b788" roughness={0.9} />
-          </mesh>
-        </group>
-      ))}
+      <Suspense fallback={null}>
+        <ModelProp url="./models/tree_oak.glb" position={[-9.5, 4.3, -9.5]} scale={2.2} />
+        <ModelProp url="./models/tree_default.glb" position={[-9.2, 2.3, -3.5]} scale={2.0} />
+        <ModelProp url="./models/tree_cone.glb" position={[-10, 0.6, 4.5]} scale={2.0} />
+        <ModelProp url="./models/tree_oak.glb" position={[9.5, 0.6, 4.5]} scale={2.0} />
+        <ModelProp url="./models/plant_bush.glb" position={[-4, 0.6, 7.5]} scale={1.8} />
+        <ModelProp url="./models/plant_bush.glb" position={[4, 0.6, 7.5]} scale={1.8} />
+      </Suspense>
 
       {/* ============================================================== */}
       {/* 9. 3D HTML ZONE LABELS (WHEN UNLOCKED)                         */}
