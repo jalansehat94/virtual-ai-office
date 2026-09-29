@@ -13,14 +13,14 @@ function getNavigationPath(startPos, endPos) {
   }
 
   // Stairway 1 (Tier 1 <-> Tier 2, Center X: 0)
-  const s1Bottom = [0.0, 0.6, 4.2]
-  const s1Mid = [0.0, 1.5, 3.2]
+  const s1Bottom = [0.0, 0.6, 5.6]
+  const s1Mid = [0.0, 1.5, 3.8]
   const s1Top = [0.0, 2.4, 2.0]
 
   // Stairway 2 (Tier 2 <-> Tier 3, Right X: 11.5)
-  const s2Bottom = [11.5, 2.4, -9.5]
-  const s2Mid = [11.5, 3.5, -11.0]
-  const s2Top = [11.5, 4.6, -12.5]
+  const s2Bottom = [11.5, 2.4, -8.2]
+  const s2Mid = [11.5, 3.5, -10.0]
+  const s2Top = [11.5, 4.6, -11.8]
   const s2Lounge = [9.0, 4.6, -14.0]
 
   const path = []
@@ -56,10 +56,10 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
   const rightLegRef = useRef()
 
   // Target final position based on status
-  // When working at desk, sit on the chair behind the desk properly
+  // When working at desk, sit on the chair cushion behind the desk with zero clipping
   const finalPos = useMemo(() => {
     if (status === 'working') {
-      return [agent.deskPos[0], agent.deskPos[1] + 0.38, agent.deskPos[2] - 0.52]
+      return [agent.deskPos[0], agent.deskPos[1] + 0.44, agent.deskPos[2] - 0.74]
     }
     if (status === 'collaborating' && agent.meetingPos) {
       return agent.meetingPos
@@ -125,14 +125,14 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     const targetY = (moving ? target[1] : finalPos[1]) + hop
     groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, delta * 7)
 
-    // Rotation & Facing
+    // Rotation & Facing: At desk or bar stool, face +Z (into desk/counter)
     if (moving) {
       const targetAngle = Math.atan2(dx, dz)
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetAngle, delta * 7)
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, 0.12, delta * 6)
     } else {
-      // At desk: face forward into laptop (0 rad). At Roost: face front/viewer (0 or PI)
-      const idleRot = status === 'working' ? 0 : Math.PI
+      const isFacingDeskOrBar = status === 'working' || (finalPos[2] >= 6.8 && finalPos[2] <= 7.2)
+      const idleRot = isFacingDeskOrBar ? 0 : Math.PI
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, idleRot, delta * 4)
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, 0, delta * 5)
     }
@@ -153,9 +153,11 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     }
 
     // SITTING VS WALKING LEGS:
+    // Sits if working at desk or resting on a stool/chair (height > 0.9)
+    const isSitting = !moving && (status === 'working' || finalPos[1] > 0.9)
     if (leftLegRef.current && rightLegRef.current) {
-      if (status === 'working' && !moving) {
-        // PROPER SITTING POSE: Legs bend forward 90 degrees onto chair cushion!
+      if (isSitting) {
+        // PROPER SITTING POSE: Legs bend forward 90 degrees onto chair/stool cushion!
         leftLegRef.current.rotation.x = THREE.MathUtils.lerp(leftLegRef.current.rotation.x, -Math.PI / 2.3, delta * 8)
         rightLegRef.current.rotation.x = THREE.MathUtils.lerp(rightLegRef.current.rotation.x, -Math.PI / 2.3, delta * 8)
       } else if (moving) {
@@ -171,10 +173,10 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     if (leftArmRef.current && rightArmRef.current) {
       if (status === 'working' && !moving) {
         // Arms reach forward onto laptop keyboard with clacking motion
-        leftArmRef.current.rotation.x = -1.05 + Math.sin(t * 15 + idx) * 0.12
-        rightArmRef.current.rotation.x = -1.05 + Math.cos(t * 15 + idx) * 0.12
-        leftArmRef.current.rotation.y = 0.25
-        rightArmRef.current.rotation.y = -0.25
+        leftArmRef.current.rotation.x = -1.15 + Math.sin(t * 15 + idx) * 0.12
+        rightArmRef.current.rotation.x = -1.15 + Math.cos(t * 15 + idx) * 0.12
+        leftArmRef.current.rotation.y = 0.30
+        rightArmRef.current.rotation.y = -0.30
       } else if (moving) {
         leftArmRef.current.rotation.x = Math.sin(t * 12 + idx) * 0.5
         rightArmRef.current.rotation.x = -Math.sin(t * 12 + idx) * 0.5
