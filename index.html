@@ -382,41 +382,41 @@
 
     // --- ANIMAL CROSSING VILLAGERS ROSTER ---
     const VILLAGERS_CONFIG = {
-      ai: { name: '@Ai (PM)', species: 'bunny', role: 'Executive PM & Teman Masa Kecil', deskPos: [0, 8.8, 0], pantryPos: [0, 0.8, -1.5], color: 0xffb7c5, sweater: 0xff6b8b, emoji: '🐰💖', skills: ['superadmin_access', 'autonomous_orchestrator'] },
+      ai: { name: '@Ai (PM)', species: 'bunny', role: 'Executive PM & Teman Masa Kecil', deskPos: [0, 4.6, -7], pantryPos: [2, 0.6, 6], color: 0xffb7c5, sweater: 0xff6b8b, emoji: '🐰💖', skills: ['superadmin_access', 'autonomous_orchestrator'] },
       
-      // Divisi Akademik
-      luna: { name: '@Luna (Prof. LUNA)', species: 'owl_cat', role: 'Koordinator Riset Akademik', deskPos: [-4, 4.8, -3], pantryPos: [-5, 0.8, -2], color: 0x9d71e8, sweater: 0x6d28d9, emoji: '🦉🎓', skills: ['luna-academic-grounding', 'heru-academic-voice'] },
-      kutu: { name: '@Kutu', species: 'hedgehog', role: 'Peneliti Jurnal Scopus Q1', deskPos: [-4, 4.8, -1.2], pantryPos: [-4, 0.8, -2], color: 0xc49b71, sweater: 0x8b5a2b, emoji: '🦔📚', skills: ['literature-search', 'scopus-validator'] },
-      crayon: { name: '@Crayon', species: 'bear', role: 'Pelukis Grafik Ilmiah 600 DPI', deskPos: [-2, 4.8, -3], pantryPos: [-3, 0.8, -2], color: 0xffb347, sweater: 0xff7043, emoji: '🐻🎨', skills: ['scientific-figure-making'] },
-      kucing: { name: '@Kucing', species: 'cat', role: 'Penjaga Integritas Anti-Turnitin', deskPos: [-2, 4.8, -1.2], pantryPos: [-2, 0.8, 2], color: 0xffa07a, sweater: 0xf06292, emoji: '🐱🛡️', skills: ['aigc-detector-rewriter'] },
-      mata: { name: '@Mata', species: 'bird', role: 'Penonton Video YouTube', deskPos: [-2, 4.8, 0], pantryPos: [-1, 0.8, 2], color: 0x4fc3f7, sweater: 0x0288d1, emoji: '🐧🍿', skills: ['claude-video'] },
+      // Divisi Akademik (Tier 2 Workspace: Z= -2 to 2)
+      luna: { name: '@Luna (Prof. LUNA)', species: 'owl_cat', role: 'Koordinator Riset Akademik', deskPos: [-4, 2.6, -2], pantryPos: [-5, 0.6, 6], color: 0x9d71e8, sweater: 0x6d28d9, emoji: '🦉🎓', skills: ['luna-academic-grounding', 'heru-academic-voice'] },
+      kutu: { name: '@Kutu', species: 'hedgehog', role: 'Peneliti Jurnal Scopus Q1', deskPos: [-4, 2.6, 0], pantryPos: [-4, 0.6, 7], color: 0xc49b71, sweater: 0x8b5a2b, emoji: '🦔📚', skills: ['literature-search', 'scopus-validator'] },
+      crayon: { name: '@Crayon', species: 'bear', role: 'Pelukis Grafik Ilmiah 600 DPI', deskPos: [-2, 2.6, -2], pantryPos: [-3, 0.6, 6], color: 0xffb347, sweater: 0xff7043, emoji: '🐻🎨', skills: ['scientific-figure-making'] },
+      kucing: { name: '@Kucing', species: 'cat', role: 'Penjaga Integritas Anti-Turnitin', deskPos: [-2, 2.6, 0], pantryPos: [-2, 0.6, 8], color: 0xffa07a, sweater: 0xf06292, emoji: '🐱🛡️', skills: ['aigc-detector-rewriter'] },
+      mata: { name: '@Mata', species: 'bird', role: 'Penonton Video YouTube', deskPos: [-2, 2.6, 2], pantryPos: [-1, 0.6, 7], color: 0x4fc3f7, sweater: 0x0288d1, emoji: '🐧🍿', skills: ['claude-video'] },
 
       // Divisi Web Dev
-      mochi: { name: '@Mochi', species: 'puppy', role: 'Lead Architect GradiEnt Studio', deskPos: [2, 4.8, -3], pantryPos: [1, 0.8, -2], color: 0xffe082, sweater: 0x00acc1, emoji: '🐕💻', skills: ['building-data-apps', 'typesafe-ai'] },
-      piksel: { name: '@Piksel', species: 'raccoon', role: 'Spesialis UI/UX Tailwind (Nook Style)', deskPos: [4, 4.8, -3], pantryPos: [2, 0.8, -2], color: 0x8d6e63, sweater: 0x26a69a, emoji: '🦝✨', skills: ['cult-ui', 'fast-gui-orchestrator'] },
-      kunci: { name: '@Kunci', species: 'badger', role: 'DBA Supabase PostgreSQL', deskPos: [4, 4.8, -1.2], pantryPos: [3, 0.8, -2], color: 0x90a4ae, sweater: 0x37474f, emoji: '🦡🔑', skills: ['supabase-integration'] },
+      mochi: { name: '@Mochi', species: 'puppy', role: 'Lead Architect GradiEnt Studio', deskPos: [2, 2.6, -2], pantryPos: [1, 0.6, 6], color: 0xffe082, sweater: 0x00acc1, emoji: '🐕💻', skills: ['building-data-apps', 'typesafe-ai'] },
+      piksel: { name: '@Piksel', species: 'raccoon', role: 'Spesialis UI/UX Tailwind', deskPos: [4, 2.6, -2], pantryPos: [2, 0.6, 7], color: 0x8d6e63, sweater: 0x26a69a, emoji: '🦝✨', skills: ['cult-ui', 'fast-gui-orchestrator'] },
+      kunci: { name: '@Kunci', species: 'badger', role: 'DBA Supabase PostgreSQL', deskPos: [4, 2.6, 0], pantryPos: [3, 0.6, 6], color: 0x90a4ae, sweater: 0x37474f, emoji: '🦡🔑', skills: ['supabase-integration'] },
 
       // Divisi BIM Lapangan
-      kaktus: { name: '@Kaktus', species: 'cactus', role: 'BIM & AEC Engineering Lead', deskPos: [-4, 4.8, 2], pantryPos: [-4, 0.8, 0.5], color: 0x81c784, sweater: 0x2e7d32, emoji: '🌵🏗️', skills: ['ddc-construction-suite', 'revit-bim-connector'] },
-      tabrak: { name: '@Tabrak', species: 'bulldog', role: 'Tukang Razia Clash 3D', deskPos: [-4, 4.8, 3.8], pantryPos: [-3, 0.8, 0.5], color: 0xd7ccc8, sweater: 0xffb74d, emoji: '🐶💥', skills: ['clash-detection'] },
-      cuan: { name: '@Cuan', species: 'cat_lucky', role: 'Estimator RAB & Volume QTO', deskPos: [-2, 4.8, 2], pantryPos: [-2, 0.8, 0.5], color: 0xfff9c4, sweater: 0xffd54f, emoji: '🐱💰', skills: ['qto-estimator', 'rab-calculator'] },
+      kaktus: { name: '@Kaktus', species: 'cactus', role: 'BIM & AEC Engineering Lead', deskPos: [-4, 2.6, 2], pantryPos: [-4, 0.6, 8], color: 0x81c784, sweater: 0x2e7d32, emoji: '🌵🏗️', skills: ['ddc-construction-suite', 'revit-bim-connector'] },
+      tabrak: { name: '@Tabrak', species: 'bulldog', role: 'Tukang Razia Clash 3D', deskPos: [-4, 2.6, 4], pantryPos: [-3, 0.6, 7], color: 0xd7ccc8, sweater: 0xffb74d, emoji: '🐶💥', skills: ['clash-detection'] },
+      cuan: { name: '@Cuan', species: 'cat_lucky', role: 'Estimator RAB & Volume QTO', deskPos: [-2, 2.6, 4], pantryPos: [-2, 0.6, 6], color: 0xfff9c4, sweater: 0xffd54f, emoji: '🐱💰', skills: ['qto-estimator', 'rab-calculator'] },
 
       // Divisi Trading Mas Amba
-      masamba: { name: '@MasAmba', species: 'wolf', role: 'Lead Quantitative Trader', deskPos: [2, 4.8, 2], pantryPos: [1, 0.8, 0.5], color: 0x78909c, sweater: 0xffb300, emoji: '🐺📈', skills: ['algo-trading-quant', 'ml-best-practices'] },
-      lilin: { name: '@Lilin', species: 'red_panda', role: 'Chartist & SMC Specialist', deskPos: [4, 4.8, 2], pantryPos: [2, 0.8, 0.5], color: 0xd84315, sweater: 0xff8a65, emoji: '🐼🕯️', skills: ['smart-money-concepts'] },
-      bandar: { name: '@Bandar', species: 'bear_big', role: 'Whale Tracker & Sentiment', deskPos: [2, 4.8, 3.8], pantryPos: [3, 0.8, 0.5], color: 0x546e7a, sweater: 0x1e88e5, emoji: '🐻🐋', skills: ['sentiment-analysis'] },
-      botik: { name: '@Botik', species: 'robo_pup', role: 'Algo & Python Backtester', deskPos: [4, 4.8, 3.8], pantryPos: [4, 0.8, 0.5], color: 0xaed581, sweater: 0x689f38, emoji: '🐶⚡', skills: ['backtest-engine'] },
-      rem: { name: '@Rem', species: 'turtle', role: 'Chief Risk Officer (Anti-MC)', deskPos: [2, 4.8, 0], pantryPos: [5, 0.8, 0.5], color: 0x80cbc4, sweater: 0xe53935, emoji: '🐢🛑', skills: ['risk-management', 'position-sizer'] }
+      masamba: { name: '@MasAmba', species: 'wolf', role: 'Lead Quantitative Trader', deskPos: [2, 2.6, 2], pantryPos: [1, 0.6, 8], color: 0x78909c, sweater: 0xffb300, emoji: '🐺📈', skills: ['algo-trading-quant', 'ml-best-practices'] },
+      lilin: { name: '@Lilin', species: 'red_panda', role: 'Chartist & SMC Specialist', deskPos: [4, 2.6, 2], pantryPos: [2, 0.6, 7], color: 0xd84315, sweater: 0xff8a65, emoji: '🐼🕯️', skills: ['smart-money-concepts'] },
+      bandar: { name: '@Bandar', species: 'bear_big', role: 'Whale Tracker & Sentiment', deskPos: [2, 2.6, 4], pantryPos: [3, 0.6, 6], color: 0x546e7a, sweater: 0x1e88e5, emoji: '🐻🐋', skills: ['sentiment-analysis'] },
+      botik: { name: '@Botik', species: 'robo_pup', role: 'Algo & Python Backtester', deskPos: [4, 2.6, 4], pantryPos: [4, 0.6, 8], color: 0xaed581, sweater: 0x689f38, emoji: '🐶⚡', skills: ['backtest-engine'] },
+      rem: { name: '@Rem', species: 'turtle', role: 'Chief Risk Officer', deskPos: [0, 2.6, 4], pantryPos: [5, 0.6, 7], color: 0x80cbc4, sweater: 0xe53935, emoji: '🐢🛑', skills: ['risk-management', 'position-sizer'] }
     };
 
     // --- THREE.JS SCENE SETUP (WARM ANIMAL CROSSING LIGHTING) ---
     const scene = new THREE.Scene();
-    // Warm pastel sunny sky
-    scene.background = new THREE.Color(0xa2e8dd);
-    scene.fog = new THREE.FogExp2(0xa2e8dd, 0.015);
+    // Warm pastel sunny sky (Animal Crossing 5 PM vibe)
+    scene.background = new THREE.Color(0xb2d8d8);
+    scene.fog = new THREE.FogExp2(0xb2d8d8, 0.015);
 
-    const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(24, 20, 28);
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(22, 16, 24);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -428,161 +428,185 @@
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2.05;
-    controls.target.set(0, 5, 0);
+    controls.maxPolarAngle = Math.PI / 2.1;
+    controls.target.set(0, 2, 0);
 
     // --- COZY ANIMAL CROSSING SUNLIGHT & SKY LIGHT ---
-    const hemiLight = new THREE.HemisphereLight(0xfff6e5, 0x76cdbe, 1.3);
+    const hemiLight = new THREE.HemisphereLight(0xfff6e5, 0x8fbc8f, 1.1);
     scene.add(hemiLight);
 
-    const sun = new THREE.DirectionalLight(0xfffaed, 1.4);
-    sun.position.set(18, 30, 18);
+    const sun = new THREE.DirectionalLight(0xfff5db, 1.4);
+    sun.position.set(20, 35, 10);
     sun.castShadow = true;
     sun.shadow.mapSize.width = 2048;
     sun.shadow.mapSize.height = 2048;
-    const d = 16;
+    const d = 20;
     sun.shadow.camera.left = -d; sun.shadow.camera.right = d;
     sun.shadow.camera.top = d; sun.shadow.camera.bottom = -d;
     scene.add(sun);
 
-    // Warm Cottage Spotlights
-    const p3 = new THREE.PointLight(0xffdfba, 1.6, 14); p3.position.set(0, 10.5, 0); scene.add(p3); // Ruang Bos
-    const p2 = new THREE.PointLight(0xffeedd, 1.8, 16); p2.position.set(0, 6.5, 0); scene.add(p2);  // Creative Studio
-    const p1 = new THREE.PointLight(0xffcba4, 1.8, 14); p1.position.set(0, 2.5, 0); scene.add(p1);  // Roost Cafe
+    // --- ANIMAL CROSSING TERRACED DIORAMA (3 CLIFF TIERS) ---
+    const cliffGrassMat = new THREE.MeshStandardMaterial({ color: 0x8fcc70, roughness: 1.0 });
+    const cliffDirtMat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.9 });
+    const woodDeckMat = new THREE.MeshStandardMaterial({ color: 0xc88b5e, roughness: 0.6 });
+    const logFenceMat = new THREE.MeshStandardMaterial({ color: 0x9c6644, roughness: 0.8 });
+    const riverMat = new THREE.MeshStandardMaterial({ color: 0x64b5f6, roughness: 0.1, transparent: true, opacity: 0.8 });
 
-    // --- ANIMAL CROSSING COTTAGE STRUCTURE (3 TIERS) ---
-    // Warm natural cedar wood & pastel grass textures
-    const floorGeo = new THREE.BoxGeometry(14, 0.45, 12);
-    
-    const matGrass = new THREE.MeshStandardMaterial({ color: 0x7ec850, roughness: 0.8 }); // Grass for island vibe
-    const matWoodFloor1 = new THREE.MeshStandardMaterial({ color: 0xc68b59, roughness: 0.6 }); // Roost warm parquet
-    const matWoodFloor2 = new THREE.MeshStandardMaterial({ color: 0xdeb887, roughness: 0.5 }); // Studio light pine
-    const matWoodFloor3 = new THREE.MeshStandardMaterial({ color: 0x9c6644, roughness: 0.5 }); // Boss loft cedar
+    // River at the front
+    const river = new THREE.Mesh(new THREE.BoxGeometry(30, 0.5, 8), riverMat);
+    river.position.set(0, -0.25, 12);
+    scene.add(river);
 
-    const logColumnMat = new THREE.MeshStandardMaterial({ color: 0x7f5539, roughness: 0.7 });
-    const fenceMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 }); // Cute white picket fence
+    // Helper to create a cliff block with wooden deck and log fences
+    function createTier(width, depth, yLevel, zPos, hasDeck, addFences) {
+      const group = new THREE.Group();
+      
+      // Grass Cliff Block
+      const cliff = new THREE.Mesh(new THREE.BoxGeometry(width, yLevel, depth), cliffDirtMat);
+      cliff.position.y = yLevel / 2;
+      cliff.castShadow = true; cliff.receiveShadow = true;
+      
+      // Grass Top
+      const grassTop = new THREE.Mesh(new THREE.BoxGeometry(width, 0.1, depth), cliffGrassMat);
+      grassTop.position.y = yLevel + 0.05;
+      grassTop.receiveShadow = true;
+      group.add(cliff);
+      group.add(grassTop);
 
-    function createCottageFloor(yPos, fMat, isTop = false) {
-      // Main wooden deck
-      const f = new THREE.Mesh(floorGeo, fMat);
-      f.position.y = yPos;
-      f.receiveShadow = true;
-      scene.add(f);
+      let floorY = yLevel + 0.1;
 
-      // Cute round log support columns
-      const colGeo = new THREE.CylinderGeometry(0.3, 0.35, 3.8, 16);
-      [[-6.6, -5.6], [6.6, -5.6], [-6.6, 5.6], [6.6, 5.6]].forEach(c => {
-        const col = new THREE.Mesh(colGeo, logColumnMat);
-        col.position.set(c[0], yPos + 1.9, c[1]);
-        col.castShadow = true;
-        scene.add(col);
-      });
+      // Wooden Deck
+      if (hasDeck) {
+        const deck = new THREE.Mesh(new THREE.BoxGeometry(width - 0.4, 0.1, depth - 0.4), woodDeckMat);
+        deck.position.y = yLevel + 0.1;
+        deck.receiveShadow = true;
+        group.add(deck);
+        floorY += 0.05;
+      }
 
-      // White picket perimeter railings
-      const railGeo = new THREE.BoxGeometry(13.6, 0.8, 0.1);
-      const railBack = new THREE.Mesh(railGeo, fenceMat);
-      railBack.position.set(0, yPos + 0.6, -5.8);
-      scene.add(railBack);
+      // Log Fences around the edge
+      if (addFences) {
+        const fenceGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.6, 8);
+        const addFence = (x, z) => {
+          const f = new THREE.Mesh(fenceGeo, logFenceMat);
+          f.position.set(x, floorY + 0.3, z);
+          f.castShadow = true;
+          group.add(f);
+        };
+        // Side fences
+        for (let z = -depth/2 + 0.4; z <= depth/2 - 0.4; z += 0.8) {
+          addFence(-width/2 + 0.3, z);
+          addFence(width/2 - 0.3, z);
+        }
+        // Back fence
+        for (let x = -width/2 + 0.3; x <= width/2 - 0.3; x += 0.8) {
+          addFence(x, -depth/2 + 0.3);
+        }
+      }
 
-      const railSideGeo = new THREE.BoxGeometry(0.1, 0.8, 11.6);
-      const railLeft = new THREE.Mesh(railSideGeo, fenceMat);
-      railLeft.position.set(-6.8, yPos + 0.6, 0);
-      scene.add(railLeft);
+      group.position.z = zPos;
+      scene.add(group);
+      return floorY;
     }
 
-    createCottageFloor(0, matWoodFloor1); // Lt 1: The Roost Cafe
-    createCottageFloor(4, matWoodFloor2); // Lt 2: Creative Studio
-    createCottageFloor(8, matWoodFloor3); // Lt 3: Boss Loft
+    const yTier1 = createTier(18, 8, 0.5, 6, false, false);   // Pantry (Grass)
+    const yTier2 = createTier(14, 8, 2.5, -2, true, true);    // Studio (Wooden Deck)
+    const yTier3 = createTier(14, 6, 4.5, -9, true, true);    // Boss Area (Wooden Deck)
 
-    // Cozy Slanted A-Frame Cottage Roof
-    const roofLeftGeo = new THREE.BoxGeometry(15, 0.3, 7.5);
-    const roofMat = new THREE.MeshStandardMaterial({ color: 0x2a9d8f, roughness: 0.5 }); // Iconic AC teal roof tiles
+    // Wooden Stairs connecting tiers
+    function createStairs(x, z, yStart, yEnd, length) {
+      const stepCount = 6;
+      const stepWidth = 1.6;
+      const stepHeight = (yEnd - yStart) / stepCount;
+      const stepDepth = length / stepCount;
+      
+      const stairGroup = new THREE.Group();
+      for (let i = 0; i < stepCount; i++) {
+        const step = new THREE.Mesh(new THREE.BoxGeometry(stepWidth, 0.15, stepDepth), woodDeckMat);
+        step.position.set(x, yStart + i * stepHeight + stepHeight/2, z + length/2 - i * stepDepth - stepDepth/2);
+        step.castShadow = true; step.receiveShadow = true;
+        stairGroup.add(step);
+      }
+      scene.add(stairGroup);
+    }
     
-    const roofL = new THREE.Mesh(roofLeftGeo, roofMat);
-    roofL.position.set(0, 13.2, -3.2);
-    roofL.rotation.x = Math.PI / 7;
-    roofL.castShadow = true;
-    scene.add(roofL);
+    createStairs(0, 1, yTier1, yTier2, 2);  // Stairs from Tier 1 to 2
+    createStairs(0, -6.5, yTier2, yTier3, 1.5); // Stairs from Tier 2 to 3
 
-    const roofR = new THREE.Mesh(roofLeftGeo, roofMat);
-    roofR.position.set(0, 13.2, 3.2);
-    roofR.rotation.x = -Math.PI / 7;
-    roofR.castShadow = true;
-    scene.add(roofR);
+    // Pine Trees (Background)
+    function createPineTree(x, z, y) {
+      const tree = new THREE.Group();
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.3, 1.5, 8), logFenceMat);
+      trunk.position.y = 0.75; trunk.castShadow = true;
+      const leaves = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2.5, 8), new THREE.MeshStandardMaterial({ color: 0x3a7d44, roughness: 0.9 }));
+      leaves.position.y = 2.2; leaves.castShadow = true;
+      const leavesTop = new THREE.Mesh(new THREE.ConeGeometry(0.9, 2.0, 8), new THREE.MeshStandardMaterial({ color: 0x4a9d54, roughness: 0.9 }));
+      leavesTop.position.y = 3.2; leavesTop.castShadow = true;
+      tree.add(trunk, leaves, leavesTop);
+      tree.position.set(x, y, z);
+      scene.add(tree);
+    }
+    createPineTree(-8, -11, 4.5); createPineTree(8, -10, 4.5); createPineTree(-7, -4, 2.5); createPineTree(7, -3, 2.5);
 
-    // --- COZY DECORATIONS (ANIMAL CROSSING FURNITURE) ---
-    // 1. Loft Ruang Bos (@Ai & Heru)
-    const bossDeskGeo = new THREE.BoxGeometry(3.6, 0.2, 1.8);
-    const bossDeskMat = new THREE.MeshStandardMaterial({ color: 0x582f0e, roughness: 0.4 });
-    const bDesk = new THREE.Mesh(bossDeskGeo, bossDeskMat);
-    bDesk.position.set(0, 8.8, 0);
-    bDesk.castShadow = true; bDesk.receiveShadow = true;
-    scene.add(bDesk);
+    // --- ANIMAL CROSSING FURNITURE DECORATIONS ---
+    
+    // Tier 3 (Boss Area): Massive Bookshelves, Fireplace, Rocking Chair
+    const bookShelfGeo = new THREE.BoxGeometry(3.8, 4, 0.8);
+    const bookShelfMat = new THREE.MeshStandardMaterial({ color: 0x5c3a21, roughness: 0.6 }); // Dark wood
+    function createBookshelf(x, z) {
+      const shelf = new THREE.Mesh(bookShelfGeo, bookShelfMat);
+      shelf.position.set(x, yTier3 + 2, z);
+      shelf.castShadow = true; shelf.receiveShadow = true;
+      scene.add(shelf);
+      
+      // Fake book rows (colorful bands)
+      const books = new THREE.Mesh(new THREE.BoxGeometry(3.6, 3.6, 0.85), new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.8 }));
+      books.position.set(x, yTier3 + 2, z);
+      scene.add(books);
+    }
+    createBookshelf(-4, -11.5); createBookshelf(0, -11.5); createBookshelf(4, -11.5);
 
-    // Cute Apple / Giant Leaf Trophy on Boss Desk
-    const leafTrophyGeo = new THREE.DodecahedronGeometry(0.65, 1);
-    const leafTrophyMat = new THREE.MeshStandardMaterial({ color: 0x82d8c7, roughness: 0.2, metalness: 0.2 });
-    const leafTrophy = new THREE.Mesh(leafTrophyGeo, leafTrophyMat);
-    leafTrophy.position.set(0, 10.3, 0);
-    scene.add(leafTrophy);
+    // Cozy Fireplace
+    const fireplace = new THREE.Mesh(new THREE.BoxGeometry(2, 1.2, 1), new THREE.MeshStandardMaterial({ color: 0x9c4a36, roughness: 0.9 }));
+    fireplace.position.set(3, yTier3 + 0.6, -7);
+    fireplace.castShadow = true; scene.add(fireplace);
+    
+    // Teapot on Fireplace
+    const teapot = new THREE.Mesh(new THREE.SphereGeometry(0.2, 12, 12), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+    teapot.position.set(3, yTier3 + 1.4, -7); scene.add(teapot);
 
-    // 2. Creative Studio Desks (Lt 2)
-    const studioDeskMat = new THREE.MeshStandardMaterial({ color: 0xddb892, roughness: 0.5 });
-    const cuteMonitorMat = new THREE.MeshStandardMaterial({ color: 0xfff1e6, roughness: 0.3 });
-    const screenGlowMat = new THREE.MeshBasicMaterial({ color: 0x76cdbe });
+    // Rattan Tables & Chairs (Tier 3 & 2)
+    const rattanMat = new THREE.MeshStandardMaterial({ color: 0xc89f65, roughness: 0.8 });
+    const cushionMat = new THREE.MeshStandardMaterial({ color: 0xfffcf2 });
+    function createRattanSet(x, z, yLvl) {
+      const table = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.6, 16), rattanMat);
+      table.position.set(x, yLvl + 0.3, z); table.castShadow = true; scene.add(table);
+      
+      const chair1 = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.6, 0.7), rattanMat);
+      chair1.position.set(x - 1, yLvl + 0.3, z); chair1.castShadow = true; scene.add(chair1);
+      const c1 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.1, 0.6), cushionMat);
+      c1.position.set(x - 1, yLvl + 0.65, z); scene.add(c1);
 
+      const chair2 = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.6, 0.7), rattanMat);
+      chair2.position.set(x + 1, yLvl + 0.3, z); chair2.castShadow = true; scene.add(chair2);
+      const c2 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.1, 0.6), cushionMat);
+      c2.position.set(x + 1, yLvl + 0.65, z); scene.add(c2);
+    }
+    createRattanSet(-3, -8, yTier3); // Boss sitting area
+    
+    // Creative Studio Desks (Tier 2)
     function createStudioDesk(x, z) {
-      const d = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.18, 1.3), studioDeskMat);
-      d.position.set(x, 4.8, z);
-      d.castShadow = true; d.receiveShadow = true;
-      scene.add(d);
-
-      // Cute laptop with mint screen
-      const lap = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.45, 0.05), cuteMonitorMat);
-      lap.position.set(x, 5.15, z - 0.35);
-      scene.add(lap);
-
-      const scr = new THREE.Mesh(new THREE.PlaneGeometry(0.64, 0.38), screenGlowMat);
-      scr.position.set(x, 5.15, z - 0.32);
-      scene.add(scr);
-
-      // Potted Monstera / Tiny Plant
-      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.09, 0.2, 12), new THREE.MeshStandardMaterial({ color: 0xd97736 }));
-      pot.position.set(x + 0.8, 5.0, z - 0.2);
-      scene.add(pot);
-
-      const plant = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 8), new THREE.MeshStandardMaterial({ color: 0x52b788 }));
-      plant.position.set(x + 0.8, 5.18, z - 0.2);
-      scene.add(plant);
+      const d = new THREE.Mesh(new THREE.BoxGeometry(2, 0.15, 1.2), logFenceMat);
+      d.position.set(x, yTier2 + 0.7, z); d.castShadow = true; scene.add(d);
+      
+      const lap = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.4, 0.05), new THREE.MeshStandardMaterial({ color: 0xf1f5f9 }));
+      lap.position.set(x, yTier2 + 1.0, z - 0.2); scene.add(lap);
     }
+    createStudioDesk(-3, -2); createStudioDesk(-3, 1); createStudioDesk(3, -2); createStudioDesk(3, 1);
 
-    createStudioDesk(-4, -2.5);
-    createStudioDesk(-2, -2.5);
-    createStudioDesk(2, -2.5);
-    createStudioDesk(4, -2.5);
-    createStudioDesk(-4, 2.5);
-    createStudioDesk(-2, 2.5);
-    createStudioDesk(2, 2.5);
-    createStudioDesk(4, 2.5);
-
-    // 3. The Roost Cafe & Bakery (Lt 1)
-    const cafeCounter = new THREE.Mesh(new THREE.BoxGeometry(8.5, 0.9, 1.8), new THREE.MeshStandardMaterial({ color: 0x4a2810, roughness: 0.4 }));
-    cafeCounter.position.set(0, 0.8, -2);
-    cafeCounter.castShadow = true;
-    scene.add(cafeCounter);
-
-    // Coffee Mugs with tiny steam
-    for (let i = -3; i <= 3; i += 1.5) {
-      const mug = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.07, 0.14, 12), new THREE.MeshStandardMaterial({ color: 0xffffff }));
-      mug.position.set(i, 1.35, -2);
-      scene.add(mug);
-    }
-
-    // Cozy Plush Lounge Sofa in Roost
-    const sofa = new THREE.Mesh(new THREE.BoxGeometry(7, 0.5, 2.5), new THREE.MeshStandardMaterial({ color: 0x84a98c, roughness: 0.8 }));
-    sofa.position.set(0, 0.55, 2.2);
-    sofa.castShadow = true;
-    scene.add(sofa);
+    // Roost Cafe Counter (Tier 1)
+    const cafeCounter = new THREE.Mesh(new THREE.BoxGeometry(6, 0.9, 1.5), logFenceMat);
+    cafeCounter.position.set(0, yTier1 + 0.45, 5); cafeCounter.castShadow = true; scene.add(cafeCounter);
 
     // --- 🍃 ANIMAL CROSSING VILLAGERS (CHUBBY CHIBI 3D MODELS) ---
     const villagerMeshes = [];
@@ -727,8 +751,8 @@
       if (data.counts) {
         document.getElementById('counterWorking').innerText = data.counts.working;
         document.getElementById('counterStandby').innerText = data.counts.standby;
-        document.getElementById('badgeWorkspaceText').innerText = `Lt 2: Creative Studio (${data.counts.working} kerja)`;
-        document.getElementById('badgePantryText').innerText = `Lt 1: Roost Cafe (${data.counts.standby} santai)`;
+        document.getElementById('badgeWorkspaceText').innerText = `Tier 2: Creative Studio (${data.counts.working} kerja)`;
+        document.getElementById('badgePantryText').innerText = `Tier 1: Roost Cafe (${data.counts.standby} santai)`;
       }
 
       Object.keys(data.agents).forEach(id => {
@@ -743,7 +767,7 @@
 
         if (newStatus === 'working') {
           animateVillagerTo(villager, cfg.deskPos);
-          villager.userData.currentFloor = cfg.deskPos[1] > 6 ? 3 : 2;
+          villager.userData.currentFloor = cfg.deskPos[1] > 3.0 ? 3 : 2;
         } else {
           animateVillagerTo(villager, cfg.pantryPos);
           villager.userData.currentFloor = 1;
@@ -781,8 +805,8 @@
       });
       document.getElementById('counterWorking').innerText = wCount;
       document.getElementById('counterStandby').innerText = sCount;
-      document.getElementById('badgeWorkspaceText').innerText = `Lt 2: Creative Studio (${wCount} kerja)`;
-      document.getElementById('badgePantryText').innerText = `Lt 1: Roost Cafe (${sCount} santai)`;
+      document.getElementById('badgeWorkspaceText').innerText = `Tier 2: Creative Studio (${wCount} kerja)`;
+      document.getElementById('badgePantryText').innerText = `Tier 1: Roost Cafe (${sCount} santai)`;
 
       addCommsLog(`🍃 [Dispatch] ${villager.userData.name} jalan ke ${nextStatus === 'working' ? 'Creative Studio' : 'Roost Cafe'}!`);
 
@@ -861,9 +885,9 @@
     const badgeWorkspace = document.getElementById('badgeWorkspace');
     const badgePantry = document.getElementById('badgePantry');
 
-    const vBoss = new THREE.Vector3(0, 11, 0);
-    const vWorkspace = new THREE.Vector3(0, 7, 0);
-    const vPantry = new THREE.Vector3(0, 3, 0);
+    const vBoss = new THREE.Vector3(0, 7, -9);
+    const vWorkspace = new THREE.Vector3(0, 4.5, -2);
+    const vPantry = new THREE.Vector3(0, 2.5, 6);
 
     function updateBadgePosition(badge, worldVec) {
       const v = worldVec.clone().project(camera);
