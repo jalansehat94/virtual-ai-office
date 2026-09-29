@@ -186,7 +186,7 @@ export default function App() {
         />
 
         {/* Island Terrain and Outdoor Library Architecture */}
-        <AnimalCrossingIsland counts={counts} />
+        <AnimalCrossingIsland counts={counts} showLabels={unlocked} />
 
         {/* 17 Animal Crossing Villagers */}
         {Object.values(AGENTS_DATA).map(agent => (

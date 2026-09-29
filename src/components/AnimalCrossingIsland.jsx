@@ -2,7 +2,7 @@ import React from 'react'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 
-export default function AnimalCrossingIsland({ counts }) {
+export default function AnimalCrossingIsland({ counts, showLabels = true }) {
   return (
     <group>
       {/* --- 1. NATURAL TERRAIN & CLIFFS (3-TIER TERRACE) --- */}
@@ -294,27 +294,31 @@ export default function AnimalCrossingIsland({ counts }) {
         </group>
       ))}
 
-      {/* --- 10. 3D HTML ZONE BADGES --- */}
-      {/* Tier 3: Ruang Bos */}
-      <Html position={[0, 8.2, -9]} center distanceFactor={18}>
-        <div className="px-3 py-1 rounded-full bg-[#fef9e7] border-2 border-[#5c3a21] shadow-[0_3px_0_#5c3a21] text-[#5c3a21] text-xs font-black flex items-center gap-1.5 whitespace-nowrap pointer-events-none select-none">
-          <span>👑</span> Ruang Bos & Arsip (@Ai)
-        </div>
-      </Html>
+      {/* --- 10. 3D HTML ZONE BADGES (ONLY WHEN UNLOCKED) --- */}
+      {showLabels && (
+        <>
+          {/* Tier 3: Ruang Bos */}
+          <Html position={[0, 8.2, -9]} center distanceFactor={18}>
+            <div className="px-3 py-1 rounded-full bg-[#fef9e7] border-2 border-[#5c3a21] shadow-[0_3px_0_#5c3a21] text-[#5c3a21] text-xs font-black flex items-center gap-1.5 whitespace-nowrap pointer-events-none select-none">
+              <span>👑</span> Ruang Bos & Arsip (@Ai)
+            </div>
+          </Html>
 
-      {/* Tier 2: Creative Studio */}
-      <Html position={[0, 5.0, -1.5]} center distanceFactor={18}>
-        <div className="px-3 py-1 rounded-full bg-[#e0f5f0] border-2 border-[#286f63] shadow-[0_3px_0_#286f63] text-[#1b4b41] text-xs font-black flex items-center gap-1.5 whitespace-nowrap pointer-events-none select-none">
-          <span>🎨</span> Creative Studio ({counts.working} kerja)
-        </div>
-      </Html>
+          {/* Tier 2: Creative Studio */}
+          <Html position={[0, 5.0, -1.5]} center distanceFactor={18}>
+            <div className="px-3 py-1 rounded-full bg-[#e0f5f0] border-2 border-[#286f63] shadow-[0_3px_0_#286f63] text-[#1b4b41] text-xs font-black flex items-center gap-1.5 whitespace-nowrap pointer-events-none select-none">
+              <span>🎨</span> Creative Studio ({counts.working} kerja)
+            </div>
+          </Html>
 
-      {/* Tier 1: Roost Cafe */}
-      <Html position={[0, 2.6, 6]} center distanceFactor={18}>
-        <div className="px-3 py-1 rounded-full bg-[#fef3c7] border-2 border-[#92400e] shadow-[0_3px_0_#92400e] text-[#92400e] text-xs font-black flex items-center gap-1.5 whitespace-nowrap pointer-events-none select-none">
-          <span>☕</span> The Roost Cafe ({counts.standby} santai)
-        </div>
-      </Html>
+          {/* Tier 1: Roost Cafe */}
+          <Html position={[0, 2.6, 6]} center distanceFactor={18}>
+            <div className="px-3 py-1 rounded-full bg-[#fef3c7] border-2 border-[#92400e] shadow-[0_3px_0_#92400e] text-[#92400e] text-xs font-black flex items-center gap-1.5 whitespace-nowrap pointer-events-none select-none">
+              <span>☕</span> The Roost Cafe ({counts.standby} santai)
+            </div>
+          </Html>
+        </>
+      )}
     </group>
   )
 }
