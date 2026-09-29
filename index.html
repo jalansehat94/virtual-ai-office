@@ -909,15 +909,15 @@
       });
       event.currentTarget.classList.add('bg-[#76cdbe]', 'text-[#1b4b41]', 'shadow-[0_2px_0_#529d8f]');
 
-      let targetCam = { x: 24, y: 20, z: 28 };
-      let targetLook = { x: 0, y: 5, z: 0 };
+      let targetCam = { x: 22, y: 16, z: 24 };
+      let targetLook = { x: 0, y: 2, z: 0 };
 
       if (type === 'boss') {
-        targetCam = { x: 0, y: 13, z: 12 }; targetLook = { x: 0, y: 9.5, z: 0 };
+        targetCam = { x: 0, y: 10, z: -1 }; targetLook = { x: 0, y: 4.5, z: -9 };
       } else if (type === 'workspace') {
-        targetCam = { x: 12, y: 9, z: 14 }; targetLook = { x: 0, y: 5.5, z: 0 };
+        targetCam = { x: 12, y: 8, z: 8 }; targetLook = { x: 0, y: 2.5, z: -2 };
       } else if (type === 'pantry') {
-        targetCam = { x: 0, y: 3.5, z: 11 }; targetLook = { x: 0, y: 1.5, z: 0 };
+        targetCam = { x: 0, y: 6, z: 18 }; targetLook = { x: 0, y: 0.5, z: 6 };
       }
 
       new TWEEN.Tween(camera.position).to(targetCam, 1200).easing(TWEEN.Easing.Cubic.Out).start();
@@ -959,9 +959,6 @@
       TWEEN.update();
 
       const time = clock.getElapsedTime();
-      if (leafTrophy) {
-        leafTrophy.rotation.y = time * 0.8;
-      }
 
       // Animal Crossing Characteristic Joyful Bounce & Waddle!
       villagerMeshes.forEach((villager, idx) => {
