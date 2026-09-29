@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-09-30T01:10:00+08:00",
+  "active_project": "SecondBrain Multi-Agent System",
+  "counts": {
+    "working": 8,
+    "standby": 8
+  },
+  "agents": {
+    "ai": { "status": "working", "task": "Supervisi Skuad SecondBrain", "target_floor": 3 },
+    "luna": { "status": "working", "task": "Menyusun Draf Bab II Skripsi", "target_floor": 2 },
+    "kutu": { "status": "working", "task": "Validasi Sitasi SNI 03-6197", "target_floor": 2 },
+    "crayon": { "status": "working", "task": "Plotting Kurva Lux 600 DPI", "target_floor": 2 },
+    "mochi": { "status": "working", "task": "Live Sync Virtual Office Web", "target_floor": 2 },
+    "piksel": { "status": "working", "task": "Styling HUD & Animasi 3D", "target_floor": 2 },
+    "masamba": { "status": "working", "task": "Scan Live BTC & Gold", "target_floor": 2 },
+    "rem": { "status": "working", "task": "Kawal Risk Management 1.5%", "target_floor": 2 },
+    "kucing": { "status": "standby", "task": "Ngopi di Pantry (Siaga Turnitin)", "target_floor": 1 },
+    "mata": { "status": "standby", "task": "Nonton TV di Pantry", "target_floor": 1 },
+    "kunci": { "status": "standby", "task": "Standby di Pantry (DB Supabase)", "target_floor": 1 },
+    "kaktus": { "status": "standby", "task": "Istirahat di Pantry (Revit)", "target_floor": 1 },
+    "tabrak": { "status": "standby", "task": "Standby di Pantry (Clash Check)", "target_floor": 1 },
+    "cuan": { "status": "standby", "task": "Standby di Pantry (RAB)", "target_floor": 1 },
+    "lilin": { "status": "standby", "task": "Ngeteh di Pantry (Chartist)", "target_floor": 1 },
+    "bandar": { "status": "standby", "task": "Pantau Berita FOMC di Pantry", "target_floor": 1 },
+    "botik": { "status": "standby", "task": "Recharging Battery di Pantry", "target_floor": 1 }
+  }
+}
