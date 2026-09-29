@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, SoftShadows, Sky } from '@react-three/drei'
+import { OrbitControls, Sky } from '@react-three/drei'
 import * as THREE from 'three'
 
 import SecurityGate from './components/SecurityGate'
@@ -14,17 +14,20 @@ export default function App() {
     return sessionStorage.getItem('sb_unlocked') === '1'
   })
 
-  // Agents status map: { [id]: 'working' | 'standby' }
+  // Agents status map: { [id]: 'working' | 'standby' | 'collaborating' | 'researching' }
   const [agentStatuses, setAgentStatuses] = useState(() => {
     const init = {}
     Object.keys(AGENTS_DATA).forEach(id => {
-      // Default: Ai is working in office, others mostly standby or working
-      init[id] = id === 'ai' ? 'working' : (['luna', 'mochi', 'kaktus', 'masamba'].includes(id) ? 'working' : 'standby')
+      // Default: 8 working on laptops, 9 standby at Roost cafe
+      init[id] = ['ai', 'luna', 'kutu', 'mochi', 'piksel', 'kaktus', 'masamba', 'botik'].includes(id)
+        ? 'working'
+        : 'standby'
     })
     return init
   })
 
   const [selectedAgent, setSelectedAgent] = useState(null)
+  const [bulletinOpen, setBulletinOpen] = useState(false)
   const [commsLogs, setCommsLogs] = useState([
     '🦉 [Telegram] @Luna: Bab II Mattoanging Al-Marwaee & Carter disinkronkan',
     '🐺 [Telegram] @MasAmba: Funding rate Binance net-neutral, bull safe',
@@ -36,7 +39,7 @@ export default function App() {
 
   const controlsRef = useRef()
 
-  // Polling live_state.json
+  // Polling live_state.json if available
   useEffect(() => {
     const fetchLiveState = async () => {
       try {
@@ -55,17 +58,15 @@ export default function App() {
             })
           }
         }
-      } catch (e) {
-        // Fallback gracefully
-      }
+      } catch (e) {}
     }
 
-    const interval = setInterval(fetchLiveState, 3000)
+    const interval = setInterval(fetchLiveState, 4000)
     fetchLiveState()
     return () => clearInterval(interval)
   }, [])
 
-  // Comms feed simulator
+  // Comms feed & autonomous actions simulator
   useEffect(() => {
     const sampleMsgs = [
       '🦉 @Luna: Rujukan SNI 03-6197 diverifikasi untuk Bab 4',
@@ -73,22 +74,24 @@ export default function App() {
       '🦝 @Piksel: Tailwind grid layout selesai dioptimasi',
       '🌵 @Kaktus: MEP vs Struktur clash-free di Revit LOD 350',
       '🐰 @Ai: Seluruh 17 agen aktif memantau SecondBrain Heru',
-      '🐼 @Lilin: Fair Value Gap M15 terisi sempurna'
+      '🐼 @Lilin: Fair Value Gap M15 terisi sempurna',
+      '🐶 @Botik: Script backtest Python selesai dieksekusi (Sharpe 2.14)',
+      '🐱 @Cuan: Volume beton Menara Dynamo terekstraksi ke Excel RAB'
     ]
 
     const interval = setInterval(() => {
-      if (Math.random() > 0.4) {
+      if (Math.random() > 0.35) {
         const msg = sampleMsgs[Math.floor(Math.random() * sampleMsgs.length)]
         setCommsLogs(prev => [msg, ...prev.slice(0, 10)])
       }
-    }, 8000)
+    }, 7000)
 
     return () => clearInterval(interval)
   }, [])
 
   // Working & Standby counts
   const counts = {
-    working: Object.values(agentStatuses).filter(s => s === 'working').length,
+    working: Object.values(agentStatuses).filter(s => s === 'working' || s === 'collaborating' || s === 'researching').length,
     standby: Object.values(agentStatuses).filter(s => s === 'standby').length,
   }
 
@@ -99,7 +102,7 @@ export default function App() {
       const next = current === 'working' ? 'standby' : 'working'
       const agent = AGENTS_DATA[id]
       setCommsLogs(l => [
-        `🍃 [Dispatch] ${agent.name} berpindah ke ${next === 'working' ? 'Creative Studio' : 'Roost Cafe'}!`,
+        `🍃 [Dispatch] ${agent.name} ${next === 'working' ? 'membuka laptop di Studio' : 'menutup laptop & santai di Roost Cafe'}!`,
         ...l
       ])
       return { ...prev, [id]: next }
@@ -134,7 +137,7 @@ export default function App() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-[#a2e8dd]">
-      {/* 1. Security Gate PIN Overlay */}
+      {/* 1. Security Gate PIN Overlay (Master PIN 211103) */}
       {!unlocked && <SecurityGate onUnlocked={() => setUnlocked(true)} />}
 
       {/* 2. Three.js Canvas Scene */}
@@ -186,15 +189,20 @@ export default function App() {
         />
 
         {/* Island Terrain and Outdoor Library Architecture */}
-        <AnimalCrossingIsland counts={counts} showLabels={unlocked} />
+        <AnimalCrossingIsland
+          counts={counts}
+          showLabels={unlocked}
+          onOpenBulletin={() => setBulletinOpen(true)}
+        />
 
-        {/* 17 Animal Crossing Villagers */}
+        {/* 17 Animal Crossing Villagers with Laptops & Thought Bubbles */}
         {Object.values(AGENTS_DATA).map(agent => (
           <Villager
             key={agent.id}
             agent={agent}
             status={agentStatuses[agent.id] || 'standby'}
             isSelected={selectedAgent?.id === agent.id}
+            showLabels={unlocked}
             onClick={(a) => setSelectedAgent(a)}
           />
         ))}
@@ -211,6 +219,9 @@ export default function App() {
           onFocusTier={handleFocusTier}
           onLock={handleLock}
           commsLogs={commsLogs}
+          bulletinOpen={bulletinOpen}
+          onOpenBulletin={() => setBulletinOpen(true)}
+          onCloseBulletin={() => setBulletinOpen(false)}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Lock,
   Sparkles,
@@ -10,7 +10,13 @@ import {
   Layers,
   CheckCircle2,
   X,
-  Compass
+  Compass,
+  Terminal,
+  FileText,
+  Brain,
+  Download,
+  Calendar,
+  ExternalLink
 } from 'lucide-react'
 
 export default function UIOverlay({
@@ -21,8 +27,13 @@ export default function UIOverlay({
   onToggleAgent,
   onFocusTier,
   onLock,
-  commsLogs
+  commsLogs,
+  bulletinOpen,
+  onCloseBulletin,
+  onOpenBulletin
 }) {
+  const [activeTab, setActiveTab] = useState('thoughts') // 'thoughts' | 'terminal' | 'deliverables'
+
   return (
     <div className="absolute inset-0 pointer-events-none select-none overflow-hidden font-sans">
       
@@ -39,7 +50,7 @@ export default function UIOverlay({
               <span className="text-sm font-black text-[#5c3a21]">SecondBrain Island HQ</span>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#e0f5f0] text-[#1b4b41] text-[10px] font-black tracking-wide border border-[#76cdbe]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] animate-ping" />
-                LIVE SYNC
+                AUTONOMOUS SYSTEM
               </span>
             </div>
             <div className="text-[11px] text-[#8b5a2b] font-bold">
@@ -48,8 +59,16 @@ export default function UIOverlay({
           </div>
         </div>
 
-        {/* Cloud Comms Status (Telegram & WhatsApp) */}
+        {/* Cloud Comms Status (Telegram & WhatsApp) & Bulletin */}
         <div className="flex items-center gap-2">
+          {/* Bulletin Board Shortcut */}
+          <button
+            onClick={onOpenBulletin}
+            className="flex items-center gap-1.5 bg-[#fefae0] border-2 border-[#d4a373] px-3 py-1.5 rounded-xl shadow-[0_3px_0_#b07d52] text-[11px] font-black text-[#5c3a21] hover:bg-[#ede0d4] transition-all"
+          >
+            <span>📌</span> Buletin Harian
+          </button>
+
           <div className="flex items-center gap-1.5 bg-[#fefae0] border-2 border-[#60a5fa] px-3 py-1.5 rounded-xl shadow-[0_3px_0_#3b82f6] text-[11px] font-black text-[#1e40af]">
             <Send size={13} className="text-[#3b82f6]" />
             <span>@SecondBrainHeruBot</span>
@@ -78,15 +97,15 @@ export default function UIOverlay({
         </div>
       </div>
 
-      {/* --- BOTTOM LEFT: BULLETIN BOARD (LIVE AGENT COMMS) --- */}
+      {/* --- BOTTOM LEFT: BULLETIN BOARD TICKER --- */}
       <div className="absolute bottom-4 left-4 max-w-sm pointer-events-auto">
         <div className="bg-[#fef9e7] border-2 border-[#d4a373] rounded-2xl p-3.5 shadow-[0_4px_0_#b07d52] backdrop-blur-sm">
           <div className="flex items-center justify-between border-b border-[#e6ccb2] pb-1.5 mb-2">
             <span className="text-xs font-black text-[#5c3a21] flex items-center gap-1.5">
-              📌 BULLETIN BOARD (COMMS)
+              📌 NOOKLINK LIVE COMMS FEED
             </span>
             <span className="text-[10px] font-bold text-[#8b5a2b] bg-[#ede0d4] px-2 py-0.5 rounded-full">
-              NookLink Live
+              Session 1
             </span>
           </div>
           <div className="space-y-1.5 text-xs font-bold">
@@ -127,9 +146,11 @@ export default function UIOverlay({
         </button>
       </div>
 
-      {/* --- RIGHT: AGENT INSPECTOR POPUP MODAL --- */}
+      {/* --- RIGHT: NOOKPHONE INSPECTOR V2 (AGENT-OFFICE & OFFICECLI STYLE) --- */}
       {selectedAgent && (
-        <div className="absolute bottom-20 right-4 w-80 bg-[#fefae0] border-4 border-[#76cdbe] rounded-3xl p-5 shadow-[0_8px_0_#529d8f,0_20px_25px_-5px_rgba(0,0,0,0.15)] pointer-events-auto transition-all animate-in fade-in slide-in-from-bottom-4">
+        <div className="absolute bottom-20 right-4 w-96 bg-[#fefae0] border-4 border-[#76cdbe] rounded-3xl p-5 shadow-[0_8px_0_#529d8f,0_20px_25px_-5px_rgba(0,0,0,0.15)] pointer-events-auto transition-all animate-in fade-in slide-in-from-bottom-4">
+          
+          {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-3">
               <div
@@ -156,7 +177,7 @@ export default function UIOverlay({
           </div>
 
           {/* Status Badge */}
-          <div className="mb-3">
+          <div className="mb-3 flex items-center justify-between">
             <div
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase border ${
                 agentStatus === 'working'
@@ -165,26 +186,110 @@ export default function UIOverlay({
               }`}
             >
               <CheckCircle2 size={13} />
-              {agentStatus === 'working' ? 'Bekerja di Studio' : 'Santai di Roost Cafe'}
+              {agentStatus === 'working' ? 'Bekerja di Laptop' : 'Santai di Roost Cafe'}
             </div>
           </div>
 
-          {/* Skills Badges */}
-          <div className="mb-4">
-            <div className="text-[10px] font-black text-[#8b5a2b] uppercase tracking-wider mb-1.5">
-              KEAHLIAN & METODE:
+          {/* 3 TABS (Agent-Office Concept) */}
+          <div className="flex items-center gap-1 bg-[#ede0d4] p-1 rounded-xl mb-3">
+            <button
+              onClick={() => setActiveTab('thoughts')}
+              className={`flex-1 py-1 text-[11px] font-black rounded-lg transition-all flex items-center justify-center gap-1 ${
+                activeTab === 'thoughts' ? 'bg-[#fefae0] text-[#5c3a21] shadow-sm' : 'text-[#8b5a2b]'
+              }`}
+            >
+              <Brain size={12} /> Status
+            </button>
+            <button
+              onClick={() => setActiveTab('terminal')}
+              className={`flex-1 py-1 text-[11px] font-black rounded-lg transition-all flex items-center justify-center gap-1 ${
+                activeTab === 'terminal' ? 'bg-[#fefae0] text-[#5c3a21] shadow-sm' : 'text-[#8b5a2b]'
+              }`}
+            >
+              <Terminal size={12} /> Terminal
+            </button>
+            <button
+              onClick={() => setActiveTab('deliverables')}
+              className={`flex-1 py-1 text-[11px] font-black rounded-lg transition-all flex items-center justify-center gap-1 ${
+                activeTab === 'deliverables' ? 'bg-[#fefae0] text-[#5c3a21] shadow-sm' : 'text-[#8b5a2b]'
+              }`}
+            >
+              <FileText size={12} /> Berkas
+            </button>
+          </div>
+
+          {/* TAB 1: THOUGHTS & SKILLS */}
+          {activeTab === 'thoughts' && (
+            <div className="space-y-3 mb-4">
+              <div className="bg-[#fffdf5] border-2 border-[#e6ccb2] rounded-2xl p-3 shadow-inner">
+                <div className="text-[10px] font-black text-[#8b5a2b] uppercase tracking-wider mb-1">
+                  PIKIRAN REAL-TIME:
+                </div>
+                <div className="text-xs font-bold text-[#286f63] flex items-center gap-1.5">
+                  <span className="text-base">{selectedAgent.bubbleIcon || '💡'}</span>
+                  <span>{selectedAgent.bubbleText}</span>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-[10px] font-black text-[#8b5a2b] uppercase tracking-wider mb-1.5">
+                  KEAHLIAN & METODE:
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedAgent.skills.map((skill, i) => (
+                    <span
+                      key={i}
+                      className="bg-[#e5f4ef] text-[#244f45] px-2 py-0.5 rounded-lg text-[10px] font-bold border border-[#b2e2d7]"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {selectedAgent.skills.map((skill, i) => (
-                <span
+          )}
+
+          {/* TAB 2: LIVE TERMINAL CONSOLE */}
+          {activeTab === 'terminal' && (
+            <div className="mb-4 bg-[#0f172a] text-[#38bdf8] font-mono text-[10px] p-3 rounded-2xl shadow-inner border border-[#334155] space-y-1 h-36 overflow-y-auto">
+              <div className="text-[#64748b] text-[9px] border-b border-[#1e293b] pb-1 mb-1">
+                SESSION 1 • DAEMON PTY ATTACHED
+              </div>
+              {selectedAgent.terminalLogs?.map((log, i) => (
+                <div
                   key={i}
-                  className="bg-[#e5f4ef] text-[#244f45] px-2 py-0.5 rounded-lg text-[10px] font-bold border border-[#b2e2d7]"
+                  className={log.startsWith('$') ? 'text-[#facc15]' : (log.includes('[OK]') || log.includes('[SUCCESS]') || log.includes('[VALID]') ? 'text-[#4ade80]' : 'text-[#94a3b8]')}
                 >
-                  {skill}
-                </span>
+                  {log}
+                </div>
               ))}
             </div>
-          </div>
+          )}
+
+          {/* TAB 3: OFFICECLI DELIVERABLES (DOCUMENTS & SPREADSHEETS) */}
+          {activeTab === 'deliverables' && (
+            <div className="mb-4 space-y-2 h-36 overflow-y-auto pr-1">
+              {selectedAgent.deliverables?.map((doc, i) => (
+                <div
+                  key={i}
+                  className="bg-white border border-[#e2e8f0] p-2 rounded-xl flex items-center justify-between text-xs hover:border-[#76cdbe] transition-all shadow-sm"
+                >
+                  <div className="flex items-center gap-2 truncate">
+                    <span className="text-base">
+                      {doc.type === 'word' ? '📄' : (doc.type === 'excel' ? '📊' : (doc.type === 'pdf' ? '📕' : '📐'))}
+                    </span>
+                    <div className="truncate">
+                      <div className="font-bold text-[#1e293b] truncate text-[11px]">{doc.name}</div>
+                      <div className="text-[9px] text-[#64748b]">{doc.size} • {doc.date}</div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#059669] bg-[#ecfdf5] px-1.5 py-0.5 rounded border border-[#a7f3d0]">
+                    Siap
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Action Dispatch Button */}
           <button
@@ -201,10 +306,62 @@ export default function UIOverlay({
               </>
             ) : (
               <>
-                <Palette size={15} /> Tugaskan Kerja ke Studio
+                <Palette size={15} /> Buka Laptop & Tugaskan Kerja
               </>
             )}
           </button>
+        </div>
+      )}
+
+      {/* --- CORK BULLETIN BOARD POPUP MODAL --- */}
+      {bulletinOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm pointer-events-auto p-4">
+          <div className="w-full max-w-lg bg-[#fef9e7] border-4 border-[#8b5a2b] rounded-3xl p-6 shadow-[0_12px_0_#5c3a21] animate-in zoom-in-95">
+            <div className="flex items-center justify-between border-b-2 border-[#d4a373] pb-3 mb-4">
+              <div className="flex items-center gap-2 text-lg font-black text-[#5c3a21]">
+                <span>📌</span> Papan Buletin Harian Pulau SecondBrain
+              </div>
+              <button
+                onClick={onCloseBulletin}
+                className="w-8 h-8 rounded-full bg-[#ede0d4] text-[#7f5539] hover:bg-[#ddb892] flex items-center justify-center font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs text-[#5c3a21] max-h-80 overflow-y-auto pr-1">
+              <div className="bg-[#fffdf5] border-2 border-[#e6ccb2] p-3 rounded-2xl">
+                <div className="font-black text-[#8b5a2b] mb-1 flex items-center gap-1.5">
+                  <Calendar size={13} /> Sesi Terakhir: 30 September 2026 (WITA)
+                </div>
+                <p className="font-medium text-[#475569] leading-relaxed">
+                  Semua 17 agen SecondBrain aktif dalam Session 1. Arsitektur 3D Virtual AI Office telah berhasil dimigrasikan ke Vite + React Three Fiber + Drei dengan keamanan Master PIN 211103.
+                </p>
+              </div>
+
+              <div className="bg-[#e0f5f0] border-2 border-[#76cdbe] p-3 rounded-2xl">
+                <div className="font-black text-[#1b4b41] mb-1">
+                  🎓 Arahan Riset Akademik (Prof. LUNA):
+                </div>
+                <p className="font-medium text-[#244f45] leading-relaxed">
+                  Bab II Skripsi Mattoanging Al-Marwaee & Carter telah disinkronkan dengan rujukan SNI 03-6197. Dilarang menggemukkan daftar pustaka dengan jurnal acak (prinsip anti-bloat).
+                </p>
+              </div>
+
+              <div className="bg-[#fef3c7] border-2 border-[#fcd34d] p-3 rounded-2xl">
+                <div className="font-black text-[#92400e] mb-1">
+                  📈 Batas Risiko Trading (Mas Amba & Rem):
+                </div>
+                <p className="font-medium text-[#78350f] leading-relaxed">
+                  Batas risiko per transaksi dikunci pada 1-2% dari modal portofolio. FVG H1 BTC/USDT terpantau aman untuk akumulasi bertahap.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-[#e6ccb2] text-[10px] text-[#8b5a2b] font-bold text-center">
+              Tersambung langsung dengan arsip SecondBrain: <code>02_brains/SESSION_ARCHIVES/</code>
+            </div>
+          </div>
         </div>
       )}
     </div>
