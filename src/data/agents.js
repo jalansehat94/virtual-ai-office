@@ -27,13 +27,13 @@ export const AGENTS_DATA = {
     ]
   },
   
-  // Divisi 01 Akademik (Far Left Wing)
+  // Divisi 01 Akademik — Room 01 (X: -13 to -5.2)
   luna: {
     id: 'luna',
     name: '@Luna (Prof. LUNA)',
     species: 'owl_cat',
     role: 'Koordinator Riset Akademik & Skripsi',
-    deskPos: [-10.0, 2.4, -7.5],
+    deskPos: [-11.2, 2.4, -7.8],
     pantryPos: [-3.7, 1.02, 7.3],
     meetingPos: [-4.5, 4.6, -15.5],
     bookshelfPos: [-12.0, 2.4, -9.5],
@@ -60,7 +60,7 @@ export const AGENTS_DATA = {
     name: '@Kutu',
     species: 'hedgehog',
     role: 'Peneliti Jurnal Scopus Q1 & Standar SNI',
-    deskPos: [-6.5, 2.4, -7.5],
+    deskPos: [-8.4, 2.4, -7.8],
     pantryPos: [-5.7, 1.02, 7.3],
     bookshelfPos: [-5.0, 2.4, -9.5],
     color: '#c49b71',
@@ -84,7 +84,7 @@ export const AGENTS_DATA = {
     name: '@Crayon',
     species: 'bear',
     role: 'Pelukis Grafik Ilmiah 600 DPI (GradiEnt Style)',
-    deskPos: [-10.0, 2.4, -3.5],
+    deskPos: [-11.2, 2.4, -3.8],
     pantryPos: [6.5, 0.95, 6.8],
     color: '#ffb347',
     sweater: '#ff7043',
@@ -108,7 +108,7 @@ export const AGENTS_DATA = {
     name: '@Kucing',
     species: 'cat',
     role: 'Penjaga Integritas Anti-Turnitin',
-    deskPos: [-6.5, 2.4, -3.5],
+    deskPos: [-8.4, 2.4, -3.8],
     pantryPos: [6.5, 0.95, 9.2],
     color: '#ffa07a',
     sweater: '#c084fc',
@@ -131,7 +131,7 @@ export const AGENTS_DATA = {
     name: '@Mata',
     species: 'bird',
     role: 'Penonton Video YouTube & Transkrip Tutorial',
-    deskPos: [-8.25, 2.4, 0.5],
+    deskPos: [-9.8, 2.4, 0.2],
     pantryPos: [5.1, 0.95, 8.0],
     color: '#38bdf8',
     sweater: '#0284c7',
@@ -150,13 +150,13 @@ export const AGENTS_DATA = {
     ]
   },
 
-  // Divisi 03 BIM & Konstruksi (Center-Left Wing)
+  // Divisi 02 BIM & Konstruksi — Room 02 (X: -5.2 to 0.2)
   kaktus: {
     id: 'kaktus',
     name: '@Kaktus',
     species: 'cactus',
     role: 'BIM & AEC Engineering Lead',
-    deskPos: [-2.5, 2.4, -7.5],
+    deskPos: [-3.8, 2.4, -7.8],
     pantryPos: [-6.7, 1.02, 7.3],
     meetingPos: [-4.5, 4.6, -15.5],
     color: '#4ade80',
@@ -181,7 +181,7 @@ export const AGENTS_DATA = {
     name: '@Tabrak',
     species: 'bulldog',
     role: 'Tukang Razia Clash 3D Pipa vs Balok',
-    deskPos: [-2.5, 2.4, -3.5],
+    deskPos: [-1.8, 2.4, -7.8],
     pantryPos: [7.9, 0.95, 8.0],
     color: '#d7ccc8',
     sweater: '#f59e0b',
@@ -204,7 +204,7 @@ export const AGENTS_DATA = {
     name: '@Cuan',
     species: 'cat_lucky',
     role: 'Estimator RAB & Volume QTO Makassar',
-    deskPos: [-2.5, 2.4, 0.5],
+    deskPos: [-2.8, 2.4, -3.8],
     pantryPos: [-11.5, 0.95, 6.0],
     color: '#fffbeb',
     sweater: '#f59e0b',
@@ -224,13 +224,13 @@ export const AGENTS_DATA = {
     ]
   },
 
-  // Divisi 04 Trading & Kuantitatif (Center-Right Wing)
+  // Divisi 03 Trading & Kuantitatif — Room 03 (X: 0.2 to 5.4)
   masamba: {
     id: 'masamba',
     name: '@MasAmba',
     species: 'wolf',
     role: 'Lead Quantitative Trader',
-    deskPos: [2.5, 2.4, -7.5],
+    deskPos: [1.8, 2.4, -7.8],
     pantryPos: [-7.7, 1.02, 7.3],
     meetingPos: [-1.0, 4.6, -15.5],
     color: '#64748b',
@@ -256,7 +256,7 @@ export const AGENTS_DATA = {
     name: '@Lilin',
     species: 'red_panda',
     role: 'Chartist & SMC Specialist (FVG & Liquidity)',
-    deskPos: [2.5, 2.4, -3.5],
+    deskPos: [3.8, 2.4, -7.8],
     pantryPos: [-8.7, 1.02, 7.3],
     color: '#c2410c',
     sweater: '#ea580c',
@@ -279,7 +279,7 @@ export const AGENTS_DATA = {
     name: '@Bandar',
     species: 'bear_big',
     role: 'Whale Tracker & Sentiment Analyzer',
-    deskPos: [2.5, 2.4, 0.5],
+    deskPos: [2.8, 2.4, -3.8],
     pantryPos: [6.5, 0.95, 10.0],
     color: '#334155',
     sweater: '#1d4ed8',
@@ -298,13 +298,13 @@ export const AGENTS_DATA = {
     ]
   },
 
-  // Divisi 02 Web & Software (Far Right Wing)
+  // Divisi 04 Web & Software — Room 04 (X: 5.4 to 13.5)
   mochi: {
     id: 'mochi',
     name: '@Mochi',
     species: 'puppy',
     role: 'Lead Architect GradiEnt Studio',
-    deskPos: [6.5, 2.4, -7.5],
+    deskPos: [7.2, 2.4, -7.8],
     pantryPos: [6.5, 0.95, 12.4],
     meetingPos: [2.5, 4.6, -15.5],
     color: '#fbbf24',
@@ -329,7 +329,7 @@ export const AGENTS_DATA = {
     name: '@Piksel',
     species: 'raccoon',
     role: 'Spesialis UI/UX Tailwind (Nook Style)',
-    deskPos: [10.0, 2.4, -7.5],
+    deskPos: [10.2, 2.4, -7.8],
     pantryPos: [5.1, 0.95, 11.2],
     color: '#78716c',
     sweater: '#0d9488',
@@ -352,7 +352,7 @@ export const AGENTS_DATA = {
     name: '@Kunci',
     species: 'badger',
     role: 'DBA Supabase PostgreSQL & RLS Security',
-    deskPos: [6.5, 2.4, -3.5],
+    deskPos: [7.2, 2.4, -3.8],
     pantryPos: [7.9, 0.95, 11.2],
     color: '#64748b',
     sweater: '#334155',
@@ -375,7 +375,7 @@ export const AGENTS_DATA = {
     name: '@Botik',
     species: 'robo_pup',
     role: 'Algo & Python Backtest Engine',
-    deskPos: [10.0, 2.4, -3.5],
+    deskPos: [10.2, 2.4, -3.8],
     pantryPos: [12.0, 0.95, 6.0],
     color: '#84cc16',
     sweater: '#4d7c0f',
@@ -399,7 +399,7 @@ export const AGENTS_DATA = {
     name: '@Rem',
     species: 'turtle',
     role: 'Chief Risk Officer (Batas Lot 1-2%)',
-    deskPos: [8.25, 2.4, 0.5],
+    deskPos: [8.7, 2.4, 0.2],
     pantryPos: [6.5, 0.95, 12.4],
     color: '#14b8a6',
     sweater: '#dc2626',
@@ -418,3 +418,4 @@ export const AGENTS_DATA = {
     ]
   }
 }
+

@@ -4,31 +4,40 @@ import * as THREE from 'three'
 import ModelProp from './ModelProp'
 
 export default function AnimalCrossingIsland({ counts, showLabels = true, onOpenBulletin }) {
-  // 16 Spacious Desks on Tier 2:
+  // =====================================================================
+  // 16 Desks on Tier 2 — 4 Division Rooms
+  // Tier 2 World: X -13..+13, Z at offset -4.6 so local Z maps:
+  //   Room 01 Akademik  — local X: -12.5 to -5.5
+  //   Room 02 BIM       — local X:  -5.5 to  0.5
+  //   Room 03 Trading   — local X:   0.5 to  5.5
+  //   Room 04 Web       — local X:   5.5 to 12.5
+  //   Z corridor:        local Z (relative to Tier2 group offset -4.6):
+  //     back row   Z = -3.0 (world -7.6), front row Z = 1.2 (world -3.4)
+  // =====================================================================
   const tier2Desks = [
-    // Divisi 01 Akademik (Far Left Wing)
-    { id: 'luna', pos: [-10.0, 2.4, -7.5], color: '#9d71e8' },
-    { id: 'kutu', pos: [-6.5, 2.4, -7.5], color: '#c49b71' },
-    { id: 'crayon', pos: [-10.0, 2.4, -3.5], color: '#ffb347' },
-    { id: 'kucing', pos: [-6.5, 2.4, -3.5], color: '#ffa07a' },
-    { id: 'mata', pos: [-8.25, 2.4, 0.5], color: '#38bdf8' },
+    // Room 01 — Divisi Akademik (@Luna & tim) — X: -12 to -5.5
+    { id: 'luna',   pos: [-11.2, 2.4, -7.8], color: '#9d71e8' },
+    { id: 'kutu',   pos: [-8.4,  2.4, -7.8], color: '#c49b71' },
+    { id: 'crayon', pos: [-11.2, 2.4, -3.8], color: '#ffb347' },
+    { id: 'kucing', pos: [-8.4,  2.4, -3.8], color: '#ffa07a' },
+    { id: 'mata',   pos: [-9.8,  2.4,  0.2], color: '#38bdf8' },
 
-    // Divisi 03 BIM & Konstruksi (Center-Left Wing)
-    { id: 'kaktus', pos: [-2.5, 2.4, -7.5], color: '#4ade80' },
-    { id: 'tabrak', pos: [-2.5, 2.4, -3.5], color: '#d7ccc8' },
-    { id: 'cuan', pos: [-2.5, 2.4, 0.5], color: '#fffbeb' },
+    // Room 02 — Divisi BIM & Konstruksi (@Kaktus & tim) — X: -4.5 to -0.5
+    { id: 'kaktus', pos: [-3.8,  2.4, -7.8], color: '#4ade80' },
+    { id: 'tabrak', pos: [-1.8,  2.4, -7.8], color: '#d7ccc8' },
+    { id: 'cuan',   pos: [-2.8,  2.4, -3.8], color: '#fffbeb' },
 
-    // Divisi 04 Trading & Quant (Center-Right Wing)
-    { id: 'masamba', pos: [2.5, 2.4, -7.5], color: '#64748b' },
-    { id: 'lilin', pos: [2.5, 2.4, -3.5], color: '#c2410c' },
-    { id: 'bandar', pos: [2.5, 2.4, 0.5], color: '#334155' },
+    // Room 03 — Divisi Trading & Quant (@MasAmba & tim) — X: 0.5 to 4.5
+    { id: 'masamba', pos: [1.8,  2.4, -7.8], color: '#64748b' },
+    { id: 'lilin',   pos: [3.8,  2.4, -7.8], color: '#c2410c' },
+    { id: 'bandar',  pos: [2.8,  2.4, -3.8], color: '#334155' },
 
-    // Divisi 02 Web & Software (Far Right Wing)
-    { id: 'mochi', pos: [6.5, 2.4, -7.5], color: '#fbbf24' },
-    { id: 'piksel', pos: [10.0, 2.4, -7.5], color: '#78716c' },
-    { id: 'kunci', pos: [6.5, 2.4, -3.5], color: '#64748b' },
-    { id: 'botik', pos: [10.0, 2.4, -3.5], color: '#84cc16' },
-    { id: 'rem', pos: [8.25, 2.4, 0.5], color: '#14b8a6' },
+    // Room 04 — Divisi Web & Software (@Mochi & tim) — X: 5.5 to 12.5
+    { id: 'mochi',  pos: [7.2,  2.4, -7.8], color: '#fbbf24' },
+    { id: 'piksel', pos: [10.2, 2.4, -7.8], color: '#78716c' },
+    { id: 'kunci',  pos: [7.2,  2.4, -3.8], color: '#64748b' },
+    { id: 'botik',  pos: [10.2, 2.4, -3.8], color: '#84cc16' },
+    { id: 'rem',    pos: [8.7,  2.4,  0.2], color: '#14b8a6' },
   ]
 
   return (
@@ -533,21 +542,209 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       {/* 5. TIER 2: BOOKCASE MAZE & 16 SPACIOUS DESKS WITH LAPTOPS      */}
       {/* ============================================================== */}
       <group position={[0, 2.4, 0]}>
-        {/* Perimeter & Maze Dividing Bookcases - Scaled to Full Architectural Height (2.8m) */}
-        <group position={[0, 0, -3.5]}>
-          {/* Back Wall Bookcases (Perimeter behind desks) */}
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-11.5, 0, -6.5]} scale={3.2} />
-          <ModelProp url="./models/bookcaseOpen.glb" position={[-8.0, 0, -6.5]} scale={3.2} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-4.5, 0, -6.5]} scale={3.2} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[4.5, 0, -6.5]} scale={3.2} />
-          <ModelProp url="./models/bookcaseOpen.glb" position={[8.0, 0, -6.5]} scale={3.2} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[11.5, 0, -6.5]} scale={3.2} />
+        {/* ============================================================== */}
+        {/* TIER 2: 4 DIVISION ROOMS WITH PARTITION WALLS                  */}
+        {/* Floor is at Y=0 in this group (world Y=2.4)                    */}
+        {/* Room spans: local Z -8.2 (back) to +1.4 (front corridor)      */}
+        {/* ============================================================== */}
 
-          {/* Departmental Divider Bookcase Walls */}
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-4.8, 0, -1.8]} rotation={[0, Math.PI / 2, 0]} scale={3.0} />
-          <ModelProp url="./models/bookcaseOpen.glb" position={[-4.8, 0, 2.8]} rotation={[0, Math.PI / 2, 0]} scale={3.0} />
-          <ModelProp url="./models/bookcaseClosedWide.glb" position={[4.8, 0, -1.8]} rotation={[0, Math.PI / 2, 0]} scale={3.0} />
-          <ModelProp url="./models/bookcaseOpen.glb" position={[4.8, 0, 2.8]} rotation={[0, Math.PI / 2, 0]} scale={3.0} />
+        {/* ── SHARED BACK WALL (behind all rooms) ── */}
+        <mesh position={[0, 1.3, -8.4]} castShadow receiveShadow>
+          <boxGeometry args={[28.0, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+
+        {/* ── SHARED LEFT OUTER WALL ── */}
+        <mesh position={[-13.5, 1.3, -3.4]} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 2.6, 10.2]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+
+        {/* ── SHARED RIGHT OUTER WALL ── */}
+        <mesh position={[13.5, 1.3, -3.4]} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 2.6, 10.2]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+
+        {/* ── DIVIDER WALL 1: Room 01|02 boundary at X = -5.2 ── */}
+        {/* South half — with doorway gap in center (Z -6.0 to -4.8) */}
+        <mesh position={[-5.2, 1.3, -7.5]} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 2.6, 1.8]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+        {/* North half */}
+        <mesh position={[-5.2, 1.3, -2.4]} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 2.6, 5.6]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+        {/* Door arch top fill */}
+        <mesh position={[-5.2, 2.35, -6.15]} castShadow>
+          <boxGeometry args={[0.18, 0.52, 1.2]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+
+        {/* ── DIVIDER WALL 2: Room 02|03 boundary at X = 0.2 ── */}
+        <mesh position={[0.2, 1.3, -7.5]} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 2.6, 1.8]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+        <mesh position={[0.2, 1.3, -2.4]} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 2.6, 5.6]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+        <mesh position={[0.2, 2.35, -6.15]} castShadow>
+          <boxGeometry args={[0.18, 0.52, 1.2]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+
+        {/* ── DIVIDER WALL 3: Room 03|04 boundary at X = 5.4 ── */}
+        <mesh position={[5.4, 1.3, -7.5]} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 2.6, 1.8]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+        <mesh position={[5.4, 1.3, -2.4]} castShadow receiveShadow>
+          <boxGeometry args={[0.18, 2.6, 5.6]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+        <mesh position={[5.4, 2.35, -6.15]} castShadow>
+          <boxGeometry args={[0.18, 0.52, 1.2]} />
+          <meshStandardMaterial color="#e0d0b8" roughness={0.7} />
+        </mesh>
+
+        {/* ── FRONT CORRIDOR WALL SEGMENTS (room front walls with big open archways) ── */}
+        {/* Room 01 front — left stub and right stub */}
+        <mesh position={[-12.4, 1.3, 0.8]} castShadow receiveShadow>
+          <boxGeometry args={[2.2, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+        <mesh position={[-7.2, 1.3, 0.8]} castShadow receiveShadow>
+          <boxGeometry args={[2.6, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+        {/* Room 01 archway top */}
+        <mesh position={[-9.8, 2.35, 0.8]}>
+          <boxGeometry args={[2.4, 0.52, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+
+        {/* Room 02 front */}
+        <mesh position={[-4.5, 1.3, 0.8]} castShadow receiveShadow>
+          <boxGeometry args={[1.4, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+        <mesh position={[-1.0, 1.3, 0.8]} castShadow receiveShadow>
+          <boxGeometry args={[1.4, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+        <mesh position={[-2.8, 2.35, 0.8]}>
+          <boxGeometry args={[1.8, 0.52, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+
+        {/* Room 03 front */}
+        <mesh position={[1.0, 1.3, 0.8]} castShadow receiveShadow>
+          <boxGeometry args={[1.4, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+        <mesh position={[4.5, 1.3, 0.8]} castShadow receiveShadow>
+          <boxGeometry args={[1.4, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+        <mesh position={[2.8, 2.35, 0.8]}>
+          <boxGeometry args={[1.8, 0.52, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+
+        {/* Room 04 front */}
+        <mesh position={[6.2, 1.3, 0.8]} castShadow receiveShadow>
+          <boxGeometry args={[1.6, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+        <mesh position={[12.0, 1.3, 0.8]} castShadow receiveShadow>
+          <boxGeometry args={[3.0, 2.6, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+        <mesh position={[8.7, 2.35, 0.8]}>
+          <boxGeometry args={[2.4, 0.52, 0.18]} />
+          <meshStandardMaterial color="#f5ede0" roughness={0.6} />
+        </mesh>
+
+        {/* ── COLORED FLOOR PANELS per room ── */}
+        {/* Room 01 Akademik — soft purple */}
+        <mesh position={[-9.35, 0.06, -3.7]} receiveShadow>
+          <boxGeometry args={[8.0, 0.04, 9.0]} />
+          <meshStandardMaterial color="#ede8f8" roughness={0.7} />
+        </mesh>
+        {/* Room 02 BIM — soft green */}
+        <mesh position={[-2.65, 0.06, -3.7]} receiveShadow>
+          <boxGeometry args={[5.2, 0.04, 9.0]} />
+          <meshStandardMaterial color="#e8f6ed" roughness={0.7} />
+        </mesh>
+        {/* Room 03 Trading — soft amber */}
+        <mesh position={[2.8, 0.06, -3.7]} receiveShadow>
+          <boxGeometry args={[5.0, 0.04, 9.0]} />
+          <meshStandardMaterial color="#fef6e8" roughness={0.7} />
+        </mesh>
+        {/* Room 04 Web — soft sky blue */}
+        <mesh position={[9.35, 0.06, -3.7]} receiveShadow>
+          <boxGeometry args={[8.0, 0.04, 9.0]} />
+          <meshStandardMaterial color="#e8f3fd" roughness={0.7} />
+        </mesh>
+
+        {/* ── ROOM NAME LABELS ── */}
+        {showLabels && (
+          <>
+            <Html position={[-9.35, 2.7, -8.0]} center>
+              <div style={{
+                background: 'linear-gradient(135deg,#7c3aed,#a855f7)',
+                color: '#fff', padding: '4px 10px', borderRadius: '8px',
+                fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.35)', userSelect: 'none',
+              }}>📚 Divisi 01 · Akademik</div>
+            </Html>
+            <Html position={[-2.65, 2.7, -8.0]} center>
+              <div style={{
+                background: 'linear-gradient(135deg,#15803d,#22c55e)',
+                color: '#fff', padding: '4px 10px', borderRadius: '8px',
+                fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.35)', userSelect: 'none',
+              }}>🏗️ Divisi 02 · BIM</div>
+            </Html>
+            <Html position={[2.8, 2.7, -8.0]} center>
+              <div style={{
+                background: 'linear-gradient(135deg,#b45309,#f59e0b)',
+                color: '#fff', padding: '4px 10px', borderRadius: '8px',
+                fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.35)', userSelect: 'none',
+              }}>📈 Divisi 03 · Trading</div>
+            </Html>
+            <Html position={[9.35, 2.7, -8.0]} center>
+              <div style={{
+                background: 'linear-gradient(135deg,#0369a1,#38bdf8)',
+                color: '#fff', padding: '4px 10px', borderRadius: '8px',
+                fontSize: '11px', fontWeight: 700, whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.35)', userSelect: 'none',
+              }}>💻 Divisi 04 · Web & Software</div>
+            </Html>
+          </>
+        )}
+
+        {/* ── BACK WALL BOOKCASES inside each room ── */}
+        <group position={[0, 0, -4.0]}>
+          {/* Room 01 Akademik bookcases */}
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-12.0, 0, -4.4]} scale={3.0} />
+          <ModelProp url="./models/bookcaseOpen.glb"       position={[-9.2,  0, -4.4]} scale={3.0} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-6.4,  0, -4.4]} scale={3.0} />
+          {/* Room 02 BIM bookcases */}
+          <ModelProp url="./models/bookcaseOpen.glb"       position={[-4.0,  0, -4.4]} scale={3.0} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[-1.2,  0, -4.4]} scale={3.0} />
+          {/* Room 03 Trading bookcases */}
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[1.2,   0, -4.4]} scale={3.0} />
+          <ModelProp url="./models/bookcaseOpen.glb"       position={[4.0,   0, -4.4]} scale={3.0} />
+          {/* Room 04 Web bookcases */}
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[6.8,   0, -4.4]} scale={3.0} />
+          <ModelProp url="./models/bookcaseOpen.glb"       position={[9.6,   0, -4.4]} scale={3.0} />
+          <ModelProp url="./models/bookcaseClosedWide.glb" position={[12.4,  0, -4.4]} scale={3.0} />
         </group>
 
         {/* 16 Real Desks, Chairs, and Laptops with Centered Symmetry & Zero-Float */}
