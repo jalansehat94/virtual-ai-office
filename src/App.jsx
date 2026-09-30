@@ -197,8 +197,17 @@ export default function App() {
     } else if (type === 'mochi' || taskText.toLowerCase().includes('@mochi') || taskText.toLowerCase().includes('web')) {
       targetAgentId = 'mochi'
       setBossMessage(`@Ai: "@Mochi, deploy fitur visual office V3 ke server production!"`)
+    } else if (type === 'all_work') {
+      setBossMessage(`@Ai: "Mode Fokus! Semua 17 agen kembali ke bilik dan buka laptop masing-masing! 💻"`)
+      setAgentStatuses(p => {
+        const next = { ...p }
+        Object.keys(next).forEach(k => { next[k] = 'working' })
+        return next
+      })
+      handleFocusTier('workspace')
+      return
     } else if (type === 'all_rest') {
-      setBossMessage(`@Ai: "Waktunya santai! Semua agen istirahat ngopi di Roost Cafe! ☕"`)
+      setBossMessage(`@Ai: "Waktunya santai! Semua 17 agen istirahat dan kumpul ngopi di The Roost Café! ☕"`)
       setAgentStatuses(p => {
         const next = { ...p }
         Object.keys(next).forEach(k => { next[k] = 'standby' })
@@ -242,7 +251,7 @@ export default function App() {
       const next = current === 'working' ? 'standby' : 'working'
       const agent = AGENTS_DATA[id]
       setCommsLogs(l => [
-        `🍃 [Dispatch] ${agent.name} ${next === 'working' ? 'membuka laptop di Studio' : 'santai di Roost Cafe'}!`,
+        `🍃 [Dispatch] ${agent.name} ${next === 'working' ? 'membuka laptop di workstation' : 'istirahat ngopi di The Roost Café'}!`,
         ...l
       ])
       return { ...prev, [id]: next }

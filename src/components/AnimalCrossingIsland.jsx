@@ -390,13 +390,16 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           ))}
 
           {/* Master SecondBrain Beacon in Center */}
-          <mesh position={[0, 1.5, -1.8]} castShadow material={mVermilion}>
+          <mesh position={[0, 1.5, -2.4]} castShadow material={mVermilion}>
             <boxGeometry args={[1.2, 0.9, 1.2]} />
           </mesh>
-          <mesh position={[0, 2.4, -1.8]}>
+          <mesh position={[0, 2.4, -2.4]}>
             <sphereGeometry args={[0.35, 16, 16]} />
             <meshBasicMaterial color="#ffb7c5" />
           </mesh>
+
+          {/* Executive PM Workstation Desk for @Ai */}
+          <ProceduralDesk position={[0, 0.02, 0]} id="ai" color="#ff6b8b" />
         </group>
       </group>
 
@@ -571,9 +574,23 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       </group>
 
       {/* ============================================================== */}
-      {/* 4. TIER 1: BREWSTER'S COFFEE BAR & PATIO LOUNGE               */}
+      {/* 4. TIER 1: THE ROOST CAFÉ & SOCIAL PATIO LOUNGE               */}
+      {/* Where all agents gather to relax, chat, and drink coffee!      */}
       {/* ============================================================== */}
       <group position={[-6.2, 0.6, 8.8]}>
+        {/* Floating 3D Cafe Signboard */}
+        <Html position={[0, 3.2, 0]} center distanceFactor={22}>
+          <div style={{
+            background: 'linear-gradient(135deg,#78350f,#b45309)',
+            color: '#fef3c7', padding: '5px 14px', borderRadius: '14px',
+            fontSize: '11px', fontWeight: 900, whiteSpace: 'nowrap',
+            border: '2px solid #fde68a', boxShadow: '0 4px 12px rgba(0,0,0,0.35)',
+            letterSpacing: '0.5px', userSelect: 'none'
+          }}>
+            ☕ The Roost Café · Kopi SecondBrain
+          </div>
+        </Html>
+
         {/* Mahogany Coffee Bar Counter */}
         <mesh position={[0, 0.5, 0]} castShadow receiveShadow material={mWoodTrim}>
           <boxGeometry args={[7.2, 1.0, 1.4]} />
@@ -583,8 +600,35 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           <boxGeometry args={[7.4, 0.06, 1.5]} />
         </mesh>
 
+        {/* Espresso Coffee Machine & Grinder */}
+        <group position={[-2.6, 1.25, 0.1]}>
+          <mesh castShadow material={mGold}>
+            <boxGeometry args={[0.7, 0.5, 0.5]} />
+          </mesh>
+          <mesh position={[0, 0.3, 0]} material={mVermilion}>
+            <cylinderGeometry args={[0.15, 0.15, 0.15, 8]} />
+          </mesh>
+          {/* Steam pipes */}
+          <mesh position={[0.25, 0.1, 0.28]} material={mGold}>
+            <cylinderGeometry args={[0.02, 0.02, 0.2, 8]} />
+          </mesh>
+        </group>
+
+        {/* Pastry Display Case with Croissants & Cookies */}
+        <group position={[2.4, 1.18, 0.1]}>
+          <mesh castShadow material={mPaperWall}>
+            <boxGeometry args={[0.9, 0.3, 0.45]} />
+          </mesh>
+          {/* Pastries inside */}
+          {[-0.25, 0, 0.25].map((px, pi) => (
+            <mesh key={pi} position={[px, 0.18, 0]} material={mGold}>
+              <sphereGeometry args={[0.06, 8, 8]} />
+            </mesh>
+          ))}
+        </group>
+
         {/* Ceramic Coffee Cups on Counter */}
-        {[-2.0, -0.6, 0.8, 2.2].map((cx, ci) => (
+        {[-1.2, -0.2, 0.8, 1.6].map((cx, ci) => (
           <group key={ci} position={[cx, 1.08, 0.1]}>
             <mesh castShadow material={mPaperWall}>
               <cylinderGeometry args={[0.07, 0.05, 0.14, 8]} />
@@ -622,7 +666,7 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
           </group>
         ))}
 
-        {/* Bar Stools with Vermilion Cushion Pads */}
+        {/* 6 Bar Stools with Vermilion Cushion Pads (Facing Counter at +Z) */}
         {[-2.5, -1.5, -0.5, 0.5, 1.5, 2.5].map((sx, idx) => (
           <group key={idx} position={[sx, 0, -1.3]}>
             <mesh position={[0, 0.40, 0]} castShadow material={mWoodTrim}>
@@ -638,21 +682,129 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
         ))}
       </group>
 
-      {/* Patio Garden Tables (Right Wing) with Umbrella */}
+      {/* Patio Garden Table 1 (Right Wing, X: 6.5, Z: 8.8) with Sun Umbrella & 4 Chairs */}
       <group position={[6.5, 0.6, 8.8]}>
+        {/* Round Table Top */}
         <mesh position={[0, 0.42, 0]} castShadow material={mWoodTrim}>
           <cylinderGeometry args={[1.2, 1.2, 0.08, 16]} />
         </mesh>
         <mesh position={[0, 0.2, 0]} material={mCliff}>
           <cylinderGeometry args={[0.1, 0.1, 0.4, 8]} />
         </mesh>
-        {/* Table Umbrella */}
+        {/* Sun Umbrella */}
         <mesh position={[0, 1.5, 0]} castShadow material={mWoodTrim}>
           <cylinderGeometry args={[0.04, 0.04, 2.2, 8]} />
         </mesh>
         <mesh position={[0, 2.45, 0]} castShadow material={mVermilion}>
           <coneGeometry args={[1.6, 0.55, 8]} />
         </mesh>
+        {/* Table Props: Coffee Mugs */}
+        {[-0.35, 0.35].map((cx, ci) => (
+          <mesh key={ci} position={[cx, 0.50, 0.1]} material={mPaperWall}>
+            <cylinderGeometry args={[0.05, 0.04, 0.09, 8]} />
+          </mesh>
+        ))}
+        {/* 4 Surrounding Patio Chairs */}
+        {[
+          { pos: [-1.2, 0, 0], rot: Math.PI / 2 },
+          { pos: [1.2, 0, 0], rot: -Math.PI / 2 },
+          { pos: [0, 0, -1.2], rot: 0 },
+          { pos: [0, 0, 1.2], rot: Math.PI },
+        ].map((c, ci) => (
+          <group key={ci} position={c.pos} rotation={[0, c.rot, 0]}>
+            <mesh position={[0, 0.22, 0]} castShadow material={mWoodTrim}>
+              <cylinderGeometry args={[0.26, 0.26, 0.06, 10]} />
+            </mesh>
+            <mesh position={[0, 0.26, 0]} material={mSeatCushion}>
+              <cylinderGeometry args={[0.24, 0.24, 0.04, 10]} />
+            </mesh>
+            <mesh position={[0, 0.50, -0.22]} material={mWoodTrim}>
+              <boxGeometry args={[0.42, 0.45, 0.05]} />
+            </mesh>
+            <mesh position={[0, 0.11, 0]} material={mCliff}>
+              <cylinderGeometry args={[0.04, 0.04, 0.22, 6]} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      {/* Patio Garden Table 2 (Center-Right, X: 2.4, Z: 8.5) with 4 Chairs & Teapot */}
+      <group position={[2.4, 0.6, 8.5]}>
+        <mesh position={[0, 0.42, 0]} castShadow material={mWoodTrim}>
+          <cylinderGeometry args={[1.1, 1.1, 0.08, 16]} />
+        </mesh>
+        <mesh position={[0, 0.2, 0]} material={mCliff}>
+          <cylinderGeometry args={[0.1, 0.1, 0.4, 8]} />
+        </mesh>
+        {/* Green Sun Umbrella */}
+        <mesh position={[0, 1.5, 0]} castShadow material={mWoodTrim}>
+          <cylinderGeometry args={[0.04, 0.04, 2.2, 8]} />
+        </mesh>
+        <mesh position={[0, 2.45, 0]} castShadow material={mWoodTrim}>
+          <coneGeometry args={[1.5, 0.50, 8]} />
+        </mesh>
+        {/* Teapot & Cups */}
+        <mesh position={[0, 0.50, 0]} material={mShojiLantern}>
+          <sphereGeometry args={[0.08, 8, 8]} />
+        </mesh>
+        {/* 4 Surrounding Patio Chairs */}
+        {[
+          { pos: [-1.1, 0, 0], rot: Math.PI / 2 },
+          { pos: [1.1, 0, 0], rot: -Math.PI / 2 },
+          { pos: [0, 0, -1.1], rot: 0 },
+          { pos: [0, 0, 1.1], rot: Math.PI },
+        ].map((c, ci) => (
+          <group key={ci} position={c.pos} rotation={[0, c.rot, 0]}>
+            <mesh position={[0, 0.22, 0]} castShadow material={mWoodTrim}>
+              <cylinderGeometry args={[0.26, 0.26, 0.06, 10]} />
+            </mesh>
+            <mesh position={[0, 0.26, 0]} material={mSeatCushion}>
+              <cylinderGeometry args={[0.24, 0.24, 0.04, 10]} />
+            </mesh>
+            <mesh position={[0, 0.50, -0.22]} material={mWoodTrim}>
+              <boxGeometry args={[0.42, 0.45, 0.05]} />
+            </mesh>
+            <mesh position={[0, 0.11, 0]} material={mCliff}>
+              <cylinderGeometry args={[0.04, 0.04, 0.22, 6]} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      {/* Sakura Garden Bench Lounge (Right Wing, under Sakura Blossom at X: 11.2, Z: 8.2) */}
+      <group position={[11.2, 0.6, 8.2]}>
+        <mesh position={[0, 0.26, 0]} castShadow material={mWoodTrim}>
+          <boxGeometry args={[2.4, 0.08, 0.7]} />
+        </mesh>
+        <mesh position={[0, 0.31, 0]} material={mSeatCushion}>
+          <boxGeometry args={[2.3, 0.05, 0.65]} />
+        </mesh>
+        <mesh position={[0, 0.65, -0.32]} material={mWoodTrim}>
+          <boxGeometry args={[2.4, 0.65, 0.08]} />
+        </mesh>
+        {[-1.0, 1.0].map((lx, li) => (
+          <mesh key={li} position={[lx, 0.13, 0]} material={mCliff}>
+            <boxGeometry args={[0.1, 0.26, 0.6]} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Sakura Garden Bench Lounge (Left Wing, under Blossom Tree at X: -11.5, Z: 8.5) */}
+      <group position={[-11.5, 0.6, 8.5]}>
+        <mesh position={[0, 0.26, 0]} castShadow material={mWoodTrim}>
+          <boxGeometry args={[1.8, 0.08, 0.7]} />
+        </mesh>
+        <mesh position={[0, 0.31, 0]} material={mSeatCushion}>
+          <boxGeometry args={[1.7, 0.05, 0.65]} />
+        </mesh>
+        <mesh position={[0, 0.65, -0.32]} material={mWoodTrim}>
+          <boxGeometry args={[1.8, 0.65, 0.08]} />
+        </mesh>
+        {[-0.7, 0.7].map((lx, li) => (
+          <mesh key={li} position={[lx, 0.13, 0]} material={mCliff}>
+            <boxGeometry args={[0.1, 0.26, 0.6]} />
+          </mesh>
+        ))}
       </group>
 
       {/* ============================================================== */}

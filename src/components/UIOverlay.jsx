@@ -281,6 +281,18 @@ export default function UIOverlay({
         {/* Quick Action Dispatch Chips (NEVER WRAPS ON MOBILE - HORIZONTALLY SCROLLABLE) */}
         <div className="w-full flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-1 justify-start sm:justify-center">
           <button
+            onClick={() => onDispatchCommand('all_work', 'Semua agen kembali ke bilik dan buka laptop masing-masing!')}
+            className="flex-shrink-0 px-2.5 py-1 rounded-xl bg-[#e0f5f0] border-2 border-[#10b981] shadow-[0_2px_0_#059669] text-[10px] sm:text-[11px] font-black text-[#065f46] hover:bg-[#a7f3d0] active:translate-y-0.5 transition-all flex items-center gap-1 whitespace-nowrap"
+          >
+            <span>💻</span> Semua Kerja
+          </button>
+          <button
+            onClick={() => onDispatchCommand('all_rest', 'Semua agen istirahat dan kumpul ngopi di The Roost Cafe!')}
+            className="flex-shrink-0 px-2.5 py-1 rounded-xl bg-[#fef3c7] border-2 border-[#f59e0b] shadow-[0_2px_0_#d97706] text-[10px] sm:text-[11px] font-black text-[#92400e] hover:bg-[#fde68a] active:translate-y-0.5 transition-all flex items-center gap-1 whitespace-nowrap"
+          >
+            <span>☕</span> Semua ke Cafe
+          </button>
+          <button
             onClick={() => onDispatchCommand('luna', 'Audit Skripsi Bab II SNI 03-6197')}
             className="flex-shrink-0 px-2.5 py-1 rounded-xl bg-[#fefae0] border-2 border-[#9d71e8] shadow-[0_2px_0_#6d28d9] text-[10px] sm:text-[11px] font-black text-[#5b21b6] hover:bg-[#ede9fe] active:translate-y-0.5 transition-all flex items-center gap-1 whitespace-nowrap"
           >
@@ -303,12 +315,6 @@ export default function UIOverlay({
             className="flex-shrink-0 px-2.5 py-1 rounded-xl bg-[#fefae0] border-2 border-[#06b6d4] shadow-[0_2px_0_#0891b2] text-[10px] sm:text-[11px] font-black text-[#0e7490] hover:bg-[#cffafe] active:translate-y-0.5 transition-all flex items-center gap-1 whitespace-nowrap"
           >
             <span>🐕</span> @Mochi: Web
-          </button>
-          <button
-            onClick={() => onDispatchCommand('all_rest', 'Semua agen istirahat di Roost Cafe')}
-            className="flex-shrink-0 px-2.5 py-1 rounded-xl bg-[#fefae0] border-2 border-[#f97316] shadow-[0_2px_0_#ea580c] text-[10px] sm:text-[11px] font-black text-[#c2410c] hover:bg-[#ffedd5] active:translate-y-0.5 transition-all flex items-center gap-1 whitespace-nowrap"
-          >
-            <span>☕</span> Semua Ngopi
           </button>
         </div>
 
@@ -422,8 +428,8 @@ export default function UIOverlay({
             </button>
           </div>
 
-          {/* Status Badge */}
-          <div className="mb-3 flex items-center justify-between">
+          {/* Status Badge & Toggle Switch */}
+          <div className="mb-3 flex items-center justify-between gap-2">
             <div
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-black tracking-wider uppercase border ${
                 agentStatus === 'working'
@@ -432,8 +438,18 @@ export default function UIOverlay({
               }`}
             >
               <CheckCircle2 size={13} />
-              {agentStatus === 'working' ? 'Bekerja di Laptop' : 'Santai di Roost Cafe'}
+              {agentStatus === 'working' ? 'Bekerja di Laptop 💻' : 'Kumpul di Cafe ☕'}
             </div>
+            <button
+              onClick={() => onToggleAgent(selectedAgent.id)}
+              className={`px-2.5 py-1 rounded-xl text-[10px] sm:text-[11px] font-black shadow-sm active:translate-y-0.5 transition-all flex items-center gap-1 border-2 ${
+                agentStatus === 'working'
+                  ? 'bg-[#fef3c7] border-[#f59e0b] text-[#92400e] hover:bg-[#fde68a]'
+                  : 'bg-[#e0f5f0] border-[#10b981] text-[#065f46] hover:bg-[#a7f3d0]'
+              }`}
+            >
+              {agentStatus === 'working' ? '☕ Pindah ke Cafe' : '💻 Pindah ke Laptop'}
+            </button>
           </div>
 
           {/* 3 Tabs */}

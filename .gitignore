@@ -10,3 +10,6 @@ dist-ssr
 edge_temp_profile
 scratch*
 public/models/ankha
+node_modules/
+.next/
+.env.local

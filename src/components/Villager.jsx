@@ -44,6 +44,26 @@ function getNavigationPath(startPos, endPos) {
   return path
 }
 
+const CAFE_BUBBLE_TEXTS = {
+  ai: 'Ngopi bareng tim di The Roost ☕',
+  luna: 'Menyeruput teh hangat 🍵',
+  kutu: 'Baca jurnal santai di cafe 📖',
+  crayon: 'Makan croissant & kopi 🥐',
+  kucing: 'Nongkrong santai di cafe ☕',
+  mata: 'Nonton suasana pulau 🍿',
+  kaktus: 'Istirahat ngopi sejenak ☕',
+  tabrak: 'Camilan biskuit kopi 🍪',
+  cuan: 'Hitung diskon kopi ☕',
+  masamba: 'Espresso pekat double shot ☕',
+  lilin: 'Ngobrol santai di meja 🕯️',
+  bandar: 'Diskusi santai di cafe ☕',
+  mochi: 'Iced caramel latte 🧋',
+  piksel: 'Menikmati pastry manis 🍰',
+  kunci: 'Santai di bangku taman 🍃',
+  botik: 'Recharging battery & kopi ☕',
+  rem: 'Rileks santai tanpa stres 🛡️'
+}
+
 export default function Villager({ agent, status, isSelected, showLabels, isAlerted, onClick }) {
   const groupRef = useRef()
   const bodyRef = useRef()
@@ -125,15 +145,37 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
     const targetY = (moving ? target[1] : finalPos[1]) + hop
     groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, delta * 7)
 
-    // Rotation & Facing: At desk or bar stool, face +Z (into desk/counter)
+    // Rotation & Facing: At desk or bar stool or cafe table
     if (moving) {
       const targetAngle = Math.atan2(dx, dz)
       groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetAngle, delta * 7)
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, 0.12, delta * 6)
     } else {
-      const isFacingDeskOrBar = status === 'working' || (finalPos[2] >= 6.8 && finalPos[2] <= 7.2)
-      const idleRot = isFacingDeskOrBar ? 0 : Math.PI
-      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, idleRot, delta * 4)
+      let targetRot = Math.PI // default facing south
+      if (status === 'working') {
+        targetRot = 0 // Face into desk (+Z)
+      } else if (finalPos[2] >= 7.3 && finalPos[2] <= 7.8 && finalPos[0] < 0) {
+        targetRot = 0 // Face into bar counter (+Z)
+      } else if (Math.abs(finalPos[0] - 5.3) < 0.4) {
+        targetRot = Math.PI / 2 // Table 1 Left: Face +X into table
+      } else if (Math.abs(finalPos[0] - 7.7) < 0.4) {
+        targetRot = -Math.PI / 2 // Table 1 Right: Face -X into table
+      } else if (Math.abs(finalPos[2] - 7.6) < 0.4 && finalPos[0] > 4.5) {
+        targetRot = 0 // Table 1 Top: Face +Z into table
+      } else if (Math.abs(finalPos[2] - 10.0) < 0.4 && finalPos[0] > 4.5) {
+        targetRot = Math.PI // Table 1 Bottom: Face -Z into table
+      } else if (Math.abs(finalPos[0] - 1.3) < 0.4) {
+        targetRot = Math.PI / 2 // Table 2 Left: Face +X into table
+      } else if (Math.abs(finalPos[0] - 3.5) < 0.4) {
+        targetRot = -Math.PI / 2 // Table 2 Right: Face -X into table
+      } else if (Math.abs(finalPos[2] - 7.4) < 0.4 && finalPos[0] < 4.0) {
+        targetRot = 0 // Table 2 Top: Face +Z into table
+      } else if (Math.abs(finalPos[2] - 9.6) < 0.4 && finalPos[0] < 4.0) {
+        targetRot = Math.PI // Table 2 Bottom: Face -Z into table
+      } else {
+        targetRot = Math.PI
+      }
+      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRot, delta * 5)
       groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, 0, delta * 5)
     }
 
@@ -169,10 +211,10 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
       }
     }
 
-    // TYPING ON LAPTOP VS SWINGING ARMS:
+    // TYPING ON LAPTOP VS SIPPING COFFEE IN CAFE:
     if (leftArmRef.current && rightArmRef.current) {
       if (status === 'working' && !moving) {
-        // Arms reach forward onto laptop keyboard with clacking motion
+        // Active energetic typing on laptop keyboard
         leftArmRef.current.rotation.x = -1.15 + Math.sin(t * 15 + idx) * 0.12
         rightArmRef.current.rotation.x = -1.15 + Math.cos(t * 15 + idx) * 0.12
         leftArmRef.current.rotation.y = 0.30
@@ -183,16 +225,31 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
         leftArmRef.current.rotation.y = 0
         rightArmRef.current.rotation.y = 0
       } else {
-        leftArmRef.current.rotation.x = THREE.MathUtils.lerp(leftArmRef.current.rotation.x, -0.2, delta * 6)
-        rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, -0.2, delta * 6)
+        // At Cafe: Occasional coffee sipping motion!
+        const sipCycle = (t * 0.7 + idx) % 5
+        if (sipCycle < 1.4) {
+          // Sipping coffee from cup
+          rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, -1.35, delta * 6)
+          rightArmRef.current.rotation.y = THREE.MathUtils.lerp(rightArmRef.current.rotation.y, -0.4, delta * 6)
+          leftArmRef.current.rotation.x = THREE.MathUtils.lerp(leftArmRef.current.rotation.x, -0.3, delta * 5)
+        } else {
+          // Relaxed posture holding coffee cup
+          rightArmRef.current.rotation.x = THREE.MathUtils.lerp(rightArmRef.current.rotation.x, -0.5, delta * 5)
+          rightArmRef.current.rotation.y = THREE.MathUtils.lerp(rightArmRef.current.rotation.y, -0.15, delta * 5)
+          leftArmRef.current.rotation.x = THREE.MathUtils.lerp(leftArmRef.current.rotation.x, -0.15, delta * 5)
+        }
       }
     }
 
-    // Head tilt while working/observing laptop screen
+    // Head tilt: working/observing laptop screen vs relaxed chatting at cafe
     if (headRef.current) {
       if (status === 'working' && !moving) {
         headRef.current.rotation.x = 0.14 + Math.sin(t * 2 + idx) * 0.03
         headRef.current.rotation.y = Math.sin(t * 1.5 + idx) * 0.05
+      } else if (!moving) {
+        // Relaxed chatting at cafe
+        headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, Math.sin(t * 1.8 + idx) * 0.08, delta * 5)
+        headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, Math.sin(t * 1.2 + idx * 1.2) * 0.25, delta * 5)
       } else {
         headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, 0, delta * 5)
         headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, 0, delta * 5)
@@ -237,28 +294,18 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             }`}
           >
             <span className="text-xs">{isAlerted ? '❗' : (isWorking ? (agent.bubbleIcon || '💻') : '☕')}</span>
-            <span className="truncate max-w-[130px]">
-              {isAlerted ? 'Menerima Tugas!' : (isWorking ? agent.bubbleText : 'Santai di Roost')}
+            <span className="truncate max-w-[145px]">
+              {isAlerted
+                ? 'Menerima Tugas!'
+                : isWorking
+                ? (agent.bubbleText || 'Kerja di Laptop')
+                : (CAFE_BUBBLE_TEXTS[agent.id] || 'Santai di Roost Café ☕')}
             </span>
           </div>
         </Html>
       )}
 
-      {/* --- 2. COFFEE CUP IN HAND (WHEN CHILLING IN ROOST CAFE) --- */}
-      {!isWorking && !isMoving && (
-        <group position={[0.22, 0.5, 0.22]}>
-          <mesh castShadow>
-            <cylinderGeometry args={[0.06, 0.05, 0.12, 10]} />
-            <meshStandardMaterial color="#ffffff" roughness={0.2} />
-          </mesh>
-          <mesh position={[0, 0.07, 0]}>
-            <cylinderGeometry args={[0.045, 0.045, 0.01, 8]} />
-            <meshBasicMaterial color="#6f4e37" />
-          </mesh>
-        </group>
-      )}
-
-      {/* --- 3. CHUBBY PEAR-SHAPED BODY (ANIMAL CROSSING PROPORTIONS) --- */}
+      {/* --- 2. CHUBBY PEAR-SHAPED BODY (ANIMAL CROSSING PROPORTIONS) --- */}
       <group ref={bodyRef}>
         {/* Soft Tapered Sweater Body */}
         <mesh position={[0, 0.62, 0]} castShadow>
@@ -740,6 +787,20 @@ export default function Villager({ agent, status, isSelected, showLabels, isAler
             <sphereGeometry args={[0.075, 12, 12]} />
             <meshStandardMaterial color="#ffffff" roughness={0.4} />
           </mesh>
+          {/* Ceramic Coffee Mug held in hand when at The Roost Cafe */}
+          {!isWorking && (
+            <group position={[0.06, -0.36, 0.08]} rotation={[0.2, 0, 0]}>
+              <mesh castShadow>
+                <cylinderGeometry args={[0.05, 0.038, 0.10, 10]} />
+                <meshStandardMaterial color="#ffffff" roughness={0.3} />
+              </mesh>
+              {/* Steaming Coffee Liquid */}
+              <mesh position={[0, 0.046, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <circleGeometry args={[0.042, 8]} />
+                <meshBasicMaterial color="#451a03" />
+              </mesh>
+            </group>
+          )}
         </group>
 
         {/* --- 7. STUBBY LEGS & SHOES --- */}
