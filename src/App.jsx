@@ -300,12 +300,12 @@ export default function App() {
             isFreeCam={isFreeCam}
           />
 
-          {/* Clash of Clans 2.5D High-Contrast Warm Sun & Rich Fill */}
-          <ambientLight intensity={0.65} color="#ffffff" />
-          <hemisphereLight intensity={1.15} groundColor="#78bc58" color="#dbeafe" />
+          {/* Warm Terracotta Diorama Lighting & Golden Rim Light */}
+          <ambientLight intensity={0.8} color="#fff1e6" />
+          <hemisphereLight intensity={0.9} groundColor="#8d5b4c" color="#fff3e0" />
           <directionalLight
-            position={[26, 42, 22]}
-            intensity={1.65}
+            position={[26, 38, 20]}
+            intensity={1.85}
             castShadow
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
@@ -316,19 +316,12 @@ export default function App() {
             shadow-camera-top={30}
             shadow-camera-bottom={-30}
             shadow-bias={-0.0004}
-            color="#fff6e8"
+            color="#fff7ed"
           />
+          {/* Anime / Clay Golden Rim Light */}
+          <directionalLight position={[-25, 18, -25]} intensity={0.75} color="#ffa270" />
 
-          <Sky
-            distance={450000}
-            sunPosition={[25, 40, 20]}
-            inclination={0.6}
-            azimuth={0.25}
-            turbidity={5}
-            rayleigh={0.5}
-          />
-
-          <fog attach="fog" args={['#a2e8dd', 38, 125]} />
+          <fog attach="fog" args={['#e06d4e', 45, 135]} />
 
           {/* Orbit Controls with full free cam capabilities */}
           <OrbitControls
