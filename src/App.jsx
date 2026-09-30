@@ -274,7 +274,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="relative w-screen h-screen overflow-hidden bg-[#a2e8dd]">
+      <div className="relative w-screen h-screen overflow-hidden bg-[#e06d4e]">
         {/* 1. Security Gate PIN Overlay */}
         {!unlocked && <SecurityGate onUnlocked={() => setUnlocked(true)} />}
 
@@ -292,6 +292,9 @@ export default function App() {
           camera={{ position: [30, 24, 30], fov: 36, near: 0.1, far: 1000 }}
           className="w-full h-full touch-none"
         >
+          {/* Terracotta Sunset Sky matching reference */}
+          <color attach="background" args={['#e06d4e']} />
+
           {/* Cinematic Camera Director */}
           <CameraDirector
             cameraPos={camPos}

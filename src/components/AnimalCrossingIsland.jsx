@@ -248,7 +248,10 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
   const mCobble = useMemo(() => new THREE.MeshStandardMaterial({ color: 0xd6cbbd, roughness: 0.85 }), [])
   const mWoodTrim = useMemo(() => new THREE.MeshStandardMaterial({ color: 0x3d271d, roughness: 0.75 }), [])
   const mVermilion = useMemo(() => new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.65 }), [])
-  const mPaperWall = useMemo(() => new THREE.MeshStandardMaterial({ color: 0xf5ede0, roughness: 0.6 }), [])
+  const mPaperWall = useMemo(() => new THREE.MeshStandardMaterial({ color: 0xfbf7ee, roughness: 0.65 }), [])
+  const mShojiLantern = useMemo(() => new THREE.MeshBasicMaterial({ color: 0xfef08a }), [])
+  const mGold = useMemo(() => new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.8, roughness: 0.25 }), [])
+  const mSeatCushion = useMemo(() => new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.6 }), [])
 
   return (
     <group>
@@ -333,26 +336,57 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
 
         {/* Mini Executive Pagoda Gazebo for @Ai (PM) */}
         <group position={[0, 4.65, 0]}>
-          {/* Stepped Eaves Pavilion Roof */}
-          <mesh position={[0, 3.8, 0]} castShadow receiveShadow material={mWoodTrim}>
-            <boxGeometry args={[7.2, 0.35, 6.2]} />
+          {/* Eave Tier 1 */}
+          <mesh position={[0, 3.65, 0]} castShadow material={mVermilion}>
+            <boxGeometry args={[7.6, 0.12, 6.6]} />
           </mesh>
-          <mesh position={[0, 4.15, 0]} castShadow receiveShadow material={mWoodTrim}>
-            <boxGeometry args={[5.6, 0.35, 4.8]} />
+          <mesh position={[0, 3.82, 0]} castShadow receiveShadow material={mWoodTrim}>
+            <boxGeometry args={[7.2, 0.24, 6.2]} />
           </mesh>
-          <mesh position={[0, 4.5, 0]} castShadow material={mWoodTrim}>
-            <boxGeometry args={[3.8, 0.35, 3.2]} />
+
+          {/* Eave Tier 2 */}
+          <mesh position={[0, 4.08, 0]} castShadow material={mVermilion}>
+            <boxGeometry args={[5.8, 0.12, 5.0]} />
           </mesh>
-          {/* Golden Finial Crown */}
-          <mesh position={[0, 5.2, 0]} castShadow material={mVermilion}>
-            <cylinderGeometry args={[0.08, 0.16, 1.4, 8]} />
+          <mesh position={[0, 4.22, 0]} castShadow receiveShadow material={mWoodTrim}>
+            <boxGeometry args={[5.4, 0.22, 4.6]} />
           </mesh>
+
+          {/* Eave Tier 3 */}
+          <mesh position={[0, 4.45, 0]} castShadow material={mVermilion}>
+            <boxGeometry args={[4.2, 0.12, 3.6]} />
+          </mesh>
+          <mesh position={[0, 4.58, 0]} castShadow material={mWoodTrim}>
+            <boxGeometry args={[3.8, 0.20, 3.2]} />
+          </mesh>
+
+          {/* Golden Finial Spire (Sōrin) */}
+          <mesh position={[0, 5.15, 0]} castShadow material={mGold}>
+            <cylinderGeometry args={[0.06, 0.14, 1.2, 8]} />
+          </mesh>
+          {[4.75, 4.95, 5.15, 5.35].map((ry, ri) => (
+            <mesh key={ri} position={[0, ry, 0]} material={mGold}>
+              <torusGeometry args={[0.16 - ri * 0.02, 0.03, 8, 16]} />
+            </mesh>
+          ))}
 
           {/* 4 Corner Vermilion Pillars */}
           {[[-3.0, -2.4], [3.0, -2.4], [-3.0, 2.4], [3.0, 2.4]].map(([px, pz], pi) => (
             <mesh key={pi} position={[px, 1.8, pz]} castShadow material={mVermilion}>
-              <boxGeometry args={[0.28, 3.6, 0.28]} />
+              <boxGeometry args={[0.26, 3.6, 0.26]} />
             </mesh>
+          ))}
+
+          {/* 4 Corner Hanging Paper Lanterns */}
+          {[[-3.4, -2.8], [3.4, -2.8], [-3.4, 2.8], [3.4, 2.8]].map(([lx, lz], li) => (
+            <group key={li} position={[lx, 3.4, lz]}>
+              <mesh position={[0, 0, 0]} material={mShojiLantern}>
+                <sphereGeometry args={[0.18, 8, 8]} />
+              </mesh>
+              <mesh position={[0, 0.16, 0]} material={mWoodTrim}>
+                <boxGeometry args={[0.24, 0.06, 0.24]} />
+              </mesh>
+            </group>
           ))}
 
           {/* Master SecondBrain Beacon in Center */}
@@ -402,59 +436,94 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
       </group>
 
       {/* ============================================================== */}
-      {/* 3. TIER 2: 4 DIVISION ROOMS WITH ELEGANT TIMBER PARTITIONS    */}
+      {/* 3. TIER 2: 4 DIVISION ROOMS WITH LOW SHOJI SCREENS & TIMBER    */}
       {/* ============================================================== */}
       <group position={[0, 2.4, 0]}>
-        {/* Back Wall */}
-        <mesh position={[0, 1.3, -8.4]} castShadow receiveShadow material={mPaperWall}>
-          <boxGeometry args={[28.0, 2.6, 0.18]} />
-        </mesh>
-        {/* Left & Right Outer Walls */}
-        <mesh position={[-13.5, 1.3, -3.4]} castShadow receiveShadow material={mPaperWall}>
-          <boxGeometry args={[0.18, 2.6, 10.2]} />
-        </mesh>
-        <mesh position={[13.5, 1.3, -3.4]} castShadow receiveShadow material={mPaperWall}>
-          <boxGeometry args={[0.18, 2.6, 10.2]} />
-        </mesh>
+        {/* Back Wall (Waist-height Shoji Screen with Timber Cap) */}
+        <group position={[0, 0.7, -8.4]}>
+          <mesh castShadow receiveShadow material={mPaperWall}>
+            <boxGeometry args={[28.0, 1.4, 0.14]} />
+          </mesh>
+          <mesh position={[0, 0.72, 0]} castShadow material={mWoodTrim}>
+            <boxGeometry args={[28.2, 0.08, 0.22]} />
+          </mesh>
+          {/* Vertical Timber Mullions */}
+          {[-13.5, -9.0, -4.5, 0, 4.5, 9.0, 13.5].map((mx, mi) => (
+            <mesh key={mi} position={[mx, 0, 0]} castShadow material={mWoodTrim}>
+              <boxGeometry args={[0.12, 1.42, 0.18]} />
+            </mesh>
+          ))}
+        </group>
 
-        {/* Partition Divider Walls with Archways */}
+        {/* Left & Right Outer Shoji Screens */}
+        <group position={[-13.5, 0.7, -3.4]}>
+          <mesh castShadow receiveShadow material={mPaperWall}>
+            <boxGeometry args={[0.14, 1.4, 10.0]} />
+          </mesh>
+          <mesh position={[0, 0.72, 0]} castShadow material={mWoodTrim}>
+            <boxGeometry args={[0.22, 0.08, 10.2]} />
+          </mesh>
+        </group>
+        <group position={[13.5, 0.7, -3.4]}>
+          <mesh castShadow receiveShadow material={mPaperWall}>
+            <boxGeometry args={[0.14, 1.4, 10.0]} />
+          </mesh>
+          <mesh position={[0, 0.72, 0]} castShadow material={mWoodTrim}>
+            <boxGeometry args={[0.22, 0.08, 10.2]} />
+          </mesh>
+        </group>
+
+        {/* Partition Divider Shoji Screens with Torii Archways */}
         {[-5.2, 0.2, 5.4].map((divX, di) => (
-          <group key={di} position={[divX, 1.3, 0]}>
+          <group key={di} position={[divX, 0.7, 0]}>
             {/* Back segment */}
             <mesh position={[0, 0, -7.5]} castShadow receiveShadow material={mPaperWall}>
-              <boxGeometry args={[0.18, 2.6, 1.8]} />
+              <boxGeometry args={[0.12, 1.4, 1.8]} />
+            </mesh>
+            <mesh position={[0, 0.72, -7.5]} castShadow material={mWoodTrim}>
+              <boxGeometry args={[0.18, 0.08, 1.9]} />
             </mesh>
             {/* Front segment */}
             <mesh position={[0, 0, -2.4]} castShadow receiveShadow material={mPaperWall}>
-              <boxGeometry args={[0.18, 2.6, 5.6]} />
+              <boxGeometry args={[0.12, 1.4, 5.6]} />
             </mesh>
-            {/* Arch Top */}
-            <mesh position={[0, 1.05, -6.15]} castShadow material={mWoodTrim}>
-              <boxGeometry args={[0.22, 0.52, 1.2]} />
+            <mesh position={[0, 0.72, -2.4]} castShadow material={mWoodTrim}>
+              <boxGeometry args={[0.18, 0.08, 5.7]} />
+            </mesh>
+            {/* Torii Style Archway Top Beam */}
+            <mesh position={[0, 1.35, -6.15]} castShadow material={mWoodTrim}>
+              <boxGeometry args={[0.20, 0.18, 1.4]} />
+            </mesh>
+            {/* Archway Posts */}
+            <mesh position={[0, 0.55, -6.8]} castShadow material={mWoodTrim}>
+              <boxGeometry args={[0.12, 1.45, 0.12]} />
+            </mesh>
+            <mesh position={[0, 0.55, -5.5]} castShadow material={mWoodTrim}>
+              <boxGeometry args={[0.12, 1.45, 0.12]} />
             </mesh>
           </group>
         ))}
 
-        {/* Division Color Floor Insets */}
-        {/* Room 01: Akademik (Ungu) */}
-        <mesh position={[-9.35, 0.04, -3.7]} receiveShadow>
-          <boxGeometry args={[8.0, 0.02, 9.0]} />
-          <meshStandardMaterial color="#ede8f8" roughness={0.7} />
+        {/* Division Tatami Floor Insets (Elevated to Y=0.03 to eliminate Z-fighting) */}
+        {/* Room 01: Akademik (Soft Amethyst Wood) */}
+        <mesh position={[-9.35, 0.03, -3.7]} receiveShadow>
+          <boxGeometry args={[7.9, 0.02, 8.9]} />
+          <meshStandardMaterial color="#8b7280" roughness={0.75} />
         </mesh>
-        {/* Room 02: BIM (Hijau) */}
-        <mesh position={[-2.65, 0.04, -3.7]} receiveShadow>
-          <boxGeometry args={[5.2, 0.02, 9.0]} />
-          <meshStandardMaterial color="#e8f6ed" roughness={0.7} />
+        {/* Room 02: BIM (Soft Sage Wood) */}
+        <mesh position={[-2.65, 0.03, -3.7]} receiveShadow>
+          <boxGeometry args={[5.1, 0.02, 8.9]} />
+          <meshStandardMaterial color="#738271" roughness={0.75} />
         </mesh>
-        {/* Room 03: Trading (Amber) */}
-        <mesh position={[2.8, 0.04, -3.7]} receiveShadow>
-          <boxGeometry args={[5.0, 0.02, 9.0]} />
-          <meshStandardMaterial color="#fef6e8" roughness={0.7} />
+        {/* Room 03: Trading (Warm Amber Cedar) */}
+        <mesh position={[2.8, 0.03, -3.7]} receiveShadow>
+          <boxGeometry args={[4.9, 0.02, 8.9]} />
+          <meshStandardMaterial color="#8a7356" roughness={0.75} />
         </mesh>
-        {/* Room 04: Web (Biru) */}
-        <mesh position={[9.35, 0.04, -3.7]} receiveShadow>
-          <boxGeometry args={[8.0, 0.02, 9.0]} />
-          <meshStandardMaterial color="#e8f3fd" roughness={0.7} />
+        {/* Room 04: Web (Soft Slate Wood) */}
+        <mesh position={[9.35, 0.03, -3.7]} receiveShadow>
+          <boxGeometry args={[7.9, 0.02, 8.9]} />
+          <meshStandardMaterial color="#6a7d8c" roughness={0.75} />
         </mesh>
 
         {/* Room Name Labels */}
@@ -509,11 +578,58 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
         <mesh position={[0, 0.5, 0]} castShadow receiveShadow material={mWoodTrim}>
           <boxGeometry args={[7.2, 1.0, 1.4]} />
         </mesh>
-        {/* Bar Stools */}
+        {/* Counter Top Trim */}
+        <mesh position={[0, 1.02, 0]} castShadow material={mWoodTrim}>
+          <boxGeometry args={[7.4, 0.06, 1.5]} />
+        </mesh>
+
+        {/* Ceramic Coffee Cups on Counter */}
+        {[-2.0, -0.6, 0.8, 2.2].map((cx, ci) => (
+          <group key={ci} position={[cx, 1.08, 0.1]}>
+            <mesh castShadow material={mPaperWall}>
+              <cylinderGeometry args={[0.07, 0.05, 0.14, 8]} />
+            </mesh>
+          </group>
+        ))}
+
+        {/* Pergola Trellis Overhead */}
+        {[-3.4, 3.4].map((px, pi) => (
+          <group key={pi} position={[px, 0, 0]}>
+            <mesh position={[0, 1.3, -0.8]} castShadow material={mWoodTrim}>
+              <boxGeometry args={[0.14, 2.6, 0.14]} />
+            </mesh>
+            <mesh position={[0, 1.3, 0.8]} castShadow material={mWoodTrim}>
+              <boxGeometry args={[0.14, 2.6, 0.14]} />
+            </mesh>
+          </group>
+        ))}
+        {/* Trellis Beams */}
+        <mesh position={[0, 2.62, -0.8]} castShadow material={mWoodTrim}>
+          <boxGeometry args={[7.6, 0.12, 0.14]} />
+        </mesh>
+        <mesh position={[0, 2.62, 0.8]} castShadow material={mWoodTrim}>
+          <boxGeometry args={[7.6, 0.12, 0.14]} />
+        </mesh>
+        {/* Hanging Lanterns */}
+        {[-2.2, 0, 2.2].map((lx, li) => (
+          <group key={li} position={[lx, 2.3, 0]}>
+            <mesh material={mShojiLantern}>
+              <sphereGeometry args={[0.16, 8, 8]} />
+            </mesh>
+            <mesh position={[0, 0.14, 0]} material={mWoodTrim}>
+              <boxGeometry args={[0.22, 0.05, 0.22]} />
+            </mesh>
+          </group>
+        ))}
+
+        {/* Bar Stools with Vermilion Cushion Pads */}
         {[-2.5, -1.5, -0.5, 0.5, 1.5, 2.5].map((sx, idx) => (
           <group key={idx} position={[sx, 0, -1.3]}>
-            <mesh position={[0, 0.42, 0]} castShadow material={mWoodTrim}>
+            <mesh position={[0, 0.40, 0]} castShadow material={mWoodTrim}>
               <cylinderGeometry args={[0.26, 0.26, 0.08, 12]} />
+            </mesh>
+            <mesh position={[0, 0.46, 0]} castShadow material={mSeatCushion}>
+              <cylinderGeometry args={[0.24, 0.24, 0.05, 12]} />
             </mesh>
             <mesh position={[0, 0.20, 0]} material={mCliff}>
               <cylinderGeometry args={[0.04, 0.04, 0.40, 6]} />
@@ -522,13 +638,20 @@ export default function AnimalCrossingIsland({ counts, showLabels = true, onOpen
         ))}
       </group>
 
-      {/* Patio Garden Tables (Right Wing) */}
+      {/* Patio Garden Tables (Right Wing) with Umbrella */}
       <group position={[6.5, 0.6, 8.8]}>
         <mesh position={[0, 0.42, 0]} castShadow material={mWoodTrim}>
           <cylinderGeometry args={[1.2, 1.2, 0.08, 16]} />
         </mesh>
         <mesh position={[0, 0.2, 0]} material={mCliff}>
           <cylinderGeometry args={[0.1, 0.1, 0.4, 8]} />
+        </mesh>
+        {/* Table Umbrella */}
+        <mesh position={[0, 1.5, 0]} castShadow material={mWoodTrim}>
+          <cylinderGeometry args={[0.04, 0.04, 2.2, 8]} />
+        </mesh>
+        <mesh position={[0, 2.45, 0]} castShadow material={mVermilion}>
+          <coneGeometry args={[1.6, 0.55, 8]} />
         </mesh>
       </group>
 
