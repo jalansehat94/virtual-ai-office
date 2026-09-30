@@ -1,7 +1,43 @@
 import React, { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
-import ModelProp from './ModelProp'
+
+// Procedural Low-Poly Pine & Oak Trees (Zero GLTF download, zero Suspense delay)
+function LowPolyTree({ position = [0, 0, 0], scale = 1, isCone = true, isDark = false }) {
+  const mTrunk = useMemo(() => new THREE.MeshStandardMaterial({ color: 0x4a3728, roughness: 0.9 }), [])
+  const mLeaves = useMemo(() => new THREE.MeshStandardMaterial({
+    color: isDark ? 0x14532d : (isCone ? 0x15803d : 0x22c55e),
+    roughness: 0.85,
+    flatShading: true
+  }), [isDark, isCone])
+
+  return (
+    <group position={position} scale={scale}>
+      {/* Trunk */}
+      <mesh position={[0, 0.6, 0]} castShadow material={mTrunk}>
+        <cylinderGeometry args={[0.18, 0.28, 1.2, 6]} />
+      </mesh>
+      {/* Foliage Cones */}
+      {isCone ? (
+        <>
+          <mesh position={[0, 1.6, 0]} castShadow receiveShadow material={mLeaves}>
+            <coneGeometry args={[1.3, 1.4, 6]} />
+          </mesh>
+          <mesh position={[0, 2.4, 0]} castShadow receiveShadow material={mLeaves}>
+            <coneGeometry args={[1.0, 1.2, 6]} />
+          </mesh>
+          <mesh position={[0, 3.1, 0]} castShadow material={mLeaves}>
+            <coneGeometry args={[0.7, 1.0, 6]} />
+          </mesh>
+        </>
+      ) : (
+        <mesh position={[0, 2.0, 0]} castShadow receiveShadow material={mLeaves}>
+          <dodecahedronGeometry args={[1.4, 1]} />
+        </mesh>
+      )}
+    </group>
+  )
+}
 
 export default function IslandEnvironment() {
   const cloudsRef = useRef()
@@ -222,10 +258,10 @@ export default function IslandEnvironment() {
           <meshStandardMaterial color="#7ec850" roughness={0.8} />
         </mesh>
         {/* Pine cluster */}
-        <ModelProp url="./models/tree_cone_dark.glb" position={[-1, 4.4, -8]} scale={2.4} />
-        <ModelProp url="./models/tree_oak.glb" position={[1, 4.4, -2]} scale={2.2} />
-        <ModelProp url="./models/tree_cone.glb" position={[-1, 4.4, 4]} scale={2.3} />
-        <ModelProp url="./models/tree_blocks.glb" position={[1, 4.4, 10]} scale={2.4} />
+        <LowPolyTree position={[-1, 4.4, -8]} scale={2.4} isDark={true} />
+        <LowPolyTree position={[1, 4.4, -2]} scale={2.2} isCone={false} />
+        <LowPolyTree position={[-1, 4.4, 4]} scale={2.3} />
+        <LowPolyTree position={[1, 4.4, 10]} scale={2.4} isCone={false} />
       </group>
 
       {/* Right Cliff Terrace & Forest */}
@@ -239,10 +275,10 @@ export default function IslandEnvironment() {
           <meshStandardMaterial color="#7ec850" roughness={0.8} />
         </mesh>
         {/* Pine cluster */}
-        <ModelProp url="./models/tree_oak.glb" position={[1, 4.4, -8]} scale={2.3} />
-        <ModelProp url="./models/tree_cone_dark.glb" position={[-1, 4.4, -2]} scale={2.4} />
-        <ModelProp url="./models/tree_blocks_dark.glb" position={[1, 4.4, 4]} scale={2.4} />
-        <ModelProp url="./models/tree_cone.glb" position={[-1, 4.4, 10]} scale={2.3} />
+        <LowPolyTree position={[1, 4.4, -8]} scale={2.3} isCone={false} />
+        <LowPolyTree position={[-1, 4.4, -2]} scale={2.4} isDark={true} />
+        <LowPolyTree position={[1, 4.4, 4]} scale={2.4} isDark={true} />
+        <LowPolyTree position={[-1, 4.4, 10]} scale={2.3} />
       </group>
 
       {/* Back High Mountain Ridge */}
@@ -257,9 +293,10 @@ export default function IslandEnvironment() {
         </mesh>
         {/* Mountain Ridge Forest */}
         {[-18, -12, -6, 0, 6, 12, 18].map((tx, idx) => (
-          <ModelProp
+          <LowPolyTree
             key={idx}
-            url={idx % 2 === 0 ? './models/tree_cone_dark.glb' : './models/tree_oak.glb'}
+            isDark={idx % 2 === 0}
+            isCone={idx % 3 !== 0}
             position={[tx, 7.6, 0]}
             scale={2.6}
           />
@@ -398,8 +435,8 @@ export default function IslandEnvironment() {
           <meshStandardMaterial color="#7ec850" roughness={0.8} />
         </mesh>
         {/* Tropical Coconut Palms */}
-        <ModelProp url="./models/tree_oak.glb" position={[-3, 2.4, -2]} scale={2.8} />
-        <ModelProp url="./models/tree_cone_dark.glb" position={[4, 2.4, 3]} scale={2.5} />
+        <LowPolyTree position={[-3, 2.4, -2]} scale={2.8} isCone={false} />
+        <LowPolyTree position={[4, 2.4, 3]} scale={2.5} isDark={true} />
         {/* Sea Rocks */}
         <mesh position={[12, 0.4, -8]} castShadow>
           <dodecahedronGeometry args={[2.4]} />
@@ -440,7 +477,7 @@ export default function IslandEnvironment() {
             <meshStandardMaterial color="#1e293b" />
           </mesh>
         </group>
-        <ModelProp url="./models/tree_oak.glb" position={[4, 2.4, -3]} scale={2.8} />
+        <LowPolyTree position={[4, 2.4, -3]} scale={2.8} isCone={false} />
       </group>
 
       {/* Atoll 3 (North-East Mountainous Islet, X: 65, Z: -65) */}
@@ -449,8 +486,8 @@ export default function IslandEnvironment() {
           <coneGeometry args={[22, 6.0, 16]} />
           <meshStandardMaterial color="#7ec850" roughness={0.85} />
         </mesh>
-        <ModelProp url="./models/tree_cone_dark.glb" position={[0, 5.5, 0]} scale={3.2} />
-        <ModelProp url="./models/tree_cone.glb" position={[-5, 4.0, 4]} scale={2.6} />
+        <LowPolyTree position={[0, 5.5, 0]} scale={3.2} isDark={true} />
+        <LowPolyTree position={[-5, 4.0, 4]} scale={2.6} />
       </group>
 
       {/* ============================================================== */}
