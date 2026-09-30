@@ -3,9 +3,12 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // Ready for static GitHub Pages hosting
+  base: '/virtual-ai-office/',
   server: {
     port: 3000,
     open: false
+  },
+  preview: {
+    port: 4173
   }
 })
