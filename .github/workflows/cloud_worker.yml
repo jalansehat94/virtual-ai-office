@@ -1,0 +1,33 @@
+name: Autonomous Cloud Telemetry Worker
+
+on:
+  schedule:
+    # Runs every 30 minutes completely autonomously in GitHub Cloud
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cloud-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Cloud Telemetry Worker
+        run: |
+          python .github/scripts/cloud_sync.py
+
+      - name: Commit and Push Fresh Telemetry
+        run: |
+          git config --global user.name "SecondBrain Cloud Bot"
+          git config --global user.email "bot@secondbrain.ai"
+          git add live_state.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(telemetry): autonomous cloud market sync [skip ci]" && git push)

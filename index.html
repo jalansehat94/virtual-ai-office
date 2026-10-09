@@ -2103,7 +2103,20 @@ const DEFAULT_STATE = {
   }
 };
 let data=DEFAULT_STATE,demo=false,lastSig="";
-function liveStatus(a,h,now){if(!a)return"idle";if(a.status==="offline")return"offline";if(demo)return"working";if(a.status)return a.status;const s=now-(a.lastActive||0);return s<45?"working":s<120?"recent":"idle"}
+function liveStatus(a,h,now){
+  if(!a)return"idle";
+  if(a.status==="offline")return"offline";
+  if(demo)return"working";
+  const realNow=Date.now()/1000;
+  const lastHeartbeat=data?(data.now||h.fetchedAt||0):0;
+  const isOffline=(realNow-lastHeartbeat)>180;
+  if(isOffline&&!demo){
+    return (a.name==="Heru"||a.name==="Ai")?"idle":"recent";
+  }
+  if(a.status)return a.status;
+  const s=now-(a.lastActive||0);
+  return s<45?"working":s<120?"recent":"idle";
+}
 function nowSec(){return data?data.now+(Date.now()/1000-data._recv):Date.now()/1000}
 
 const isHomeAgent=a=>a.name==="Heru"||a.name==="Ai";
@@ -2144,7 +2157,13 @@ function sync(){
   updateMine(data.mine||null);applyGotos(now);
   $("#sAct").textContent=`${act} / ${tot}`;$("#sSes").textContent=ses;$("#sCost").textContent="$"+cost.toFixed(2);$("#sVps").textContent=`${up} / ${data.hosts.length}`;
   const last=Math.max(...data.hosts.map(h=>h.fetchedAt||0));
-  $("#upd").textContent=last?`Data VPS diperbarui ${ago(last,now)} · refresh tiap 20 detik${demo?" · MODE DEMO":""}`:"Menghubungi SecondBrain Live Backend…";
+  const realNow=Date.now()/1000;
+  const age=last?(realNow-last):999999;
+  if(age<180){
+    $("#upd").textContent=`🟢 Laptop Heru Online · Terkoneksi Live ke Antigravity · refresh tiap 20 dtk${demo?" · MODE DEMO":""}`;
+  } else {
+    $("#upd").textContent=`💤 Laptop Heru Sedang Istirahat (Terakhir aktif ${ago(last,realNow)}) · Cloud Telemetry 24/7${demo?" · MODE DEMO":""}`;
+  }
 }
 function getApiEndpoint(){
   const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
@@ -2163,7 +2182,7 @@ function updateLiveBadge(endpoint, isLive){
       el = document.createElement("button");
       el.id = "liveBadge";
       el.className = "btn";
-      el.style.cssText = "margin-left:8px;font-size:10px;padding:3px 8px;cursor:pointer;border-radius:6px;font-weight:700;";
+      el.style.cssText = "margin-left:8px;font-size:10px;padding:3px 8px;cursor:pointer;border-radius:6px;font-weight:700;display:inline-flex;align-items:center;gap:4px;transition:all .2s ease;";
       el.onclick = () => {
         const cur = localStorage.getItem("sb_live_tunnel") || "";
         const u = prompt("🔗 Sambungkan Live Telemetry ke Laptop Heru!\nMasukkan URL Cloudflare Tunnel / Ngrok (contoh: https://xxxx.trycloudflare.com)\nKosongkan untuk kembali ke mode Snapshot:", cur);
@@ -2178,10 +2197,34 @@ function updateLiveBadge(endpoint, isLive){
   }
   if(el){
     const isLocal = endpoint === "/api/state";
-    el.textContent = isLive ? (isLocal ? "🟢 LIVE LOCAL" : "🌐 LIVE TUNNEL") : "📡 SNAPSHOT SYNC";
-    el.style.background = isLive ? (isLocal ? "#22c55e" : "#0ea5e9") : "rgba(255,255,255,0.18)";
-    el.style.color = "#fff";
-    el.title = isLive ? "Terhubung live ke SecondBrain!" : "Klik untuk menghubungkan Cloudflare Tunnel / Ngrok ke laptop Heru";
+    const realNow = Date.now() / 1000;
+    const lastHeartbeat = data ? (data.now || Math.max(...(data.hosts||[]).map(h => h.fetchedAt || 0))) : 0;
+    const age = lastHeartbeat ? (realNow - lastHeartbeat) : 999999;
+
+    if(isLocal){
+      el.textContent = "🟢 LAPTOP ONLINE · LOCAL";
+      el.style.background = "#22c55e";
+      el.style.color = "#fff";
+      el.title = "Terhubung langsung ke SecondBrain lokal (Port 4848)";
+    } else if(endpoint.includes("tunnel")){
+      el.textContent = "🌐 LIVE TUNNEL";
+      el.style.background = "#0ea5e9";
+      el.style.color = "#fff";
+      el.title = "Terhubung live ke laptop Heru via tunnel";
+    } else {
+      if(age < 180){
+        el.textContent = "🟢 LAPTOP ONLINE · LIVE";
+        el.style.background = "#22c55e";
+        el.style.color = "#fff";
+        el.title = `Laptop Heru terdeteksi online! Sinyal terakhir: ${Math.round(age)} dtk lalu`;
+      } else {
+        const agoStr = lastHeartbeat ? ago(lastHeartbeat, realNow) : "beberapa waktu lalu";
+        el.textContent = "💤 LAPTOP OFFLINE · ISTIRAHAT";
+        el.style.background = "rgba(100,116,139,0.35)";
+        el.style.color = "#cbd5e1";
+        el.title = `Laptop Heru sedang offline/istirahat (Terakhir aktif: ${agoStr}). Kantor 3D tetap aman di cloud!`;
+      }
+    }
   }
 }
 async function load(){
