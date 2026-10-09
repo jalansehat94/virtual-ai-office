@@ -1782,11 +1782,74 @@ function sync(){
   const last=Math.max(...data.hosts.map(h=>h.fetchedAt||0));
   $("#upd").textContent=last?`Data VPS diperbarui ${ago(last,now)} · refresh tiap 20 detik${demo?" · MODE DEMO":""}`:"Menghubungi SecondBrain Live Backend…";
 }
+function getApiEndpoint(){
+  const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  if(isLocal) return "/api/state";
+  const custom = localStorage.getItem("sb_live_tunnel");
+  if(custom) return custom.replace(/\/+$/, "") + "/api/state";
+  return "live_state.json";
+}
+function updateLiveBadge(endpoint, isLive){
+  let el = document.getElementById("liveBadge");
+  if(!el){
+    const brand = document.querySelector(".box.brand");
+    if(brand){
+      el = document.createElement("button");
+      el.id = "liveBadge";
+      el.className = "btn";
+      el.style.cssText = "margin-left:8px;font-size:10px;padding:3px 8px;cursor:pointer;border-radius:6px;font-weight:700;";
+      el.onclick = () => {
+        const cur = localStorage.getItem("sb_live_tunnel") || "";
+        const u = prompt("🔗 Sambungkan Live Telemetry ke Laptop Heru!\nMasukkan URL Cloudflare Tunnel / Ngrok (contoh: https://xxxx.trycloudflare.com)\nKosongkan untuk kembali ke mode Snapshot:", cur);
+        if(u !== null){
+          if(u.trim()) localStorage.setItem("sb_live_tunnel", u.trim());
+          else localStorage.removeItem("sb_live_tunnel");
+          load();
+        }
+      };
+      brand.appendChild(el);
+    }
+  }
+  if(el){
+    const isLocal = endpoint === "/api/state";
+    el.textContent = isLive ? (isLocal ? "🟢 LIVE LOCAL" : "🌐 LIVE TUNNEL") : "📡 SNAPSHOT SYNC";
+    el.style.background = isLive ? (isLocal ? "#22c55e" : "#0ea5e9") : "rgba(255,255,255,0.18)";
+    el.style.color = "#fff";
+    el.title = isLive ? "Terhubung live ke SecondBrain!" : "Klik untuk menghubungkan Cloudflare Tunnel / Ngrok ke laptop Heru";
+  }
+}
 async function load(){
-  try{const r=await fetch("api/state",{cache:"no-store"});const d=await r.json();d._recv=Date.now()/1000;
-    const sig=d.hosts.map(h=>h.key+":"+(h.agents||[]).map(a=>a.id).join(",")).join("|");
-    data=d;if(sig!==lastSig){lastSig=sig;build();focusOn(focus.key||({kebun:"farm",farm:"farm",tambang:"mine",mine:"mine",emas:"mine"}[location.hash.slice(1)])||"all",true)}sync()}
-  catch(e){console.error(e);$("#upd").textContent=e instanceof TypeError&&/fetch/i.test(e.message)?(location.protocol==="https:"?"⚠️ Server kantor sedang tidak tersedia":"⚠️ Server SecondBrain Office belum aktif — jalankan office_backend.py di port 4848"):"⚠️ "+e.message}
+  const ep = getApiEndpoint();
+  try{
+    const r = await fetch(ep, {cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+    d._recv = Date.now()/1000;
+    const sig = d.hosts.map(h=>h.key+":"+(h.agents||[]).map(a=>a.id).join(",")).join("|");
+    data = d;
+    if(sig !== lastSig){lastSig = sig; build(); focusOn(focus.key||({kebun:"farm",farm:"farm",tambang:"mine",mine:"mine",emas:"mine"}[location.hash.slice(1)])||"all",true)}
+    sync();
+    updateLiveBadge(ep, true);
+  }catch(e){
+    if(ep !== "live_state.json"){
+      try{
+        const r2 = await fetch("live_state.json", {cache:"no-store"});
+        if(r2.ok){
+          const d2 = await r2.json();
+          d2._recv = Date.now()/1000;
+          const sig2 = d2.hosts.map(h=>h.key+":"+(h.agents||[]).map(a=>a.id).join(",")).join("|");
+          data = d2;
+          if(sig2 !== lastSig){lastSig = sig2; build(); focusOn(focus.key||"all",true)}
+          sync();
+          updateLiveBadge("live_state.json", false);
+          return;
+        }
+      }catch(e2){}
+    }
+    console.error(e);
+    updateLiveBadge("offline", false);
+    $("#upd").textContent = "⚠️ Menghubungi SecondBrain Live Backend…";
+  }
 }
 
 /* ================= tab & fokus kamera ================= */
