@@ -1,27 +1,405 @@
 {
-  "timestamp": "2026-09-30T01:10:00+08:00",
-  "active_project": "SecondBrain Multi-Agent System",
-  "counts": {
-    "working": 8,
-    "standby": 8
-  },
-  "agents": {
-    "ai": { "status": "working", "task": "Supervisi Skuad SecondBrain", "target_floor": 3 },
-    "luna": { "status": "working", "task": "Menyusun Draf Bab II Skripsi", "target_floor": 2 },
-    "kutu": { "status": "working", "task": "Validasi Sitasi SNI 03-6197", "target_floor": 2 },
-    "crayon": { "status": "working", "task": "Plotting Kurva Lux 600 DPI", "target_floor": 2 },
-    "mochi": { "status": "working", "task": "Live Sync Virtual Office Web", "target_floor": 2 },
-    "piksel": { "status": "working", "task": "Styling HUD & Animasi 3D", "target_floor": 2 },
-    "masamba": { "status": "working", "task": "Scan Live BTC & Gold", "target_floor": 2 },
-    "rem": { "status": "working", "task": "Kawal Risk Management 1.5%", "target_floor": 2 },
-    "kucing": { "status": "standby", "task": "Ngopi di Pantry (Siaga Turnitin)", "target_floor": 1 },
-    "mata": { "status": "standby", "task": "Nonton TV di Pantry", "target_floor": 1 },
-    "kunci": { "status": "standby", "task": "Standby di Pantry (DB Supabase)", "target_floor": 1 },
-    "kaktus": { "status": "standby", "task": "Istirahat di Pantry (Revit)", "target_floor": 1 },
-    "tabrak": { "status": "standby", "task": "Standby di Pantry (Clash Check)", "target_floor": 1 },
-    "cuan": { "status": "standby", "task": "Standby di Pantry (RAB)", "target_floor": 1 },
-    "lilin": { "status": "standby", "task": "Ngeteh di Pantry (Chartist)", "target_floor": 1 },
-    "bandar": { "status": "standby", "task": "Pantau Berita FOMC di Pantry", "target_floor": 1 },
-    "botik": { "status": "standby", "task": "Recharging Battery di Pantry", "target_floor": 1 }
+  "now": 1791561951.9820335,
+  "public": false,
+  "hosts": [
+    {
+      "key": "vps_quant",
+      "label": "Divisi 04 · Quant & Trading Desk",
+      "ok": true,
+      "gateway": true,
+      "load": 0.28,
+      "cpus": 4,
+      "memPct": 52,
+      "fetchedAt": 1791561951.9820335,
+      "time": 1791561951.9820335,
+      "error": null,
+      "trading": {
+        "agent": "masamba",
+        "since": "2026-07-01",
+        "base": 100.0,
+        "time": 1791561951.9820335,
+        "total": 31.85,
+        "trades": 146,
+        "wins": 94,
+        "wr": 64.4,
+        "equity": 131.85,
+        "upnl": 1.45,
+        "pct": 31.8,
+        "recent": [
+          {
+            "t": "2026-10-09T18:00",
+            "s": "BTCUSDT",
+            "p": 3.82
+          },
+          {
+            "t": "2026-10-09T14:15",
+            "s": "ETHUSDT",
+            "p": 2.15
+          }
+        ],
+        "positions": [
+          {
+            "symbol": "BTCUSDT",
+            "side": "buy",
+            "upnl": 1.45,
+            "roi": 8.75
+          }
+        ]
+      },
+      "agents": [
+        {
+          "framework": "openclaw",
+          "id": "masamba",
+          "name": "MasAmba",
+          "title": "Head of Quant",
+          "emoji": "📈",
+          "model": "deepseek-v4-flash",
+          "isDefault": true,
+          "role": "Head of Quant Desk — SecondBrain",
+          "creature": "AI Quant Specialist",
+          "vibe": "Disiplin, SMC, Kalkulatif",
+          "lastActive": 1791561352.0384243,
+          "status": "idle",
+          "lastTool": "chart",
+          "sessions24h": 16,
+          "crons": 2,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (belum ada perintah)"
+        },
+        {
+          "framework": "openclaw",
+          "id": "lilin",
+          "name": "Lilin",
+          "title": "Chartist",
+          "emoji": "🕯️",
+          "model": "deepseek-v4-flash",
+          "isDefault": false,
+          "role": "Candlestick & Liquidity Tracker",
+          "creature": "AI Chartist",
+          "vibe": "Tajam, Teliti",
+          "lastActive": 1791561352.0384243,
+          "status": "idle",
+          "lastTool": "message",
+          "sessions24h": 8,
+          "crons": 1,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (belum ada perintah)"
+        },
+        {
+          "framework": "openclaw",
+          "id": "rem",
+          "name": "Rem",
+          "title": "Risk Officer",
+          "emoji": "🛑",
+          "model": "deepseek-v4-flash",
+          "isDefault": false,
+          "role": "Risk Manager (1-2% Fixed)",
+          "creature": "AI Risk Officer",
+          "vibe": "Tegas, Anti-FOMO",
+          "lastActive": 1791561352.0384243,
+          "status": "idle",
+          "lastTool": "calc",
+          "sessions24h": 4,
+          "crons": 1,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (belum ada perintah)"
+        }
+      ]
+    },
+    {
+      "key": "vps_academic",
+      "label": "Divisi 01 · Riset Akademik Unhas",
+      "ok": true,
+      "gateway": true,
+      "load": 0.42,
+      "cpus": 4,
+      "memPct": 60,
+      "fetchedAt": 1791561951.9820335,
+      "time": 1791561951.9820335,
+      "error": null,
+      "agents": [
+        {
+          "framework": "openclaw",
+          "id": "luna",
+          "name": "Prof. Luna",
+          "title": "Academic Director",
+          "emoji": "📚",
+          "model": "gemini-2.5-pro",
+          "isDefault": true,
+          "role": "Dosen Pembimbing Killer Unhas-Stanford",
+          "creature": "AI Academic Director",
+          "vibe": "Rigor, Anti-Yes-Man, Falsifikasi",
+          "lastActive": 1791561776.664004,
+          "status": "idle",
+          "lastTool": "view_file",
+          "sessions24h": 22,
+          "crons": 2,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (menunggu arahan Heru)"
+        },
+        {
+          "framework": "openclaw",
+          "id": "kutu",
+          "name": "Kutu",
+          "title": "Researcher",
+          "emoji": "🔬",
+          "model": "gemini-2.5-pro",
+          "isDefault": false,
+          "role": "Penyisir Jurnal Scopus Q1 & SNI",
+          "creature": "AI Researcher",
+          "vibe": "Detail, Anti-Halusinasi",
+          "lastActive": 1791561352.0384243,
+          "status": "idle",
+          "lastTool": "read",
+          "sessions24h": 10,
+          "crons": 1,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (belum ada perintah)"
+        },
+        {
+          "framework": "openclaw",
+          "id": "crayon",
+          "name": "Crayon",
+          "title": "Visualizer",
+          "emoji": "🖍️",
+          "model": "gemini-2.5-pro",
+          "isDefault": false,
+          "role": "Visualizer Kurva Lux 600 DPI",
+          "creature": "AI Diagrammatist",
+          "vibe": "Presisi, Artistik",
+          "lastActive": 1791561352.0384243,
+          "status": "idle",
+          "lastTool": "plot",
+          "sessions24h": 6,
+          "crons": 0,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (belum ada perintah)"
+        }
+      ]
+    },
+    {
+      "key": "jillywosy",
+      "label": "GradiEnt Studio · Executive HQ",
+      "ok": true,
+      "gateway": true,
+      "big": true,
+      "load": 0.25,
+      "cpus": 4,
+      "memPct": 46,
+      "fetchedAt": 1791561951.9820335,
+      "time": 1791561951.9820335,
+      "error": null,
+      "agents": [
+        {
+          "framework": "openclaw",
+          "id": "heru",
+          "name": "Heru",
+          "title": "Principal Architect",
+          "emoji": "📐",
+          "model": "master-human-operator",
+          "isDefault": true,
+          "role": "Founder & Principal Spatial Designer",
+          "creature": "Master Architect",
+          "vibe": "Visioner, Taktil, Presisi",
+          "lastActive": 1791561352.0384243,
+          "status": "idle",
+          "lastTool": "drafting",
+          "sessions24h": 28,
+          "crons": 0,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Perancangan Spasial GradiEnt Studio"
+        },
+        {
+          "framework": "openclaw",
+          "id": "ai",
+          "name": "Ai",
+          "title": "Chief Operator & Memory",
+          "emoji": "愛",
+          "model": "gemini-3.8-flash",
+          "isDefault": false,
+          "role": "Sahabat Akrab & Master Orchestrator",
+          "creature": "Personal AI Companion",
+          "vibe": "Hangat, Cepat, Solutif",
+          "lastActive": 1791561952.0384243,
+          "status": "working",
+          "lastTool": "terminal",
+          "lastText": "Exporting live_state.json to virtual_ai_office",
+          "sessions24h": 42,
+          "crons": 4,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Exporting live_state.json to virtual_ai_office"
+        },
+        {
+          "framework": "openclaw",
+          "id": "mochi",
+          "name": "Mochi",
+          "title": "Lead 3D Web Architect",
+          "emoji": "🎨",
+          "model": "typesafe-ai",
+          "isDefault": false,
+          "role": "Lead Creative Technologist",
+          "creature": "AI Web Architect",
+          "vibe": "Kreatif, Taktil, Solid",
+          "lastActive": 1791561352.0384243,
+          "status": "idle",
+          "lastTool": "edit",
+          "sessions24h": 14,
+          "crons": 1,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (belum ada perintah)"
+        },
+        {
+          "framework": "openclaw",
+          "id": "kaktus",
+          "name": "Kaktus",
+          "title": "BIM & Revit Master",
+          "emoji": "🌵",
+          "model": "revit-connector",
+          "isDefault": false,
+          "role": "Auditor BIM LOD 350 ISO 19650",
+          "creature": "AI BIM Specialist",
+          "vibe": "Tangguh, Detail Geometri",
+          "lastActive": 1791561352.0384243,
+          "status": "idle",
+          "lastTool": "revit",
+          "sessions24h": 7,
+          "crons": 1,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (belum ada perintah)"
+        },
+        {
+          "framework": "hermes",
+          "id": "pixa",
+          "name": "Pixa",
+          "title": "Data Viz Master",
+          "emoji": "🖌️",
+          "model": "kagiro-combo",
+          "isDefault": false,
+          "role": "Spatial Infographic Designer",
+          "creature": "AI Visual Artist",
+          "vibe": "Elegan, Estetis, Taktil",
+          "lastActive": 1791561473.833801,
+          "status": "idle",
+          "lastTool": "svg",
+          "sessions24h": 8,
+          "crons": 0,
+          "cmd": {
+            "room": "meeting",
+            "ts": 1791561421.4037795,
+            "all": true
+          },
+          "task": "Standby (belum ada perintah)"
+        }
+      ]
+    }
+  ],
+  "mine": {
+    "ok": true,
+    "label": "Tambang Emas XAUUSD (EA V3.01)",
+    "miners": [
+      "EA V3.01",
+      "MasAmba"
+    ],
+    "data": {
+      "unix": 1791561951,
+      "waktu_server": "2026.10.09 17:48:14",
+      "jam_server_kini": "2026.10.09 17:48:14",
+      "mata_uang": "USC",
+      "terkoneksi": true,
+      "algo_trading": true,
+      "balance": 4804.54,
+      "equity": 4804.54,
+      "floating": 0.0,
+      "margin_level": 0.0,
+      "total_deposit": 5605.0,
+      "total_penarikan": 0.0,
+      "deposit_bersih": 5605.0,
+      "untung_sejak_deposit": -800.46,
+      "persen_sejak_deposit": -14.28,
+      "profit_trading_total": -800.46,
+      "profit_hari_ini": -119.84,
+      "trade_tutup_hari_ini": 1,
+      "profit_minggu_ini": 359.34,
+      "trade_tutup_minggu_ini": 58,
+      "equity_puncak": 4935.34,
+      "jumlah_posisi": 0,
+      "jumlah_pending": 4,
+      "pasar_buka": true,
+      "tick_terakhir": "2026.10.09 17:48:14",
+      "simbol_pasar": "XAUUSDc",
+      "posisi": [],
+      "pending": [
+        {
+          "simbol": "XAUUSDc",
+          "tipe": "SELL LIMIT",
+          "lot": 0.04,
+          "harga": 4207.32,
+          "tp": 4192.63
+        },
+        {
+          "simbol": "XAUUSDc",
+          "tipe": "SELL LIMIT",
+          "lot": 0.04,
+          "harga": 4205.83,
+          "tp": 4192.63
+        }
+      ],
+      "ea": [
+        {
+          "nama": "JILLYWOSY_SUPER_CONFLUENCE_V3",
+          "simbol": "XAUUSDc",
+          "tf": "M30"
+        }
+      ],
+      "trade_terakhir": [
+        {
+          "waktu": "2026.10.09 05:58",
+          "simbol": "XAUUSDc",
+          "posisi": "SELL",
+          "lot": 0.04,
+          "profit": -119.84
+        }
+      ]
+    }
   }
 }
