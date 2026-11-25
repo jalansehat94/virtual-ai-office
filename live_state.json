@@ -297,9 +297,9 @@
       "MasAmba"
     ],
     "data": {
-      "unix": 1795543503,
-      "waktu_server": "2026-11-25 02:05:03 WITA",
-      "jam_server_kini": "2026-11-25 02:05:03 WITA",
+      "unix": 1795574507,
+      "waktu_server": "2026-11-25 10:41:47 WITA",
+      "jam_server_kini": "2026-11-25 10:41:47 WITA",
       "mata_uang": "USC",
       "terkoneksi": true,
       "algo_trading": true,
@@ -321,7 +321,7 @@
       "jumlah_posisi": 0,
       "jumlah_pending": 4,
       "pasar_buka": true,
-      "tick_terakhir": "Spot: $3562.70 · Cloud Feed",
+      "tick_terakhir": "Spot: $3572.50 · Cloud Feed",
       "simbol_pasar": "XAUUSDc",
       "posisi": [],
       "pending": [
@@ -356,15 +356,15 @@
           "profit": -119.84
         }
       ],
-      "harga_spot_xau": 3562.7
+      "harga_spot_xau": 3572.5
     }
   },
   "cloud_worker": {
     "status": "active",
-    "last_sync": "2026-11-25 02:05:03 WITA",
-    "unix": 1795543503,
+    "last_sync": "2026-11-25 10:41:47 WITA",
+    "unix": 1795574507,
     "source": "GitHub Actions Autonomous Cloud Worker",
-    "gold_price": 3562.7,
+    "gold_price": 3572.5,
     "btc_price": null
   }
 }
